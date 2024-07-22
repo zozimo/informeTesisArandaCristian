@@ -101,12 +101,12 @@ El SMN proporcionó los sensores de viento de ultrasonido. Se trabajó con los s
     \caption{Sensor Delta OHM modelo HD51.3D}
     \label{fig:sensorDeltaOhm}
 \end{figure}
- Algunas especificaciones técnicas de este tipo de anemómetros se muestran en la tabla \ref{tab:especTecniDelta}. Las más relevantes para el proceso de calibración son, el rango de medición, la resolución, la precisión, los protocolos de comunicación, la alimentación eléctrica y el intervalo de tiempo mínimo con el que puede tomar muestras. 
+ Algunas especificaciones técnicas de este tipo de anemómetros se muestran en la tabla \~ref{tab:especTecniDelta}. Las más relevantes para el proceso de calibración son, el rango de medición, la resolución, la precisión, los protocolos de comunicación, la alimentación eléctrica y el intervalo de tiempo mínimo con el que puede tomar muestras. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Módulo de alimentación electrica}\label{sec:moduloAlimentacionElectrica}
 
-Los anemómetros funcionan con una alimentación de 12 \unit{\volt} para el sistema principal y 24 \unit{\volt} para el sistema de calefacción ya que estos sensores pueden ser expuestos a entornos con temperaturas por debajo de cero grados. Por otro lado, los módulos Ethernet, RS-485 y los amplificadores operacionales trabajan con 5 \unit{\volt}, mientras que el resto de la placa de desarrollo opera con 3.3 \unit{\volt}. Por esta razón, se decide alimentar todo el sistema con una fuente de 12 \unit{\volt}, para garantizar el funcionamiento de los anemómetros en condiciones normales de temperatura dentro del laboratorio.
+Los anemómetros funcionan con una alimentación de 12 \unit{\volt} para el sistema principal y 24 \unit{\volt} para el sistema de calefacción ya que estos sensores pueden ser expuestos a entornos con temperaturas por debajo de cero grados. Por otro lado, los módulos Ethernet, RS-485 y los amplificadores operacionales trabajan con 5 \unit{\volt}, mientras que el resto de la placa de desarrollo opera con 3.3 \unit{\volt}. Por esta razón, se decide alimentar todo el sistema con una fuente de 12 \unit{\volt}, para garantizar el funcionamiento de los anemómetros en condiciones normales de temperatura dentro del laboratorio.rwer
 
 Para lograr estos niveles de tensión, se optó por un regulador basado en el chip LM2596S (Step-Down), como se indica en la Figura \ref{fig:StepDowmLM2596S}
 . Se conectan 12 \unit{\volt} a la entrada y se ajusta el potenciómetro hasta obtener 5 \unit{\volt} a la salida. Esta salida estará disponible para conectar el resto de los módulos.
@@ -235,7 +235,7 @@ Con esta configuración, se logró una comunicación bidireccional, permitiendo 
 \subsection{Circuito PWM}\label{sec:circuitoPWM}
 
 
-En esta sección, se diseñó un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en ingles). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control del variador de velocidad del túnel de viento.
+En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \~ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control del variador de velocidad del túnel de viento.
 
 El tablero posee dos pulsadores: uno de marcha (BT1-NC) y otro de parada (BT2-NA), que permiten encender y apagar, respectivamente, el conjunto variador-motor del túnel de viento. Además, cuenta con dos voltímetros de corriente continua, V1 y V2, que muestran el valor de tensión que se está aplicando al motor.
 
@@ -1003,7 +1003,7 @@ En las Figuras \ref{fig:MuestraIBC} y \ref{fig:MuestraPAT} se muestran las regio
         \label{fig:MuestraPAT}
     \end{subfigure}
     \caption{}
-    \label{fig:mainFigure}
+    \label{fig:mainFigures}
 \end{figure}
 
 El string del patrón VAISALA, modelo WMT700 tiene el formato \texttt{\$--MWV,021,R,003.34,N,A*14}, mientras que el del instrumento bajo calibración DELTAOHM, modelo HD51.3 tiene el formato \texttt{28.30 359.3 998.3<CR><LF>}. Para procesar y separar estos datos, se utiliza un diccionario de punteros a funciones, como se muestra en el fragmento de Código \ref{cdg:dicPuntFuncionPreprocesoAnemo}. Desde el software, el operador preconfigura el modelo del anemómetro y, por lo tanto, a la máquina de estados, asegurándose de llamar a la función correspondiente para procesar los datos de cada anemómetro.
