@@ -1,0 +1,47 @@
+\definecolor{Sail}{rgb}{0.643,0.819,0.976}
+\section{Especificaciones técnicas y hojas de datos}
+\begin{table}[H]
+\centering
+\fontsize{10}{8}\selectfont
+\begin{tblr}{
+  row{1} = {Sail},
+  row{6} = {Sail},
+  row{11} = {Sail},
+  row{16} = {Sail},
+  column{2} = {c},
+  cell{1}{1} = {c=2}{},
+  cell{6}{1} = {c=2}{},
+  cell{11}{1} = {c=2}{},
+  cell{16}{1} = {c=2}{},
+  hlines,
+  vlines,
+}
+\textbf{Velocidad de viento}     &                                                                                           \\
+Sensor                           & Ultrasonido                                                                               \\
+Rango de Medición                & $\SI{0}{\meter\per\second}$ a $\SI{75}{\meter\per\second}$                                \\
+Resolución                       & $\SI{0.1}{\meter\per\second}$                                                             \\                                 
+Precisión                        & {$ \pm \SI{0.2}{\meter\per\second}$ o $2\%$ de la medición hasta $\SI{60}{\meter\per\second}$ \\ $3\%$ de la medición para mayor que $\SI{60}{\meter\per\second}$~}\\
+\textbf{Dirección del viento}    &                                                                                           \\
+Sensor                           & Ultrasonido                                                                               \\
+Rango de Medición                & $\SI{0}{\degree}$ a $\SI{359.9}{\degree}$                                                \\
+Resolución                       & $\SI{0.1}{\degree}$                                                                       \\
+Precisión                        & $\pm \SI{2}{\degree} $ RMSE (velocidad del viento  $\SI{2}{\meter\per\second}$)           \\
+\textbf{Fuente de alimentación}  &                                                                                           \\
+Fuente de alimentación del calentador           & $\SI{24}{\volt}$ Vdc $\pm 10\%$\\
+Consumo de energía del calentador               & $\SI{30}{\watt}$       \\
+{Fuente de alimentación del\\ instrumento (sin calentador)}          & $\SI{12}{\volt}$ a $\SI{30}{\volt}$ Vdc\\
+{Consumo de energía del\\ instrumento (sin calentador)}              & $\SI{60}{\milli\ampere}$ @ $\SI{24}{\volt}$ Vdc\\
+\textbf{Otras especificaciones }    &                                                                                           \\
+Salida Serial                       & RS232 aislado y  RS485                                                                      \\
+Protocolo de comunicación           & NMEA, MODBUS-RTU, ACII propietario                                                               \\
+Intervalo de medición               & Configurable de $\SI{250}{\milli\second}$ a $\SI{1}{\second}$\\
+Intervalo de velocidad promedio     & Configurable de $\SI{1}{\second}$ a $\SI{10}{\minute}$\\
+Conexión eléctrica                  & 19-pole M23 conector Macho\\
+Temperatura de operación            & $\SI{-40}{\degreeCelsius}$ a $+\SI{70}{\degreeCelsius}$\\
+Grado de protección                 &  IP66                                                                                         \\                                                                                 
+\end{tblr}
+\caption{Especificaciones de sensor modelo Delta OHM HD51.3.}
+\label{tab:especTecniDelta}
+\end{table}
+
+\section{Sección 2}

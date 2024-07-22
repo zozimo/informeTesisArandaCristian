@@ -1,0 +1,61 @@
+\section{Caracterización de la zona de medición}
+\subsection{Banco de medición}
+\subsection{Procesamiento de datos}
+\subsection{Resultados}
+
+
+Se realizaron mediciones de 5 m/s a 25 m/s variando las distancias sobre el eje x (eje de la direccion del viento), a una altura constante en el eje z y centrado en el eje y constante, 
+
+\begin{itemize}
+    \item Se encontró que dos pares de puntos donde para generar una cantidad de viento se precisa aproximadamente el mismo ciclo de trabajo. Esos puntos son en -20cm y 60 cm y entre 10cm y 40 cm, 
+    \item Entre -20 y 60 cm quiza mejore el disminuya el factor de bloqueo pero en ambos casos el controlador sufre cambios mas abruptos de tensión debido a diferencia de 10 y 40 cm
+    \item Las velocidades en estos 4 puntos obtenidas a partir del controlador son relatimente estables, calcular varianza y media, de todas formas en -20 y 60 si bien estabiliza, sufre mas el controlador, con picos de tensión para mantener estable, osea le cuesta mas estabilizar en esos puntos
+    \item Entre -20 y 60 tengo una diferencia de direccion del  viento aprox de  4 grados, en cambio entre 10 y 40 tengo una diferencia en grados de 2 grados,(Para esto hacerlo bien calcular media y varianza). Ojo que esto tambien puede tener que ver en como me quedo el brazo para medir en 60, pudo haber quedado un poco inclinado y girado (repetir Medicion).
+\end{itemize}
+
+\section{Calibración Delta OHM HD500}
+\subsection{Banco de medición}
+\subsection{Procesamiento de datos}
+\subsection{Resultados}
+
+
+\section{Calibración Vaisala WMT700}
+\subsection{Banco de medición}
+\subsection{Procesamiento de datos}
+\subsection{Resultados}
+
+
+Cálculo del factor de bloqueo medición 1
+Sensor Delta OHM
+
+Primera área (Soporte): 30 cm x 7 cm = 210 cm²
+Segunda área (Sensor): 10 cm x 15 cm = 150 cm²
+
+Área total en cm²: 210 cm² + 150 cm² = 360 cm²
+
+convertir a metros cuadrados:
+360 cm² = 0.036 m²
+
+
+Area del patrón
+Primera área (Soporte): 27.5 cm x 8 cm = 220 cm²
+Segunda área (SensorCuernos): 19 cm x 1.5 cm = 28.5 cm²
+
+Área total en cm²: 28.5 (cm²)*3 + 220 cm² =  305 cm²
+
+convertir a metros cuadrados:
+305 cm² = 0.0305 m²
+
+
+Entendido, los diámetros de extremo a extremo de la elipse del túnel de viento son 119 cm y 60 cm. Vamos a calcular el área total de la sección transversal de la elipse en metros cuadrados.
+
+$Area=\pi × radio_mayor × radio_ menor$
+Área = 3.14 x (120/2)x(61/2) = 0.5749 m2
+
+Factor de Bloqueo DeltaOhm = 0.036/0.5749 = 0.0626
+Factor de Bloqueo Vaisala = 0.0305/0.5749 = 0.05305
+Aca se muestran los resultados de la calibracion del sistema.
+
+Sistema versatil
+
+Hacer pruebas con una rampa, y una lineallist
