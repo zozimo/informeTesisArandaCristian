@@ -101,12 +101,12 @@ El SMN proporcionó los sensores de viento de ultrasonido. Se trabajó con los s
     \caption{Sensor Delta OHM modelo HD51.3D}
     \label{fig:sensorDeltaOhm}
 \end{figure}
- Algunas especificaciones técnicas de este tipo de anemómetros se muestran en la tabla \~ref{tab:especTecniDelta}. Las más relevantes para el proceso de calibración son, el rango de medición, la resolución, la precisión, los protocolos de comunicación, la alimentación eléctrica y el intervalo de tiempo mínimo con el que puede tomar muestras. 
+ Algunas especificaciones técnicas de este tipo de anemómetros se muestran en la tabla \ref{tab:especTecniDelta}. Las más relevantes para el proceso de calibración son, el rango de medición, la resolución, la precisión, los protocolos de comunicación, la alimentación eléctrica y el intervalo de tiempo mínimo con el que puede tomar muestras. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Módulo de alimentación electrica}\label{sec:moduloAlimentacionElectrica}
 
-Los anemómetros funcionan con una alimentación de 12 \unit{\volt} para el sistema principal y 24 \unit{\volt} para el sistema de calefacción ya que estos sensores pueden ser expuestos a entornos con temperaturas por debajo de cero grados. Por otro lado, los módulos Ethernet, RS-485 y los amplificadores operacionales trabajan con 5 \unit{\volt}, mientras que el resto de la placa de desarrollo opera con 3.3 \unit{\volt}. Por esta razón, se decide alimentar todo el sistema con una fuente de 12 \unit{\volt}, para garantizar el funcionamiento de los anemómetros en condiciones normales de temperatura dentro del laboratorio.rwer
+Los anemómetros funcionan con una alimentación de 12 \unit{\volt} para el sistema principal y 24 \unit{\volt} para el sistema de calefacción ya que estos sensores pueden ser expuestos a entornos con temperaturas por debajo de cero grados. Por otro lado, los módulos Ethernet, RS-485 y los amplificadores operacionales trabajan con 5 \unit{\volt}, mientras que el resto de la placa de desarrollo opera con 3,3 \unit{\volt}. Por esta razón, se decide alimentar todo el sistema con una fuente de 12 \unit{\volt}, para garantizar el funcionamiento de los anemómetros en condiciones normales de temperatura dentro del laboratorio.rwer
 
 Para lograr estos niveles de tensión, se optó por un regulador basado en el chip LM2596S (Step-Down), como se indica en la Figura \ref{fig:StepDowmLM2596S}
 . Se conectan 12 \unit{\volt} a la entrada y se ajusta el potenciómetro hasta obtener 5 \unit{\volt} a la salida. Esta salida estará disponible para conectar el resto de los módulos.
@@ -121,7 +121,7 @@ Cabe aclarar que, si bien la CIAA tiene una salida de 5 \unit{\volt}, esta no pr
     \label{fig:StepDowmLM2596S}
 \end{figure}
 
-En la Figura \ref{fig:esquemPowerSupply} se observa el esquemático del sistema, mostrando cómo se conecta el módulo LM2596 con el resto de los componentes. Este esquemático incluye un divisor resistivo y un diodo Zener de 3.3 \unit{\volt} para limitar y adaptar la tensión de 12 \unit{\volt} a un rango de 3.3 \unit{\volt}, ya que se toman muestras de la tensión de alimentación a través del canal analógico-digital ADC\_CH1 de la EDU-CIAA. Esta información de la tensión se envía junto con los datos de los anemómetros, permitiendo un monitoreo preciso del sistema de alimentación. Además, se han agregado filtros de bypass a la alimentación del amplificador operacional LM358 para asegurar una operación estable y sin ruido.
+En la Figura \ref{fig:esquemPowerSupply} se observa el esquemático del sistema, mostrando cómo se conecta el módulo LM2596 con el resto de los componentes. Este esquemático incluye un divisor resistivo y un diodo Zener de 3,3 \unit{\volt} para limitar y adaptar la tensión de 12 \unit{\volt} a un rango de 3,3 \unit{\volt}, ya que se toman muestras de la tensión de alimentación a través del canal analógico-digital ADC\_CH1 de la EDU-CIAA. Esta información de la tensión se envía junto con los datos de los anemómetros, permitiendo un monitoreo preciso del sistema de alimentación. Además, se han agregado filtros de bypass a la alimentación del amplificador operacional LM358 para asegurar una operación estable y sin ruido.
 
 \begin{figure}[H]
     \centering
@@ -139,7 +139,8 @@ En la sección \ref{sec:instrumentos_med_viento} del capítulo \ref{cap:viento} 
     \item Tensión diferencial entre A y B para la transmisión de datos. Cuando la línea A es más positiva que la línea B por al menos 200 mV, se interpreta como un estado lógico '1'. Inversamente, cuando la línea B es más positiva que la línea A por al menos 200 mV, se interpreta como un estado lógico '0'.
     \item Velocidades de hasta 10 Mbps y distancia de hasta 1200 metros.
     \item Soporte para multidrop de hasta 32 dispositivos.
-    \item Resistencias de terminación de 120 ohmios para minimizar reflexiones de señal.
+    \item Resistencias de terminación de $\SI{120}{\ohm}$ para minimizar reflexiones de señal.
+
     \item Robustez contra interferencias eléctricas en entornos industriales.
 \end{itemize}
 
@@ -207,10 +208,10 @@ Una de las principales ventajas del módulo W5100 \cite{W5100Datasheet} es su ca
     \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Hardware/moduleW5100.png}
     \caption{Módulo W5100 utilizado para realizar la conectividad a internet a través de la interfaz SPI del microcontrolador.}
     \label{fig:moduleW5100}
-\end{figure}
+\end{figure}b
 Descripción de los Pines del Módulo W5100 Ethernet
 \begin{itemize}
-\item \textbf{VCC:} Pin de alimentación, generalmente conectado a 3.3V o 5V, dependiendo del módulo específico.
+\item \textbf{VCC:} Pin de alimentación, generalmente conectado a $\SI{3.3}{\volt}$ o $\SI{5}{\volt}$, dependiendo del módulo específico.
 \item \textbf{GND:} Pin de tierra, utilizado para completar el circuito de alimentación.
 \item \textbf{MISO (Master In Slave Out):} Pin de salida de datos del módulo hacia el microcontrolador en la comunicación SPI.
 \item \textbf{MOSI (Master Out Slave In):} Pin de entrada de datos desde el microcontrolador hacia el módulo en la comunicación SPI.
@@ -235,7 +236,7 @@ Con esta configuración, se logró una comunicación bidireccional, permitiendo 
 \subsection{Circuito PWM}\label{sec:circuitoPWM}
 
 
-En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \~ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control del variador de velocidad del túnel de viento.
+En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control del variador de velocidad del túnel de viento.
 
 El tablero posee dos pulsadores: uno de marcha (BT1-NC) y otro de parada (BT2-NA), que permiten encender y apagar, respectivamente, el conjunto variador-motor del túnel de viento. Además, cuenta con dos voltímetros de corriente continua, V1 y V2, que muestran el valor de tensión que se está aplicando al motor.
 
@@ -272,12 +273,12 @@ Para lograr controlar el nivel de tensión $VADC$ por medio de software, se remp
   vlines,
 }
 \textbf{R [\unit{\ohm}]} & \textbf{VCC [\unit{\milli\volt}]} & \textbf{I\_R[\unit{\milli\ampere}]} \\
-47K              & 9.9               & 2               \\
-10K              & 9.52              & 5.9               \\
-1K               & 9.29              & 9.4               \\
-560              & 7.55              & 13.48             \\
-330              & 5.63              & 16.97             \\
-100              & 2.29              & 100               \\
+47K              & 9,9               & 2               \\
+10K              & 9,52              & 5,9               \\
+1K               & 9,29              & 9,4               \\
+560              & 7,55              & 13,48             \\
+330              & 5,63              & 16,97             \\
+100              & 2,29              & 100               \\
 47               & 859               & 100               
 \end{tblr}
 \caption{Mediciones de tensión y corriente de la fuente del variador para distintas resistencias de carga.}
@@ -309,7 +310,7 @@ No obstante, para cuando se mejore la mecánica y transmisión del motor del tú
     \label{fig:filter1and2}
 \end{figure}
 
-% En la figura \ref{fig:adc100PercentPwm} se muestra el resultado de la simulación para un pulso $vPWM$ (señal azul) de $ \SI{100}{\micro\second}$ de periodo y una amplitud de $\SI{3.3}{\volt}$ con el ciclo de trabajo al $99\%$.La tensión $vFilter1$ (señal verde) en la primera etapa del filtro pasa bajo, tiene un tiempo de crecimiento corto del orden de los $\SI{10}{\milli \second}$, pero mayor ripple. La segunda etapa del filtro es la tensión $voutFilter$ (señal roja), esta señal tiene un mayor tiempo de crecimiento del orden $\SI{16}{\milli \second}$, pero un rizado mucho menor, entonces el agregado de otra etapa de filtrado permite obtener un nivel de continua con rizado mucho menor. Finalmente, podemos observar la señal $vadcTunel$ (señal celeste), esta señal es estable y se la conecta al $VADC$ del variador de velocidad.
+En la figura \ref{fig:adc100PercentPwm} se muestra el resultado de la simulación para un pulso $vPWM$ (señal azul) de $ \SI{100}{\micro\second}$ de periodo y una amplitud de $\SI{3.3}{\volt}$ con el ciclo de trabajo al $99\%$.La tensión $vFilter1$ (señal verde) en la primera etapa del filtro pasa bajo, tiene un tiempo de crecimiento corto del orden de los $\SI{10}{\milli \second}$, pero mayor ripple. La segunda etapa del filtro es la tensión $voutFilter$ (señal roja), esta señal tiene un mayor tiempo de crecimiento del orden $\SI{16}{\milli \second}$, pero un rizado mucho menor, entonces el agregado de otra etapa de filtrado permite obtener un nivel de continua con rizado mucho menor. Finalmente, podemos observar la señal $vadcTunel$ (señal celeste), esta señal es estable y se la conecta al $VADC$ del variador de velocidad.
 
 
 En la Figura \ref{fig:pwm100Percent} se muestra el resultado de la simulación para un pulso $\text{vPWM}$ (señal azul) de $\SI{100}{\micro\second}$ de periodo ($\SI{10}{\kilo\hertz}$) y una amplitud de $\SI{3.3}{\volt}$ con un ciclo de trabajo del $99\%$.
@@ -321,7 +322,7 @@ Finalmente, podemos observar la señal $\text{vadcTunel}$ (señal celeste). Esta
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/pwm100Percent.png}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/pwm100Percent.png}
     \caption{Señales simuladas para un ciclo de trabajo al 100 \% de la señal de entrada.}
     \label{fig:pwm100Percent}
 \end{figure}
@@ -416,17 +417,17 @@ Luego de caracterizar el circuito PWM, se lo llevó al túnel de viento y se con
   vlines,
 }
 {\textbf{Ciclo de trabajo}\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{Viento [\unit{\meter\per\second}]} \\
-0                                                & 4.2                      & 1                     \\
-1                                                & 16.6                     & 1.1                   \\
-2                                                & 30.3                     & 1.2                   \\
-31                                               & 427                      & 4.5                   \\
-63                                               & 864                      & 7.8                   \\
-94                                               & 1291                     & 11.1                  \\
-127                                              & 1745                     & 14.7                  \\
+0                                                & 4,2                      & 1                     \\
+1                                                & 16,6                     & 1,1                   \\
+2                                                & 30,3                     & 1,2                   \\
+31                                               & 427                      & 4,5                   \\
+63                                               & 864                      & 7,8                   \\
+94                                               & 1291                     & 11,1                  \\
+127                                              & 1745                     & 14,7                  \\
 158                                              & 2170                     & 18                    \\
-191                                              & 2621                     & 21.5                  \\
-222                                              & 3048                     & 24.5                  \\
-255                                              & 3500                     & 26.3                  
+191                                              & 2621                     & 21,5                  \\
+222                                              & 3048                     & 24,5                  \\
+255                                              & 3500                     & 26,3                  
 \end{tblr}
 \caption{Mediciones para ciclos de trabajo en modo Ascendente, VadcTunnel y la velocidad del viento.}
 \label{tab:windSpeedDataAsc}
@@ -443,17 +444,17 @@ Luego de caracterizar el circuito PWM, se lo llevó al túnel de viento y se con
   vlines,
 }
 {\textbf{Ciclo de trabajo}\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{Viento [\unit{\meter\per\second}]} \\
-255                               & 3501                     & 25.9                  \\
-222                               & 3048                     & 24.5                  \\
-191                               & 2622                     & 21.3                  \\
+255                               & 3501                     & 25,9                  \\
+222                               & 3048                     & 24,5                  \\
+191                               & 2622                     & 21,3                  \\
 158                               & 2170                     & 18                    \\
-127                               & 1744                     & 14.7                  \\
-94                                & 1291                     & 11.1                  \\
-63                                & 865                      & 7.8                   \\
-31                                & 426                      & 4.5                   \\
-2                                 & 30                       & 1.3                   \\
-1                                 & 16                       & 1.1                   \\
-0                                 & 4                        & 1.0                   
+127                               & 1744                     & 14,7                  \\
+94                                & 1291                     & 11,1                  \\
+63                                & 865                      & 7,8                   \\
+31                                & 426                      & 4,5                   \\
+2                                 & 30                       & 1,3                   \\
+1                                 & 16                       & 1,1                   \\
+0                                 & 4                        & 1,0                   
 \end{tblr}
 \caption{Mediciones para ciclos de trabajo en modo Descendente, VadcTunnel y la velocidad del viento.}
 \label{tab:windSpeedDataDesc}
@@ -519,10 +520,10 @@ Se conectó dos voltímetros, uno en la señal de entrada del variador y otro en
   vlines,
 }
 {\textbf{Ciclo de trabajo }\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{VadcCIAA [\unit{\milli\volt}]} \\
-0                                                & 4.2                      & 20                        \\
-1                                                & 16.6                     & 16.7                      \\
-2                                                & 30.3                     & 37.3                      \\
-31                                               & 427                      & 421.3                     \\
+0                                                & 4,2                      & 20                        \\
+1                                                & 16,6                     & 16,7                      \\
+2                                                & 30,3                     & 37,3                      \\
+31                                               & 427                      & 421,3                     \\
 63                                               & 864                      & 856                       \\
 94                                               & 1291                     & 1280                      \\
 127                                              & 1745                     & 1725                      \\
@@ -588,7 +589,7 @@ En La Figura \ref{fig:esquemLedStatusSocket} se muestra un circuito similar al p
     \label{fig:esquemLedStatusSocket}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \section{Diseño y construcción del PCB}
@@ -715,24 +716,26 @@ En particular, la lógica del programa se implementó mediante el uso de maquina
 \begin{tblr}{
   colspec = {Q[l,8cm] Q[c,1.5cm] Q[c,1.5cm] Q[c,1.5cm] Q[c,1.5cm]},
   rows = {m},
-  % row{1} = {font=\bfseries},    
+  row{1} = {font=\bfseries},    
   % cells = {c},
   row{1} = {Sail,font=\bfseries},
   hlines,
   vlines,
 }
-Descripción & Mealy     & Moore    & Harel    & UML \\
-Estados y transiciones & \checkmark & \checkmark    & \checkmark    & \checkmark \\
-Las transiciones producen salida & \checkmark   & \crossmark    & \checkmark    & \checkmark\\
-Los estados producen salida & \crossmark    & \checkmark    & \checkmark    & \checkmark \\
-Profundidad (jerarquías, estados compuestos) & \crossmark   & \crossmark & \checkmark   & \checkmark \\
-Ortogonalidad (submáquinas de estado paralelas) & \crossmark    & \crossmark    & \checkmark    & \checkmark\\
-Comunicación por difusión (eventos) & \crossmark    & \crossmark    & \checkmark    & \checkmark\\
-Historial, acciones, retrasos, tiempos de espera, condiciones & \crossmark    & \crossmark    & \checkmark    & \checkmark\\
+    Descripción & Mealy     & Moore    & Harel    & UML \\
+    Estados y transiciones & \checkmark & \checkmark    & \checkmark    & \checkmark \\
+    Las transiciones producen salida & \checkmark   & $\chi$    & \checkmark    & \checkmark \\
+    Los estados producen salida & $\chi$    & \checkmark    & \checkmark    & \checkmark \\
+    Profundidad (jerarquías, estados compuestos) & $\chi$   & $\chi$ & \checkmark   & \checkmark \\
+    Ortogonalidad (submáquinas de estado paralelas) & $\chi$    & $\chi$    & \checkmark    & \checkmark\\
+    Comunicación por difusión (eventos) & $\chi$    & $\chi$    & \checkmark    & \checkmark\\
+    Historial, acciones, retrasos, tiempos de espera, condiciones & $\chi$    & $\chi$    & \checkmark    & \checkmark\\
 \end{tblr}
 \caption{Diferencias entre los tipos de máquinas de estados.}
 \label{tab:compStateCharts}
 \end{table}
+
+
 Se crearon doce regiones que trabajan de forma concurrente (de forma ortogonal), como se muestra en la Figura \ref{fig:ordenRegiones}, y se comunican entre sí mediante eventos internos. A cada región se le asigna una prioridad en función de su posición; las que están más arriba tienen mayor prioridad de ejecución respecto a las de más abajo.
 
 \begin{figure}[H]
@@ -1133,7 +1136,7 @@ typedef struct {
 } pidController_t;
 \end{lstlisting}
 
-Finalmente, se aplica el algoritmo de control \textbf{PID} sobre el error calculado para regular la salida del circuito PWM y, consecuentemente, la velocidad del viento en el túnel. La máquina de estados comienza en el estado \texttt{INICIO}, donde se ejecuta la función \texttt{configPID(prtPid)}. Esta función configura los parámetros del controlador PID, obtenidos heurísticamente, con $kp = 3$, $kd = 0.5$, $ki = 0$, y el tiempo de muestreo $Ts = \SI{1}{\second}$. Además, prepara el pin digital de la EDU-CIAA para habilitar la salida PWM con un valor inicial de cero.
+Finalmente, se aplica el algoritmo de control \textbf{PID} sobre el error calculado para regular la salida del circuito PWM y, consecuentemente, la velocidad del viento en el túnel. La máquina de estados comienza en el estado \texttt{INICIO}, donde se ejecuta la función \texttt{configPID(prtPid)}. Esta función configura los parámetros del controlador PID, obtenidos heurísticamente, con $kp = 3$; $kd = 0,5$; $ki = 0$; y el tiempo de muestreo $Ts = \SI{1}{\second}$. Además, prepara el pin digital de la EDU-CIAA para habilitar la salida PWM con un valor inicial de cero.
 
 Si el indicador \texttt{starMesuare} se encuentra en \texttt{True}, se transiciona al estado \textbf{MESUARE\_PAT}. En este estado, se invoca la función \texttt{opMesuareWindPAT(ptrAnemoPat, ptriIntesidadPatron, ptriIntesidadReferencia)}, que obtiene la intensidad instantánea del viento del anemómetro patrón y la intensidad de referencia enviada por el servidor, almacenando estos valores en variables correspondientes.
 
