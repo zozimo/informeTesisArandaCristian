@@ -1,8 +1,8 @@
-En este capítulo, se introduce una aplicación web diseñada para interactuar con el datalogger previamente mencionado, con el objetivo de optimizar la calibración de anemómetros. Esta herramienta de software simplifica la carga de metadatos esenciales, incluyendo la información de los sensores de referencia y los sensores bajo calibración, los certificados de calibración y las especificaciones de la zona de medición del túnel de viento.
+En este capítulo, se introduce una aplicación web diseñada para interactuar con el datalogger descrito en el capitulo anterior, con el objetivo de optimizar la calibración de anemómetros. Esta herramienta de software simplifica la carga de metadatos esenciales, incluyendo la información de los sensores de referencia y los sensores bajo calibración, los certificados de calibración y las especificaciones de la zona de medición del túnel de viento.
 
 La aplicación ofrece la posibilidad de configurar el datalogger, definiendo la interfaz eléctrica de los anemómetros, los intervalos de muestreo y procesamiento de datos, y los puntos de medición de la velocidad del viento. Además, permite establecer los tiempos de encendido y el periodo de estabilidad en cada punto de medición. Una vez configurado el sistema, el software inicia el proceso de medición, enviando referencias de viento al hardware. Este último interactúa con el túnel de viento a través de su controlador PID para ajustar la velocidad del viento al valor deseado. Las mediciones obtenidas son verificadas por el operador y, si son correctas, se calcula automáticamente la incertidumbre expandida. Los resultados se presentan en el front end, en gráficos y tablas, se almacenan en una base de datos y pueden descargarse para emitir el certificado de calibración correspondiente.
 
-La integración de esta aplicación con el datalogger automatiza y estandariza el proceso de calibración, reduciendo de manera significativa el tiempo dedicado al procesamiento manual de datos y a la separación de estos en diferentes etapas. Esto contribuye a la reducción de tiempos operativos y minimiza errores sistemáticos, mejorando notablemente la calidad y precisión en la calibración de sensores de viento ultrasónicos.
+La integración de esta aplicación con el datalogger automatiza y estandariza el proceso de calibración, reduciendo de manera significativa el tiempo dedicado al procesamiento manual de datos y a la separación de estos en diferentes etapas. Esto contribuye a la reducción de tiempos operativos y minimiza errores sistemáticos, mejorando notablemente la calidad y precisión en la calibración de sensores de viento de ultrasonido.
 
 \section{Desarrollo aplicación WEB}
 % hablar de las herramientas utilizadas para todo el desarrollo, contar todo, los entornos, lenguajes y frameworks etc
@@ -10,12 +10,8 @@ Durante el desarrollo de la aplicación web, se emplearon diversas herramientas 
 
 En el frontend, se emplearon JavaScript y jQuery para hacer la página web dinámica y permitir la visualización de datos actualizados en tiempo real. También se utilizaron HTML y CSS para estructurar y estilizar el contenido de la aplicación web. Además, se emplearon herramientas como NumPy 1.24.2, SciPy  1.11.2 para el procesamiento de datos y Plotly 5.15 para generar gráficos dinámicos, así como Pandas 2.2 para la manipulación de datos.
 
-Adicionalmente, se trabajó en un entorno virtual de Python para mantener las dependencias aisladas y facilitar la portabilidad del proyecto a otros entornos. Se gestionó el control de versiones con Git y GitHub, subiendo el código y trabajando en distintas ramas para luego integrar los cambios en la rama principal, lo que permitió una colaboración más eficiente y mantener un historial claro de los cambios realizados.
+Adicionalmente, se trabajó en un servidor local, dentro de un entorno virtual de Python para mantener las dependencias aisladas y facilitar la portabilidad del proyecto a otros entornos. Se gestionó el control de versiones con Git y GitHub, en el repositorio \url{https://github.com/InstrumentalSMN/AppWebSistemaDecalibracion/tree/develop_apps}, subiendo el código y trabajando en distintas ramas para luego integrar los cambios en la rama principal, lo que permitió mantener un historial claro de los cambios realizados.
 
-Toda la integración y pruebas se realizaron en un servidor local, ejecutando todo en una computadora dedicada para asegurar un entorno controlado y eficiente. 
-
-
-% Para facilitar el debugging, se activó el módulo de depuración utilizando un archivo \texttt{launch.json} dentro de la carpeta \texttt{.vscode}, donde se definieron los argumentos necesarios para ejecutar el servidor en la IP y el puerto específicos.
 \subsection{Arquitectura del software}
 Para desarrollar la aplicación, se utilizó una arquitectura de cinco capas, como se muestra en la Figura \ref{fig:arquitecturaSoft}. La primera capa está conformada por el servidor web Nginx, que actúa como un servidor \textit{proxy} inverso. Nginx se encarga de manejar las solicitudes HTTP entrantes, distribuyéndolas eficientemente y proporcionando un equilibrio de carga, además de servir contenido estático como archivos CSS, JavaScript e imágenes. Esta capa permite mejorar el rendimiento y la seguridad de la aplicación al filtrar y dirigir el tráfico de manera óptima.
 
@@ -23,7 +19,11 @@ La segunda capa está compuesta por Gunicorn, un servidor WSGI (\textit{Web Serv
 
 En la tercera capa se encuentra la aplicación web desarrollada en Django, un \textit{framework} de alto nivel que facilita el desarrollo rápido y eficiente de aplicaciones web seguras y mantenibles.  Esta capa es responsable de la lógica de negocio de la aplicación, la gestión de las bases de datos y la interacción con los usuarios a través de interfaces web dinámicas.
 
-La cuarta capa está constituida por el sistema de gestión de bases de datos PostgreSQL. Esta capa se encarga del almacenamiento y recuperación de datos de manera eficiente y segura. PostgreSQL proporciona robustez y flexibilidad en la gestión de datos, soportando transacciones complejas y garantizando la integridad de la información. La integración de PostgreSQL con Django se realiza a través del ORM (\textit{Object-Relational Mapping}) de Django, que permite interactuar con la base de datos utilizando objetos Python, simplificando las operaciones de consulta y manipulación de datos.
+
+La cuarta capa está constituida por el sistema de gestión de bases de datos PostgreSQL, encargado del almacenamiento y recuperación de datos de manera eficiente y segura. La integración con Django se realiza a través de su ORM (\textit{Object-Relational Mapping}), que permite interactuar con la base de datos utilizando objetos en Python. Las tablas se definen creando una clase que hereda de \texttt{models.Model} de Django, donde los campos se establecen como atributos de la clase. Esto permite crear registros, guardar información y realizar consultas de manera sencilla, traduciendo automáticamente las operaciones en Python a consultas SQL en la base de datos. Esta abstracción de los detalles subyacentes de la implementación facilita la gestión y manipulación de datos, mejorando la eficiencia en el desarrollo de aplicaciones web.
+
+
+
 
 Finalmente, la quinta capa consiste en un servidor WebSocket que se conecta con un sistema embebido. Este servidor permite la comunicación bidireccional en tiempo real entre la aplicación y dispositivos embebidos, facilitando el control y monitoreo remoto. Esta capa es esencial para aplicaciones que requieren actualizaciones en tiempo real y una interacción continua con dispositivos de hardware.
 
@@ -33,10 +33,7 @@ Finalmente, la quinta capa consiste en un servidor WebSocket que se conecta con 
     \caption{Arquitectura del software implementada.}
     \label{fig:arquitecturaSoft}
 \end{figure}
-
-\subsection{Back End}\label{sec:back_end}
-
-Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la Figura \ref{fig:patronMVT}. Este patrón es ampliamente utilizado en el desarrollo web con el marco de trabajo Django. El patrón MVT permite una distinción explícita de las responsabilidades, lo que facilita tanto el desarrollo como el mantenimiento del código.
+Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la Figura \ref{fig:patronMVT}. Este patrón es ampliamente utilizado en el desarrollo web con el \textit{framework} de trabajo Django. El patrón MVT permite una distinción explícita de las responsabilidades, lo que facilita tanto el desarrollo como el mantenimiento del código.
 
 \begin{itemize}
     \item \textbf{Modelo (M)}: Representa la capa de acceso a la base de datos (ORM). Contiene toda la información sobre los datos, cómo acceder a ellos, validarlos, su comportamiento y las relaciones entre ellos.
@@ -46,38 +43,210 @@ Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la F
 \end{itemize}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Figuras/AplicacionWeb/backend/patronMVT.png}
+    \includegraphics[width=0.8\linewidth]{Figuras/AplicacionWeb/patronMVT.png}
     \caption{Patrón de diseño de software MVT, que divide la lógica del programa en tres elementos interconectados.}
     \label{fig:patronMVT}
 \end{figure}
 
 
+\subsection{Back End}\label{sec:back_end}
+El Back end se encarga de:
+\begin{itemize}
+    \item Administrar la base de datos, incluyendo la ejecución de consultas, la realización de actualizaciones y la aplicación de validaciones para garantizar la integridad y consistencia de la información.
+    \item Recibir o gestionar solicitudes HTTP y conexiones al servidor WebSocket.
+    \item Enviar comandos de configuración hacia el datalogger y gestionar la recepción de mediciones de los sensor.
+    \item Generar un perfil de referencias de velocidad de viento, que se van a transmitir al datalogger para controlar el motor del túnel.
+    \item A partir de las mediciones crudas de velocidades de viento, calcular el presupuesto de incertidumbre de la corrección.
+\end{itemize}
+
+% La aplicación web desarrollada en Django permite una gestión eficiente y precisa de los datos relacionados con la calibración de sensores de viento en un túnel de viento. El backend de esta aplicación se encarga de administrar la base de datos, facilitando la entrada y salida de información crítica. Los usuarios pueden cargar metadatos de los sensores de viento, configurar parámetros del motor del túnel de viento, y especificar las velocidades deseadas. Además, se incorpora información relevante del datalogger utilizado para controlar el motor y registrar las mediciones.
+
+% Una vez ingresados estos datos, la medición puede iniciarse desde el frontend, y el backend se encarga de almacenar todas las lecturas en la base de datos. Este proceso incluye la gestión de datos crudos de viento, medidos tanto del sensor padrón como del sensor IBC. A través de interfaces intuitivas, el backend también ofrece funcionalidades para calcular la incertidumbre de las mediciones, utilizando algoritmos internos que generan un presupuesto de incertidumbre preciso. Estos cálculos y resultados se almacenan de manera organizada en la base de datos, permitiendo al operador acceder a los datos de calibración y descargar informes detallados, incluyendo gráficos y tablas.
+
+% Además, el backend genera un perfil a partir de una función generadora de trayectoria en función de los datos que el operador ingresa desde el frontend. Este perfil o referencia se envía al sistema embebido y al datalogger, permitiendo establecer una acción de control en el variador del motor del túnel de viento para obtener la velocidad del viento deseada. De este modo, el backend no solo gestiona la base de datos, sino que también se encarga de la generación de trayectorias para el control del motor.
+
+
 \subsubsection{Base de datos}
-Hablar de cuales son las tablas y sus campos y las claves primarias, se puede poner graficos
+
+Dado que la aplicación está diseñada para manejar una gran cantidad de datos que requieren almacenamiento y recuperación eficientes, se ha implementado una base de datos relacional. El diagrama entidad-relación, presentado en la figura \ref{fig:DiagramaEntidadRelacion}, ilustra la estructura de la base de datos. Esta estructura incluye diversas tablas que almacenan información crucial para la aplicación. Entre estas tablas se encuentran las que registran los datos del sensor patrón y el sensor bajo calibración, así como los detalles relacionados con el certificado de calibración del patrón. Además, se documentan los registros del certificado de caracterización del túnel de viento. También se incluye información sobre la configuración del datalogger y del túnel de viento.
+
+
+Cuando se inicia una calibración y se empiezan a recibir datos de los sensores, toda esta información se almacena en una tabla \texttt{DatosMedidos2023} de la base de datos. Asimismo, se guardan los resultados generados antes y después del procesamiento de los datos, como gráficos y tablas.
+
+Todas estas tablas están relacionadas mediante claves foráneas (relación de uno a muchos) con la tabla de \texttt{Calibración}. Esto se debe a que una calibración está asociada a un único datalogger o a un único sensor IBC, y se puede recuperar la información de esa calibración a través clave primaria.
+
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.1\linewidth]{Figuras/AplicacionWeb/backend/DiagramaEntidadrelacion.png}
-    \caption{Diagrama entidad relación}
+    \caption{Diagrama entidad relación diseñada para la aplicación Web.}
     \label{fig:DiagramaEntidadRelacion}
 \end{figure}
 
+% Todo las definiciones de estas tablas se realizaron a traves de clases usando el Conector de ORM de django con la base de datos Postggre SQL, a traves de la definir una clase que hereda de models.Model, como se ve en el codigo \ref{}, donde se define la clase,  ConfigTunel
+
+\subsubsection{Servidor WebSocket}
+
+Se utilizó la biblioteca Django-channels para implementar un servidor WebSocket que opera de forma concurrente con el servidor web HTTP. Este servidor permite la conexión simultánea de múltiples clientes, en este caso, un datalogger que envía datos y un usuario que recibe dicha información a través de WebSockets. Los datos recibidos por el servidor, son graficados y actualizados en tiempo real en la aplicación web.
+
+Para configurar el servidor, se creó el archivo \texttt{routing.py}, el cual define las rutas de los canales, es decir, los puntos de acceso a los consumidores (consumers) que gestionan las conexiones WebSocket. La configuración del archivo \texttt{routing.py} se presenta en el Código \ref{cdg:routing}. Cada ruta mapea una URL de WebSocket a un consumidor específico. En este caso, \texttt{ChatConsumer} es una clase que maneja las conexiones a la URL \texttt{ws/socket-server/}.
 
 
-\subsubsection{Generador de trayectoria}
-hablar de como el soft calcula la trayectoria en base a los tiempos y puntos ingresados por soft
+
+\begin{lstlisting}[style=pythonstyle, caption={Configuracion del routing para gestionar las conexiones de clientes al servidor WebSocket.}, label=cdg:routing,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+from django.urls import re_path
+from . import consumers
+
+websocket_urlpatterns = [
+    re_path(r'ws/socket-server/',consumers.ChatConsumer.as_asgi())
+]
+\end{lstlisting}
+
+También se creo el archivo \texttt{consumers.py} define las clases de consumidores que manejan las conexiones WebSocket. Un consumidor en Django-channels es una clase que gestiona la conexión con el cliente, incluyendo el manejo de eventos como la recepción y el envío de mensajes. En el codigo \ref{cdg:consumer} se muestra el consumidor implementado
+
+\begin{lstlisting}[style=pythonstyle, caption={Declaracion de las funciones que utiliza cada consumidor para interactuar con el servidor WebSocket.}, label=cdg:consumer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+class ChatConsumer(WebsocketConsumer):
+    def connect(self):
+        self.room_group_name = 'test'
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name,
+            self.channel_name           
+        )
+        self.accept()
+
+    def disconnect(self, close_code):
+        pass
+        
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        # message = text_data
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': message,
+                'sender_channel_name': self.channel_name,
+            }
+        )
+        if(len(message)>0):
+            if(message[0] == "M"):
+                saveMesuareDataBase(message)
+        print('Message:', message)
+
+    def chat_message(self, event):
+        message = event['message']
+        sender_channel_name = event['sender_channel_name']
+        if sender_channel_name != self.channel_name:
+            self.send(text_data=json.dumps({
+                'type': 'chat',
+                'message': message
+            }))
+\end{lstlisting}
+
+En particular, se implementa la clase \texttt{ChatConsumer}, que hereda de \texttt{WebsocketConsumer}, para gestionar las conexiones WebSocket. Esta clase define varios métodos, incluyendo \texttt{connect}, \texttt{disconnect}, \texttt{receive} y \texttt{chat\_message}.
+
+El método \texttt{connect} se ejecuta cuando un cliente se conecta al servidor WebSocket. Dentro de este método, se asigna el nombre del grupo de la sala a \texttt{self.room\_group\_name} y se añade el canal del cliente al grupo utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_add)}. Finalmente, se acepta la conexión mediante \texttt{self.accept()}. Por otro lado, el método \texttt{disconnect} se ejecuta cuando un cliente se desconecta del servidor WebSocket.
+
+El método \texttt{receive} recibe y decodifica los mensajes desde JSON para luego enviarlos a un grupo de la sala utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_send)}. Los mensajes que envía el datalogger tiene la forma del arreglo declarado en código \ref{cdg:estructuraMensaje}, que contiene toda la información que ha recolectado el datalogger en un ciclo de iteración.
+
+
+\begin{lstlisting}[style=cstyle, caption={Estructura del mensaje enviado por el datalogger}, label=cdg:estructuraMensaje, basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+real32_t Tabla_Mediciones[25] = {
+    velocidadInst, velocidadMin, velocidadMax, velocidadPromedio,
+    velocidadInstIBC, velocidadMinIBC, velocidadMaxIBC, velocidadPromedioIBC,
+    direccionInst, direccionMin, direccionMax, direccionPromedio,
+    direccionInstIBC, direccionMinIBC, direccionMaxIBC, direccionPromedioIBC,
+    nv_bateriaInst, nv_bateriaMin, nv_bateriaMax, nv_bateriaPromedio,
+    nv_adcTunelInst, nv_adcTunelMin, nv_adcTunelMax, nv_adcTunelPromedio,
+    nv_pwmControlTunelInst
+};
+\end{lstlisting}
+
+El mensaje decodificado tiene la siguiente forma:
+\begin{verbatim}
+    
+    poner numeros de la base de datos
+    M;634;14-06-2024;16:42:41;
+    10.08;10.08;10.08;10.08;
+    9.53;9.53;9.53;9.53;
+    169;169;169;169;
+    175;175;175;175;
+    12.02;12.02;12.02;12.02;
+    1.25;1.25;1.25;1.25;
+    90;
+\end{verbatim}
+
+De esta forma, si el mensaje recibido comienza con la letra "M", se guarda en la base de datos mediante la función \texttt{saveMeasureDataBase(message)}. Esta función conoce el orden en que se creó el string y separa los datos para guardarlos en su respectivo campo de la base de datos.
+
+Finalmente, el método \texttt{chat\_message} se utiliza para enviar mensajes a los clientes. Si el mensaje recibido no se origina del mismo canal que el receptor, se envía el mensaje de vuelta al cliente utilizando \texttt{self.send()}. Por ejemplo, cuando un cliente está conectado al WebSocket desde el navegador web, puede ver cómo se grafican los datos en tiempo real a medida que estos llegan desde el datalogger hacia servidor.
+
+
+
+\subsubsection{Generador de trayectoria y control del túnel}
+
+En la sección \ref{sec:sistemaDeControlPid} se ha detallado el funcionamiento del controlador PID del túnel de viento. Para que este funcione, necesita referencias que se construyen a partir de un generador de trayectoria utilizando el método de Paul \cite{RoboFIUBAGenTrayec}. El generador toma los valores de velocidad de viento deseados y los tiempos deseados desde la configuración realizada por el operador en el frontend, y con estos valores se genera una curva de referencia de velocidades de viento en función del tiempo.
+
+El método de Paul consiste en definir, para cada punto, dos zonas: una de aceleración constante y otra de velocidad constante. Cada segmento tiene una duración $T_{j}$ y un tiempo de aceleración $t_{acc}$, como se muestra en la figura \ref{fig:segmentosZona1yZona2}, de forma tal que no se realicen cambios abruptos en el controlador, permitiendo que los cambios de velocidad del viento sean suaves.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/backend/segmentoTrayect.png}
+    \caption{Segmento para pasar de un punto de velocidad $v^B$ a otro $v^C$ viniendo desde $v^A$.}
+    \label{fig:segmentosZona1yZona2}
+\end{figure}
+
+Estos cambios suaves se traducen, a través del controlador PID, en cambios suaves en los valores de PWM para el motor.
+
+Para la zona 2 del segmento $T_{j}$, donde se define $\Delta C = v^C - v^B$, el método de Paul aplica la ecuación \ref{eq:zona2MetodoPaul}:
+\begin{equation}
+    v(t_{seg}) = \frac{\Delta C}{T_j} + v^B
+    \label{eq:zona2MetodoPaul}
+\end{equation}
+
+Para la zona 1 del mismo segmento, donde se define $\Delta A = v^A - v^B$, se aplica la ecuación \ref{eq:zona1MetodoPaul}:
+\begin{equation}
+    v(t_{seg}) = \frac{\Delta C}{T_j} \frac{(t_{seg} + t_{acc})^2}{4t_{acc}} + \frac{\Delta A}{t_{acc}} \frac{(t_{seg} - t_{acc})^2}{4t_{acc}} + v^B 
+    \label{eq:zona1MetodoPaul}
+\end{equation}
+
+Esto garantiza que en la zona 1, donde se realiza el enganche de segmento, la aceleración del cambio sea constante, y que en la zona 2, donde se realiza la transición de un segmento a otro, la velocidad de cambio sea constante.
+
+El algoritmo generador de trayectoria se muestra en el código \ref{cdg:genTrayectoria}. Este se ejecuta en el backend y calcula la trayectoria en función de cada punto de viento (segmento) y los tiempos de crecimiento, estabilización y medición configurados por el operador. Luego, realiza el encadenamiento de todas las velocidades para obtener un perfil como el de la Figura \ref{fig:trayectoriaGenerada}, donde se muestra una trayectoria de ciclo ascendente y descendente para los puntos 5, 10, 15, 20 y 25 \unit{\meter\per\second}, con un tiempo de crecimiento de 2 \unit{\minute}, un tiempo de estabilización de 5 \unit{\minute} y un tiempo de medición de 2 \unit{\minute}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/backend/trayectoriaGenerada.jpg}
+    \caption{Trayectoria generada utilizando el método de Paul para un ciclo ascendente y descendente de velocidades.}
+    \label{fig:trayectoriaGenerada}
+\end{figure}
+
 \subsubsection{Cálculo de incertidumbre}
-Acá se puede poner las funciones que se llaman para hacer el calculo de incertidumbre, mostrar un diagrama de flujo desde el inicio con el boton calcular incertidumbre hasta la salida de tablas con los reusltados
 
+El algoritmo calcula la incertidumbre con los puntos parceados en la seccion anterior, el En la tabla \ref{} se muestran las incertidumbres consiredaras, el algoritmo realiza para cada punto de viento configurador por software, la siguiente cuenta 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/backend/DiagramaFlujoCalculoIncertidumbre.png}
+    \caption{Diagrama de flujo del calculo de incertidumbre.}
+    \label{fig:DiagramaFlujoCalculoIncertidumbre}
+\end{figure}
 
 \subsection{Frond End}\label{sec:frondEnd}
+
+-Presentación de datos al usuario (UI/UX).
+-Interacción del usuario (formularios, botones, eventos).
+-Comunicación con el backend a través de API REST o WebSocket.
+-Validaciones iniciales de datos del usuario (pueden hacerse también en el backend por seguridad).
+
+
+
 mas que todo contar como se usa el soft, que aca se entienda como se usa el front
 \subsubsection{Carga de metadatos}
 que se carga en esta seccion, capturas de pantalla de la vista
 \subsubsection{Configuración del sistema}
 que se carga en esta seccion, capturas de pantalla de la vista
 \subsubsection{Adquisición de datos}
-que hace esta seccion como se inicia y para, buscar alguna captura de pantalla
+que hace esta seccion como se inicia y para, buscar alguna captura de pantalla, contar que comando se enviar internamente para y recibe la ciaa en formato JSON, se relaciona con el puntero a funcion de la seccion \ref{}..
 
 \subsubsection{Procesamiento de datos}
 captura de pantalla de los datos crudos, mas su grafico y el boton para calcular la incertidumbre
@@ -86,6 +255,7 @@ mostrar los resultados que muestra el soft como ejemplo usar los del segundo Del
 
 \section{Integración con el hardware}
 Cuando tenga armado el PCB, hago una prueba de configuración del datalogger, configuración del túnel, metadatos para la calibración
+
 
 diagrama de como queda todo el sistema, 
 \begin{figure}[H]
@@ -96,5 +266,6 @@ diagrama de como queda todo el sistema,
 \end{figure}
 
 
+mostrar un diagrama de flujo desde el inicio con el boton calcular incertidumbre hasta la salida de tablas con los reusltados, pasos del proceso de calibración
 
 %-----------------------------------------------------------------------------------------------------

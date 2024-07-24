@@ -1,6 +1,47 @@
-\section{Tipos de incertidumbre}\label{tipos_incertidumbre}
-explicamos en general los tipos de incertidumbre tipo A, tipoB etc
-\section{Modelo teórico}\label{modelo_teoricos}
-aca copiamos el modelo por comparacion
-\section{Fuentes de incertidumbre}\label{modelo_teorico}
-Aca pondremos todas las fuentes de incertidumbre que consideramemos para un anemometro adentro de un tunes de viento, 
+\section{Incertidumbre de la medición}\label{sec:tipos_incertidumbre}
+
+Definir algunas cosas como incertidumbre, y los tipos A y B
+
+Para obtener una incertidumbre real del mensurando se debe realizar un presupuesto de incertidumbre (\textit{uncertainty budget}). Un presupuesto de incertidumbre debe incluir el modelo de medición, las estimaciones y las incertidumbres de medición asociadas con las cantidades en el modelo de medición, las covarianzas, el tipo de funciones de densidad de probabilidad aplicadas, los grados de libertad, el tipo de evaluación de la incertidumbre de medición y cualquier factor de cobertura. Además debe incluir la incertidumbre de calibración del patrón, y las propiedades de los instrumentos patrón y bajo calibración que se obtienen de su hoja de datos o manual, a saber, deriva, resolución, tiempo constante vs. fenómeno observado, repetibilidad, estabilidad
+
+\section{Trazabilidad de las mediciones}\label{sec:trazabilidad}
+Explicar la trazabilidad a partir de una diagrama.
+
+\section{Fuentes de incertidumbre}\label{sec:fuentesDeIncertidumbre}
+
+
+Aca pondremos todas las fuentes de incertidumbre que consideramemos para un anemometro adentro de un tunes de viento en particular
+
+\section{Modelo teórico de medición}\label{sec:modelo_teoricos}
+
+El modelo de medición utilizado para calcular la incertidumbre se muestra en la ecuación \ref{eq:ModeloIncertidumbre}. Este modelo se basa en una comparación, donde se obtiene la corrección del mensurando bajo calibración a partir de la diferencia de medición en un punto determinado y bajo condiciones ambientales controladas, entre un patrón calibrado y el instrumento bajo calibración (IBC).
+
+\begin{equation}
+    CV_{IBC} = \overbrace{V_{p} + CV_{p}}^{V_{ref}} - V_{IBC}
+    \label{eq:ModeloIncertidumbre}
+\end{equation}
+donde se define:
+
+\begin{itemize}
+    \item $V_{IBC}$ representa el valor de viento medido con el anemómetro bajo calibración.
+    \item $CV_{IBC}$ representa la corrección del anemómetro bajo calibración.
+    \item $V_{p}$ representa el valor de viento medido con el anemómetro patrón.
+    \item $CV_{p}$ representa la corrección de viento del anemómetro patrón, obtenida a partir de su certificado de calibración.
+\end{itemize}
+
+A partir de la ecuación \ref{eq:ModeloIncertidumbre} y tomando en cuenta las fuentes de incertidumbre, definidas en la tabla \ref{} se realiza el calculo de la incertidumbre combinada de la corrección, como la suma de los cuadrados de las incertidumbres estándar de cada fuente, como se muestra en la ecuación \ref{eq:incertidumbreCombinada}
+\text
+
+\begin{equation}
+    u^{2}(CV_{IBC}) = u^{2}(V_{ref})+u^{2}(V_{IBC})+u^{2}(\text{túnel de Viento})
+    \label{eq:incertidumbreCombinada}
+\end{equation}
+donde se define:
+
+\begin{itemize}
+    \item $u^{2}(CV_{IBC})$ es la incertidumbre estándar de la corrección del anemómetro bajo calibración.
+    \item $u^{2}(V_{ref})$ representa la suma de todas las fuentes de incertidumbre estándar debidas al patrón de referencia.
+    \item $u^{2}(V_{IBC})$ representa la suma de todas las fuentes de incertidumbre estándar debidas al anemómetro bajo calibración.
+    \item $u^{2}(\text{túnel de Viento})$ es la contribución de incertidumbre estándar referida al túnel de viento, quien se encarga de generar condiciones de velocidad y dirección de viento.
+\end{itemize}
+
