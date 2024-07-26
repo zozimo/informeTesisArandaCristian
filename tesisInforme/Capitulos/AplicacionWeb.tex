@@ -3,7 +3,7 @@ En este capítulo, se introduce una aplicación web diseñada para interactuar c
 La aplicación ofrece la posibilidad de configurar el datalogger, definiendo la interfaz eléctrica de los anemómetros, los intervalos de muestreo y procesamiento de datos, y los puntos de medición de la velocidad del viento. Además, permite establecer los tiempos de encendido y el periodo de estabilidad en cada punto de medición. Una vez configurado el sistema, el software inicia el proceso de medición, enviando referencias de viento al hardware. Este último interactúa con el túnel de viento a través de su controlador PID para ajustar la velocidad del viento al valor deseado. Las mediciones obtenidas son verificadas por el operador y, si son correctas, se calcula automáticamente la incertidumbre expandida. Los resultados se presentan en el front end, en gráficos y tablas, se almacenan en una base de datos y pueden descargarse para emitir el certificado de calibración correspondiente.
 
 La integración de esta aplicación con el datalogger automatiza y estandariza el proceso de calibración, reduciendo de manera significativa el tiempo dedicado al procesamiento manual de datos y a la separación de estos en diferentes etapas. Esto contribuye a la reducción de tiempos operativos y minimiza errores sistemáticos, mejorando notablemente la calidad y precisión en la calibración de sensores de viento de ultrasonido.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Desarrollo aplicación WEB}
 % hablar de las herramientas utilizadas para todo el desarrollo, contar todo, los entornos, lenguajes y frameworks etc
 Durante el desarrollo de la aplicación web, se emplearon diversas herramientas para llevar a cabo el proyecto de manera eficiente. Se utilizó Django en su versión 4.2 como framework principal, junto con Python 3.10, proporcionando una base sólida y flexible para el desarrollo backend. Para la gestión de la base de datos, se optó por PostgreSQL en su versión 15 y se utilizó PGAdmin 4 para gestionar dicha base de datos. La conexión entre Django y PostgreSQL se realizó utilizando PSYCOPG2 en su versión 2.9.5.
@@ -11,7 +11,7 @@ Durante el desarrollo de la aplicación web, se emplearon diversas herramientas 
 En el frontend, se emplearon JavaScript y jQuery para hacer la página web dinámica y permitir la visualización de datos actualizados en tiempo real. También se utilizaron HTML y CSS para estructurar y estilizar el contenido de la aplicación web. Además, se emplearon herramientas como NumPy 1.24.2, SciPy  1.11.2 para el procesamiento de datos y Plotly 5.15 para generar gráficos dinámicos, así como Pandas 2.2 para la manipulación de datos.
 
 Adicionalmente, se trabajó en un servidor local, dentro de un entorno virtual de Python para mantener las dependencias aisladas y facilitar la portabilidad del proyecto a otros entornos. Se gestionó el control de versiones con Git y GitHub, en el repositorio \url{https://github.com/InstrumentalSMN/AppWebSistemaDecalibracion/tree/develop_apps}, subiendo el código y trabajando en distintas ramas para luego integrar los cambios en la rama principal, lo que permitió mantener un historial claro de los cambios realizados.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Arquitectura del software}
 Para desarrollar la aplicación, se utilizó una arquitectura de cinco capas, como se muestra en la Figura \ref{fig:arquitecturaSoft}. La primera capa está conformada por el servidor web Nginx, que actúa como un servidor \textit{proxy} inverso. Nginx se encarga de manejar las solicitudes HTTP entrantes, distribuyéndolas eficientemente y proporcionando un equilibrio de carga, además de servir contenido estático como archivos CSS, JavaScript e imágenes. Esta capa permite mejorar el rendimiento y la seguridad de la aplicación al filtrar y dirigir el tráfico de manera óptima.
 
@@ -48,14 +48,14 @@ Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la F
     \label{fig:patronMVT}
 \end{figure}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Back End}\label{sec:back_end}
 El Back end se encarga de:
 \begin{itemize}
     \item Administrar la base de datos, incluyendo la ejecución de consultas, la realización de actualizaciones y la aplicación de validaciones para garantizar la integridad y consistencia de la información.
     \item Recibir o gestionar solicitudes HTTP y conexiones al servidor WebSocket.
     \item Enviar comandos de configuración hacia el datalogger y gestionar la recepción de mediciones de los sensor.
-    \item Generar un perfil de referencias de velocidad de viento, que se van a transmitir al datalogger para controlar el motor del túnel.
+    \item Generar un perfil de referencias de velocidad de viento almacenadas en la base de datos, que se van a transmitir al datalogger para controlar el motor del túnel.
     \item A partir de las mediciones crudas de velocidades de viento, calcular el presupuesto de incertidumbre de la corrección.
 \end{itemize}
 
@@ -84,7 +84,7 @@ Todas estas tablas están relacionadas mediante claves foráneas (relación de u
 \end{figure}
 
 % Todo las definiciones de estas tablas se realizaron a traves de clases usando el Conector de ORM de django con la base de datos Postggre SQL, a traves de la definir una clase que hereda de models.Model, como se ve en el codigo \ref{}, donde se define la clase,  ConfigTunel
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Servidor WebSocket}
 
 Se utilizó la biblioteca Django-channels para implementar un servidor WebSocket que opera de forma concurrente con el servidor web HTTP. Este servidor permite la conexión simultánea de múltiples clientes, en este caso, un datalogger que envía datos y un usuario que recibe dicha información a través de WebSockets. Los datos recibidos por el servidor, son graficados y actualizados en tiempo real en la aplicación web.
@@ -182,7 +182,7 @@ De esta forma, si el mensaje recibido comienza con la letra "M", se guarda en la
 Finalmente, el método \texttt{chat\_message} se utiliza para enviar mensajes a los clientes. Si el mensaje recibido no se origina del mismo canal que el receptor, se envía el mensaje de vuelta al cliente utilizando \texttt{self.send()}. Por ejemplo, cuando un cliente está conectado al WebSocket desde el navegador web, puede ver cómo se grafican los datos en tiempo real a medida que estos llegan desde el datalogger hacia servidor.
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Generador de trayectoria y control del túnel}
 
 En la sección \ref{sec:sistemaDeControlPid} se ha detallado el funcionamiento del controlador PID del túnel de viento. Para que este funcione, necesita referencias que se construyen a partir de un generador de trayectoria utilizando el método de Paul \cite{RoboFIUBAGenTrayec}. El generador toma los valores de velocidad de viento deseados y los tiempos deseados desde la configuración realizada por el operador en el frontend, y con estos valores se genera una curva de referencia de velocidades de viento en función del tiempo.
@@ -216,23 +216,47 @@ El algoritmo generador de trayectoria se muestra en el código \ref{cdg:genTraye
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/backend/trayectoriaGenerada.jpg}
+    \includegraphics[width=0.7\linewidth]{Figuras/AplicacionWeb/backend/trayectoriaGenerada.jpg}
     \caption{Trayectoria generada utilizando el método de Paul para un ciclo ascendente y descendente de velocidades.}
     \label{fig:trayectoriaGenerada}
 \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Cálculo de incertidumbre}\label{sec:calculoIncertidumbre}
 
-\subsubsection{Cálculo de incertidumbre}
+El proceso de calcular la incertidumbre expandida para todos los puntos medidos se realiza según el algoritmo del diagrama de flujo de la figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}.
 
-El algoritmo calcula la incertidumbre con los puntos parceados en la seccion anterior, el En la tabla \ref{} se muestran las incertidumbres consiredaras, el algoritmo realiza para cada punto de viento configurador por software, la siguiente cuenta 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/backend/DiagramaFlujoCalculoIncertidumbre.png}
-    \caption{Diagrama de flujo del calculo de incertidumbre.}
+    \caption{Diagrama de flujo del para el calculo de incertidumbre expandida.}
     \label{fig:DiagramaFlujoCalculoIncertidumbre}
 \end{figure}
 
-\subsection{Frond End}\label{sec:frondEnd}
+Después de completar los ciclos ascendente y descendente de medición, se dispone de un banco de datos crudos de velocidad y dirección. El algoritmo lee estos datos y extrae las mediciones de la parte plana estable para cada punto de forma iterativa. Este proceso se denomina \textit{parsear datos}. Luego, se muestran los datos crudos procesados en pantalla, donde el operador, desde el front-end, debe hacer clic en el botón "Calcular Incertidumbre" siempre que esté de acuerdo con los datos. Si no, puede reiniciar las mediciones con un nuevo perfil.
 
+Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar ($\sigma_{v}$) de las mediciones para cada punto. A continuación, se arma el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los datos promedio. Se realiza la lectura de la resolución de los instrumentos y el área de bloqueo de los anemómetros para el cálculo del factor de bloqueo, con el cual se corrigen las mediciones del IBC. Estos datos también son ingresados por el operador.
+
+Luego, se obtienen los datos de calibración del sensor patrón a partir de un ajuste lineal de los puntos discretos del certificado y evaluando los puntos configurados por el operador. Esto se hace así porque no siempre el patrón está calibrado en los mismos puntos en los que se lo va a utilizar. Lo mismo se realiza con el certificado del túnel, extrayendo los valores de estabilidad, homogeneidad y el factor de calibración del túnel para los puntos configurados por el operador.
+
+Con todas estas incertidumbres normalizadas y multiplicadas por su coeficiente de sensibilidad $c_{i}$, se obtiene la incertidumbre estándar para cada punto. Luego, se realiza la suma de los cuadrados de cada incertidumbre y se calcula la raíz cuadrada para obtener la incertidumbre combinada para cada punto
+\[
+u_c = \sqrt{\sum_{i=1}^{n} (u_i^2)}.
+\]
+
+En base al número de mediciones, se calculan los grados de libertad efectivos para cada punto y con este número, solicitando un intervalo de confianza del 95\%, se evalúa la distribución $t$ de Student para obtener el factor de cobertura ($k$). Finalmente, se multiplica este número por cada incertidumbre combinada correspondiente para obtener la incertidumbre expandida 
+\[
+U = k \cdot u_c.
+\]
+
+Finalmente, todos los resultados se presentan por pantalla y se dispone de botones para descargar los gráficos y tablas correspondientes a los datos crudos, la histéresis y los resultados de calibración.
+
+% Luego, se grafica la curva de histéresis, como se muestra en la figura \ref{fig:CurvaHisteresis}, junto con una tabla para analizar la alinealidad del IBC (figura \ref{fig:TablaAlinealidad}). Además, se presenta la curva de calibración con sus correspondientes incertidumbres expandidas tanto para los datos del ciclo ascendente como del descendente (figura \ref{fig:CurvaCalibracion}). Finalmente, se incluye una tabla (figura \ref{fig:TablaIncertidumbres}) donde se especifican la incertidumbre combinada, la incertidumbre expandida, la corrección y los grados de libertad para cada punto donde se realizó la calibración del anemómetro.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Frond End}\label{sec:frondEnd}
+El frond end se encarga de:
+
+sigo mañana aqui
 -Presentación de datos al usuario (UI/UX).
 -Interacción del usuario (formularios, botones, eventos).
 -Comunicación con el backend a través de API REST o WebSocket.

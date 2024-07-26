@@ -1,11 +1,12 @@
 \definecolor{Sail}{rgb}{0.643,0.819,0.976}
-Este capítulo se centra en el diseño y la programación del datalogger, el cual está basado en la placa de desarrollo EDU-CIAA, con el agregado de un shield (poncho) específico para la aplicación. El sistema se describe en la Figura \ref{fig:esquemaHardarware} y consta de distintos módulos, a saber, un módulo para la adquisición de muestras de viento mediante el protocolo RS485, un módulo para la recepción y transmisión de datos a través de Ethernet, un módulo de alimentación de 12 \unit{\volt} y un módulo PWM con una etapa de filtrado seguida de otra de amplificación para entregar las tensiones necesarias para el funcionamiento y control del túnel de viento. Además, se toman muestras de esta última tensión y de la fuente para monitorear por software el comportamiento del sistema.
+Este capítulo se centra en el diseño y la programación del datalogger, que será utilizado en el banco de medición para calibrar los anemómetros de ultrasonido. Este sistema está basado en la placa de desarrollo EDU-CIAA, con el agregado de un \textit{shield} (poncho) específico para la aplicación. El sistema se describe en la Figura \ref{fig:esquemaHardware} y consta de distintos módulos, a saber: un módulo para la adquisición de muestras de viento mediante el protocolo RS485, un módulo para la recepción y transmisión de datos a través de Ethernet, un módulo de alimentación de 12 \unit{\volt}, y un módulo PWM con una etapa de filtrado seguida de otra de amplificación para entregar las tensiones necesarias para el funcionamiento y control del túnel de viento. Además, se toman muestras de esta última tensión y de la fuente para monitorear por software el comportamiento del sistema.
+
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Figuras/datalogger/esquemaHardarware.png}
     \caption{Diagrama en bloques del sistema electrónico.}
-    \label{fig:esquemaHardarware}
+    \label{fig:esquemaHardware}
 \end{figure}
 
 
