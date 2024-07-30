@@ -279,7 +279,7 @@ Si el usuario responde afirmativamente, se abre a izquierda una barra de navegac
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Carga de metadatos}\label{sec:cargaMetadatos}
 
-El contenido principal (\textit{main}) de la primera vista, llamada \texttt{Carga de Metadatos}, se muestra en la Figura \ref{fig:cargaMetadata}. En esta vista, se deben ingresar la marca, el modelo, el número de serie, el número de patrimonio (identificador de instrumentos del SMN), la resolución y el área de bloqueo del instrumento, medidos previamente con una cinta métrica, tanto del sensor patrón como del sensor bajo calibración. Luego, se debe cargar la información del certificado de calibración del instrumento patrón utilizado, incluyendo la fecha de generación, los puntos en los que fue calibrado, los valores obtenidos por cada punto, las correcciones obtenidas y su respectiva incertidumbre. Por último, se deben ingresar los datos del certificado de caracterización del túnel de viento, especificando la fecha de emisión, los puntos medidos en el ensayo, los valores de estabilidad y de homogeneidad del flujo de aire en la zona de medición. Además, se debe agregar el factor de calibración definido en la tabla \ref{tab:fuenteIncert}. Una vez cargada toda la información, el operador debe presionar el botón \texttt{Cargar}, o si desea borrar toda la información del formulario, debe presionar \texttt{Limpiar campos}. Parte de esta información luego será utilizada para el cálculo de la incertidumbre expandida del sensor bajo calibración y toda los datos ingresados se guardan en la base de datos.
+El contenido principal (\textit{main}) de la primera vista, llamada \texttt{Carga de Metadatos}, se muestra en la Figura \ref{fig:cargaMetadata}. En esta vista, se deben ingresar la marca, el modelo, el número de serie, el número de patrimonio (identificador de instrumentos del SMN), la resolución y el área de bloqueo del instrumento medido previamente con una cinta métrica, tanto del sensor patrón como del sensor bajo calibración. Luego, se debe cargar la información del certificado de calibración del instrumento patrón utilizado, incluyendo la fecha de generación, los puntos en los que fue calibrado, los valores obtenidos por cada punto, las correcciones obtenidas y su respectiva incertidumbre. Por último, se deben ingresar los datos del certificado de caracterización del túnel de viento, especificando la fecha de emisión, los puntos medidos en el ensayo, los valores de estabilidad y de homogeneidad del flujo de aire en la zona de medición. Además, se debe agregar el factor de calibración definido en la tabla \ref{tab:fuenteIncert}. Una vez cargada toda la información, el operador debe presionar el botón \texttt{Cargar}, o si desea borrar toda la información del formulario, debe presionar \texttt{Limpiar campos}. Parte de esta información luego será utilizada para el cálculo de la incertidumbre expandida del sensor bajo calibración y toda los datos ingresados se guardan en la base de datos.
 
 \begin{figure}[H]
     \centering
@@ -305,7 +305,7 @@ A la derecha, se configura el túnel de viento. Aquí se establecen los puntos m
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frondend/curvaEscalon.png}
-    \caption{Configuración de tiempos para el generador de trayectoria en $\SI{5}{meter\per\second}$.}
+    \caption{Configuración de tiempos para el generador de trayectoria en $\SI{5}{\meter\per\second}$.}
     \label{fig:curvaEscalon}
 \end{figure}
 
@@ -317,7 +317,7 @@ Una vez que los datos de configuración están cargados, el usuario puede hacer 
 
 Una vez cargados todos los datos, el software muestra la vista de la Figura \ref{fig:adquisicionDatos}. Al hacer clic en el botón \texttt{Iniciar Medición}, se envían todas las configuraciones al datalogger a través del servidor WebSocket mediante comandos detallados en la Tabla \ref{tab:comandosParaconfig}. Luego, se activa un temporizador que multiplica el tiempo de un escalón, como el de la Figura \ref{fig:curvaEscalon}, por la cantidad de puntos ingresados e indica el tiempo restante para que termine todas las mediciones. 
 
-El software también envía, a intervalos de un segundo, un valor de referencia del generador de trayectoria al datalogger para que éste genere un nivel de PWM y lo envíe al variador de velocidad del motor. Al mismo tiempo, se reciben las mediciones del sensor patrón e IBC, y se va construyendo el perfil de mediciones, con la dirección del viento a la izquierda y la velocidad a la derecha.
+El software también envía, a intervalos de un segundo, un valor de referencia del generador de trayectoria al datalogger para que éste genere un nivel de PWM y lo envíe al variador de velocidad del motor. Al mismo tiempo, se reciben las mediciones del sensor patrón e IBC, y se va construyendo el perfil de mediciones, con la dirección del viento a la izquierda y la intensidad a la derecha.
 
 \begin{figure}[H]
     \centering
@@ -348,7 +348,7 @@ Luego de que se acabe el tiempo del temporizador, el software redirige a la vist
     \label{fig:procesarDatos1}
 \end{figure}
 
-En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos2} se muestran tablas con los datos parseados, que corresponden a la extracción de los datos de la parte plana, equivalente añ tiempo de medición, como por ejemplo en el gráfico de la Figura \ref{fig:curvaEscalon}. El operador revisa estos datos y, si están dentro del entorno del punto de medición configurado, debe presionar el botón \texttt{Calcular Incertidumbre}. En caso contrario, puede reiniciar las mediciones, lo que lo devolverá a la vista de adquisición de datos. De igual forma cada tabla cuenta con un boton para ser descargado en formato $.csv$
+En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos2} se muestran tablas con los datos parseados, que corresponden a la extracción de los datos de la parte plana, equivalente al tiempo de medición, como por ejemplo en el gráfico de la Figura \ref{fig:curvaEscalon} es de alrededor de 120 muestras alredor de $\SI{5}{\meter\per\second}$. El operador revisa estos datos y, si están dentro del entorno del punto de medición configurado, debe presionar el botón \texttt{Calcular Incertidumbre}. En caso contrario, puede reiniciar las mediciones, lo que lo devolverá a la vista de adquisición de datos. De igual forma cada tabla cuenta con un boton para ser descargado en formato $.csv$
 
 \begin{figure}[H]
     \centering
