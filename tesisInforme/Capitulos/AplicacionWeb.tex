@@ -227,8 +227,19 @@ El proceso de calcular la incertidumbre expandida para todos los puntos medidos 
 
 Después de completar los ciclos ascendente y descendente de medición, se dispone de un banco de datos crudos de velocidad y dirección. El algoritmo lee estos datos y extrae las mediciones de la parte plana estable para cada punto de forma iterativa. Este proceso se denomina \textit{parsear datos}. Luego, se muestran los datos crudos procesados en pantalla, donde el operador, desde el front-end, debe hacer clic en el botón ``Calcular Incertidumbre'', siempre que esté de acuerdo con los datos. Si no, puede reiniciar las mediciones con un nuevo perfil.
 
-Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar ($\sigma_{v}$) de las mediciones para cada punto. A continuación, se arma el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los datos promedio. Se realiza la lectura de la resolución de los instrumentos y el área de bloqueo de los anemómetros para el cálculo del factor de bloqueo, con el cual se corrigen las mediciones del IBC. Estos datos también son ingresados por el operador.
+Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar ($\sigma_{v}$) de las mediciones de velocidad del viento para cada punto. A continuación, se elabora el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los valores promedio. Se procede a la lectura de los datos ingresados por el operador, específicamente la resolución de los instrumentos y el área de bloqueo de los anemómetros para el cálculo del factor de bloqueo, ecuación \ref{eq:FactorDeBloqueo}, donde $S_{T}$ corresponde al área transversal de la zona de medición del túnel de viento y $S_{A}$ se corresponde al área efectiva de bloqueo del sensor y su soporte. Este valor se utiliza para corregir las mediciones del IBC y del patrón, y se incorpora su respectiva incertidumbre según la ecuación \ref{eq:incertiFactorBloqueo}.
 
+\begin{equation}
+    \centering
+    F_{bk}= \frac{S_{A} }{S_{T}}
+    \label{eq:FactorDeBloqueo}
+\end{equation}
+
+\begin{equation}
+    \centering
+    \Delta F_{bk} =  \sqrt{\left\lvert \frac{\partial F}{\partial S_T} \right\rvert^2 \left\lvert\Delta S_T\right\rvert^2 + \left\lvert \frac{\partial F}{\partial S_A} \right\rvert^2 \left\lvert\Delta S_A\right\rvert^2} = \left( \frac{-S_{A}}{S_{T}^{2}} \right)^2 (\Delta S_T)^2 + \left( \frac{1}{S_{T}} \right)^2 (\Delta S_A)^2
+    \label{eq:incertiFactorBloqueo}
+\end{equation}
 Luego, se obtienen los datos de calibración del sensor patrón a partir de un ajuste lineal de los puntos discretos del certificado y evaluando los puntos configurados por el operador. Esto se hace así porque no siempre el patrón está calibrado en los mismos puntos en los que se lo va a utilizar. Lo mismo se realiza con el certificado del túnel, extrayendo los valores de estabilidad, homogeneidad y el factor de calibración del túnel para los puntos configurados por el operador.
 
 Con todas estas incertidumbres normalizadas y multiplicadas por su coeficiente de sensibilidad $c_{i}$, se obtiene la incertidumbre estándar para cada punto. Luego, se realiza la suma de los cuadrados de cada incertidumbre y se calcula la raíz cuadrada para obtener la incertidumbre combinada para cada punto
@@ -264,7 +275,7 @@ La aplicación web presenta una plantilla de inicio, como se muestra en la figur
 El usuario hace click en el botón \texttt{Viento} y se activa la vista de la Figura \ref{fig:iniciarCalibViento}, donde le consulta al usuario, si desea iniciar o no una calibración de anemómetros.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Figuras/AplicacionWeb/frondend/iniciarCalibViento.png}
+    \includegraphics[width=0.7\linewidth]{Figuras/AplicacionWeb/frondend/iniciarCalibViento.png}
     \caption{Vista para confirmar si se desea realizar o no una calibración.}
     \label{fig:iniciarCalibViento}
 \end{figure}
@@ -304,7 +315,7 @@ A la derecha, se configura el túnel de viento. Aquí se establecen los puntos m
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frondend/curvaEscalon.png}
+    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/frondend/curvaEscalon.png}
     \caption{Configuración de tiempos para el generador de trayectoria en $\SI{5}{\meter\per\second}$.}
     \label{fig:curvaEscalon}
 \end{figure}
@@ -315,7 +326,7 @@ Una vez que los datos de configuración están cargados, el usuario puede hacer 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Adquisición de datos}\label{sec:adquisicionDatos}
 
-Una vez cargados todos los datos, el software muestra la vista de la Figura \ref{fig:adquisicionDatos}. Al hacer clic en el botón \texttt{Iniciar Medición}, se envían todas las configuraciones al datalogger a través del servidor WebSocket mediante comandos detallados en la Tabla \ref{tab:comandosParaconfig}. Luego, se activa un temporizador que multiplica el tiempo de un escalón, como el de la Figura \ref{fig:curvaEscalon}, por la cantidad de puntos ingresados e indica el tiempo restante para que termine todas las mediciones. 
+Una vez cargados todos los datos, el software muestra la vista de la Figura \ref{fig:adquisicionDatos}. Al hacer clic en el botón \texttt{Iniciar Medición}, se envían todas las configuraciones al datalogger a través del servidor WebSocket mediante comandos detallados en la Tabla \ref{tab:comandoDataloggerWeb}. Luego, se activa un temporizador que multiplica el tiempo de un escalón, como el de la Figura \ref{fig:curvaEscalon}, por la cantidad de puntos ingresados e indica el tiempo restante para que termine todas las mediciones. 
 
 El software también envía, a intervalos de un segundo, un valor de referencia del generador de trayectoria al datalogger para que éste genere un nivel de PWM y lo envíe al variador de velocidad del motor. Al mismo tiempo, se reciben las mediciones del sensor patrón e IBC, y se va construyendo el perfil de mediciones, con la dirección del viento a la izquierda y la intensidad a la derecha.
 
@@ -361,57 +372,66 @@ En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Resultados}\label{sec:Resultados}
-Cuando hace hace click en calcular incertidumbre se activa el programa del diagrama de flujo de la figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}.
 
-continuar aqui mañana
+Cuando se hace clic en el botón calcular incertidumbre, se activa el programa del diagrama de flujo de la Figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}. En las Figuras \ref{fig:curvaHisteris} y \ref{fig:tablaHisteresis} se muestra el espacio donde se carga el primer resultado, que consiste en un gráfico con la curva de histéresis y en su leyenda se agregan las funciones obtenidas a partir de un ajuste lineal de los puntos. Además, se presenta una tabla con los valores promedio y su histéresis, calculada como la diferencia de los datos ascendentes y descendentes. Tanto el gráfico como la tabla cuentan con botones para descargar.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frondend/curvaHisteris.png}
-    \caption{.}
+    \caption{Curva de histéresis.}
     \label{fig:curvaHisteris}
 \end{figure}
-
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{Figuras/AplicacionWeb/frondend/tablaHisteresis.png}
-    \caption{.}
+    \caption{Tabla de valores promedio e histéresis.}
     \label{fig:tablaHisteresis}
 \end{figure}
 
-
+En las Figuras \ref{fig:curvaCalib} y \ref{fig:tablaCalib} se muestran los espacios donde se cargan los resultados de la calibración. Estos resultados comprenden las curvas de calibración ascendente y descendente con sus respectivas tablas, donde se presentan las correcciones, la incertidumbre combinada y expandida, y los grados de libertad para cada punto.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frondend/curvaCalib.png}
-    \caption{.}
+    \caption{Curva de calibración.}
     \label{fig:curvaCalib}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Figuras/AplicacionWeb/frondend/tablaCalib.png}
-    \caption{.}
+    \includegraphics[width=0.7\linewidth]{Figuras/AplicacionWeb/frondend/tablaCalib.png}
+    \caption{Tabla de correcciones, incertidumbre y grados de libertad.}
     \label{fig:tablaCalib}
 \end{figure}
 
-
-
-mostrar los resultados que muestra el soft como ejemplo usar los del segundo DeltaOHM
+% mostrar los resultados que muestra el soft como ejemplo usar los del segundo DeltaOHM
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Integración con el hardware}
-Cuando tenga armado el PCB, hago una prueba de configuración del datalogger, configuración del túnel, metadatos para la calibración
+\section{Integración con el hardware}\label{sec:integracionHardware}
 
 
-diagrama de como queda todo el sistema, 
+El software desarrollado interactúa con el hardware, permitiendo al operador configurar de manera sencilla e intuitiva la interfaz eléctrica de los anemómetros, la cadencia de toma de muestras y los puntos de velocidad del viento en el túnel. Se realiza automáticamente el cálculo de incertidumbre y se genera un reporte con los resultados, para el instrumento bajo estudio. Este trabajo estandariza un procedimiento semiautomático para la calibración de sensores de viento ultrasónicos, reduciendo los tiempos operativos, el cálculo manual y los errores sistemáticos, mejorando la calidad en la calibración. Además, el sistema de adquisición, en conjunto con el software y otro sistema de posicionamiento (no incluido en esta tesis), permitirá caracterizar la zona de medición.
+
+El flujo de proceso de calibración de la figura \ref{fig:sistemaIntegral} se define a continuación:
+\begin{itemize}
+    \item Se debe armar el banco de medición, montando los sensores en un soporte dentro del túnel de viento.
+    \item Se conectan los anemómetros al datalogger y se alimenta todo el sistema con una fuente de 12 voltios. Además, se conecta el datalogger a la red LAN local del laboratorio.
+    \item Se accede a la interfaz web y se configuran los parámetros de calibración.
+    \item La aplicación Django procesa las solicitudes y envía comandos al datalogger a través de WebSocket.
+    \item El datalogger controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
+    \item Los datos de los anemómetros y otros sensores se registran y envían a la aplicación Django.
+    \item La aplicación procesa los datos, calcula las correcciones e incertidumbres, y almacena los resultados en la base de datos.
+    \item Los resultados pueden ser visualizados y descargados a través de la interfaz web.
+\end{itemize}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/integracionHardware/DiagramaSistemaDesarrollar.png}
-    \caption{}
-    \label{fig:}
+    \includegraphics[width=1.1\linewidth]{Figuras/AplicacionWeb/integracionHardware/DiagramaSistemaDesarrollar.png}
+    \caption{Sistema integrado desarrollado en esta tesis.}
+    \label{fig:sistemaIntegral}
 \end{figure}
 
 
-mostrar un diagrama de flujo desde el inicio con el boton calcular incertidumbre hasta la salida de tablas con los reusltados, pasos del proceso de calibración
+% mostrar un diagrama de flujo desde el inicio con el boton calcular incertidumbre hasta la salida de tablas con los reusltados, pasos del proceso de calibración
 
 %-----------------------------------------------------------------------------------------------------

@@ -1,5 +1,53 @@
 \definecolor{Sail}{rgb}{0.643,0.819,0.976}
-\section{Especificaciones técnicas y hojas de datos}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Principio de medición para sensores de ultrasonido}\label{ap:principioDeMedicionUltrasonido}
+
+La velocidad y dirección del viento se determinan midiendo el tiempo que tardan los pulsos ultrasónicos en recorrer la distancia desde el transductor que genera el pulso hasta el transductor receptor. El instrumento utiliza dos pares de transductores orientados a lo largo de dos ejes ortogonales. Detectar la velocidad del viento a lo largo de dos ejes permite determinar no solo la intensidad sino también la dirección del viento.
+
+El instrumento mide el tiempo de viaje del pulso ultrasónico entre los dos transductores de la misma pareja en ambas direcciones, como se muestra en la figura \ref{fig:trasductoresUltra}. Los tiempos de viaje en las dos direcciones opuestas se definen como $t_{A}$ (tiempo en dirección hacia adelante) y $t_{R}$ (tiempo en dirección inversa). Si la velocidad del viento es cero, los valores de $t_{A}$ y $t_{R}$ son iguales. En presencia de viento, uno de los dos valores de tiempo es mayor que el otro y la comparación entre los dos valores de tiempo permite determinar la dirección y la intensidad del viento.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{Figuras/apendiceA/trasductoresUltra.png}
+  \caption{Esquema de los transductores y el tiempo de viaje de un pulso ultrasónico. \cite{DeltaOHM_HD51.3D_manual}}
+  \label{fig:trasductoresUltra}
+\end{figure}
+
+El tiempo de viaje del pulso de ultrasonido esta dado por las ecuaciones \ref{eq:t_A} y \ref{eq:t_R}
+\begin{equation}
+  t_{A} = \frac{D}{C + Vw}
+  \centering
+  \label{eq:t_A}
+\end{equation}
+
+\begin{equation}
+  \centering
+  t_{R} = \frac{D}{C - Vw}
+  \label{eq:t_R}
+\end{equation}
+
+donde se define:
+\begin{itemize}
+  \item D: Distancia entre los dos transductores del mismo par.
+  \item C: Velocidad del sonido.
+  \item $V_{w}$: Componente de la velocidad del viento a lo largo del eje de medición.
+\end{itemize}
+
+Realizando la medición de los dos tiempos de viaje en los ejes cartesianos $\mathbf{U}$ y $\mathbf{V}$ podemos determinar el vector velocidad de viento como 
+
+
+\begin{equation}
+  \centering
+  V_{w_{i}} = \frac{D}{2}\left(\frac{1}{t_{a_{i}}}-\frac{1}{t_{R_{i}}}\right)\text{,  } i= u,v
+  \label{eq:velViento}
+\end{equation}
+
+El eje $\mathbf{U}$ es un eje que va de oeste a este, mientras que el eje $\mathbf{V}$ es un eje que va de sur a norte. Medir el tiempo de viaje en ambas direcciones permite cancelar la dependencia de la velocidad de transmisión de los ultrasonidos en el aire de las condiciones ambientales de temperatura, humedad y presión barométrica.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Especificaciones técnicas y hojas de datos}\label{EspecificacionesTecDataSheet}
 \begin{table}[H]
 \centering
 \fontsize{10}{8}\selectfont
