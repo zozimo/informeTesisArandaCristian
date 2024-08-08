@@ -1,0 +1,62 @@
+En la tabla de la figura \ref{ap:calculoIncertidumreEjemplo} se muestra el cálculo, a través de una hoja de cálculo de Excel o una calculadora, para obtener la incertidumbre combinada en las mediciones de un anemómetro bajo calibración marca DeltaOhm, modelo HD51.3 en \SI{10}{\meter\per\second} con un patrón Vaisala, modelo WMT700. Se cuantifican todas las incertidumbres, se normalizan por su factor de distribución, se multiplica por su coeficiente de sensibilidad que es la unidad en todos los casos y luego se realiza la suma de los cuadrados. En particular, se obtuvo una incertidumbre combinada de $u_{com} = \sqrt{0.07} = \SI{0.26}{\meter\per\second}$ y, aplicando el factor de cobertura de 2, se obtiene una incertidumbre expandida de $U_{exp} = 2 \cdot 0.26 = \SI{0.52}{\meter\per\second}$.
+
+Por otro lado, se puede observar, en la última columna, el peso en porcentaje de la incertidumbre estándar al cuadrado para cada fuente. Se observa que las incertidumbre con mayor peso son el valor de calibración del patrón y el ajuste de la corrección de los datos del certificado del patrón. Por último, dado que el túnel no está caracterizado en su volumen, el aporte de las fuentes de incertidumbre se consideró nulo.
+
+El software desarrollado realiza de forma iterativa estos cálculos para todos los puntos y devuelve un gráfico y una tabla con los resultados finales. De esta forma, el software permite optimizar en tiempo el procesamiento de los datos.
+
+
+\newpage
+\definecolor{Sail}{rgb}{0.643,0.819,0.976}
+\section{Ejemplo de Presupuesto de incertidumbre para un punto}
+\begin{table}[H]
+    \flushleft 
+    \fontsize{7}{8}\selectfont
+    \begin{tblr}{
+      colspec = {Q[c,1cm] Q[c,2cm] Q[c,1.5cm] Q[c,1cm] Q[c,1cm] Q[c,2cm] Q[c,0.5cm] Q[c,0.5cm] Q[c,1.5cm] Q[c,0.5cm] Q[c,1cm]},  
+      cells = {c},
+      row{1} = {Sail},
+      row{2} = {Sail},
+      cell{1}{1} = {c=11}{},
+      cell{2}{1} = {c=2}{},
+      cell{3}{1} = {r=7}{},
+      cell{10}{1} = {r=5}{},
+      cell{15}{1} = {r=4}{},
+      cell{19}{9} = {Sail},
+      cell{19}{10} = {Sail},
+      cell{19}{11} = {Sail},
+      vlines,
+      hline{1-3,10,15,19-20} = {-}{},
+      hline{4-9,11-14,16-18} = {2-11}{},
+    }
+    \textbf{Presupuesto de calibración para 10 m/s} &                                      &                                &                        &                       &                                  &             &                   &                           &                &                           \\
+    \textbf{Fuentes de incertidumbre}                                &                                      & \textbf{Tipo de Incertidumbre} & \textbf{Valores \unit{\meter\per\second} } & \textbf{Distribu- ción} & \textbf{Factor de normalización} & $\mathbf{c_i}$ & $\mathbf{\sigma_i}$ & $\mathbf{u_{i} = c_{i} \cdot \sigma_{i}}$ &  $\mathbf{u_{i}^{2}}$ & Peso de $\mathbf{u_{i}^{2}}$ (\%) \\
+    Patron                                          & Calibración                          & B                              & 0,279                  & N                     & 2,00                             & 1,00        & 0,139             & 0,14                      & 0,02           & 29,17                     \\
+                                                    & {Ajuste de\\
+        calibración}        & A                              & 0,049                  & N                     & 1,00                             & 1,00        & 0,049             & 0,05                      & 0,00           & 3,64                      \\
+                                                    & {Resolución del\\
+        instrumento}   & B                              & 0,010                  & R                     & 1,73                             & 1,00        & 0,006             & 0,01                      & 0,00           & 0,05                      \\
+                                                    & Repetibilidad                        & A                              & 0,010                  & N                     & 9,80                             & 1,00        & 0,010             & 0,01                      & 0,00           & 0,15                      \\
+                                                    & Histéresis                           & B                              & -0,020                 & R                     & 1,73                             & 1,00        & -0,012            & -0,01                     & 0,00           & 0,20                      \\
+                                                    & Ajuste de la corrección del patron   & A                              & 0,210                  & N                     & 1,00                             & 1,00        & 0,210             & 0,21                      & 0,04           & 66,13                     \\
+                                                    & {Factor de\\
+        bloqueo}            & B                              & 0,002                  & RMS                   & 1,00                             & 1,00        & 0,002             & 0,00                      & 0,00           & 0,00                      \\
+    Túnel de viento                                 & Homogeneidad                         & B                              & 0,000                  & R                     & 1,00                             & 1,00        & 0,000             & 0,00                      & 0,00           & 0,00                      \\
+                                                    & {Ajuste de la\\
+        homogeneidad}    & A                              & 0,000                  & N                     & 1,00                             & 1,00        & 0,000             & 0,00                      & 0,00           & 0,00                      \\
+                                                    & Estabilidad                          & B                              & 0,000                  & R                     & 1,73                             & 1,00        & 0,000             & 0,00                      & 0,00           & 0,00                      \\
+                                                    & {Ajuste de la\\
+        estabilidad}     & A                              & 0,000                  & N                     & 1,00                             & 1,00        & 0,000             & 0,00                      & 0,00           & 0,00                      \\
+                                                    & {Factor de\\
+        calibración}        & B                              & 0,000                  & RMS                   & 1,00                             & 1,00        & 0,000             & 0,00                      & 0,00           & 0,00                      \\
+    IBC                                             & {Resolución
+      del\\
+        Instrumento} & B                              & 0,010                  & R                     & 1,73                             & 1,00        & 0,006             & 0,01                      & 0,00           & 0,05                      \\
+                                                    & Repetibilidad                        & A                              & 0,010                  & N                     & 9,80                             & 1,00        & 0,010             & 0,01                      & 0,00           & 0,15                      \\
+                                                    & Histéresis                           & B                              & -0,030                 & R                     & 1,73                             & 1,00        & -0,017            & -0,02                     & 0,00           & 0,45                      \\
+                                                    & {Factor de\\
+        bloqueo}            & B                              & 0,002                  & RMS                   & 1,00                             & 1,00        & 0,002             & 0,00                      & 0,00           & 0,00                      \\
+    TOTAL                                           & ~                                    & ~                              & ~                      & ~                     & ~                                & ~           & ~                 & \textbf{0,40}             & \textbf{0,07}  & \textbf{100,00}           
+    \end{tblr}
+    \caption{En la tabla se indica el calculo de incertidumbre para un punto en particular \SI{10}{\meter\per\second}.}
+    \label{ap:calculoIncertidumreEjemplo}
+\end{table}

@@ -2,7 +2,7 @@ En este capítulo, se introduce una aplicación web diseñada para interactuar c
 
 La aplicación ofrece la posibilidad de configurar el datalogger, definiendo la interfaz eléctrica de los anemómetros, los intervalos de muestreo y procesamiento de datos, y los puntos de medición de la velocidad del viento. Además, permite establecer los tiempos de encendido y el periodo de estabilidad en cada punto de medición. Una vez configurado el sistema, el software inicia el proceso de medición, enviando referencias de viento al hardware. Este último interactúa con el túnel de viento a través de su controlador PID para ajustar la velocidad del viento al valor deseado. Las mediciones obtenidas son verificadas por el operador y, si son correctas, se calcula automáticamente la incertidumbre expandida. Los resultados se presentan en el front end, en gráficos y tablas, se almacenan en una base de datos y pueden descargarse para emitir el certificado de calibración correspondiente.
 
-La integración de esta aplicación con el datalogger automatiza y estandariza el proceso de calibración, reduciendo de manera significativa el tiempo dedicado al procesamiento manual de datos y a la separación de estos en diferentes etapas. Esto contribuye a la reducción de tiempos operativos y minimiza errores sistemáticos, mejorando notablemente la calidad y precisión en la calibración de sensores de viento de ultrasonido.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Desarrollo aplicación WEB}
 % hablar de las herramientas utilizadas para todo el desarrollo, contar todo, los entornos, lenguajes y frameworks etc
@@ -227,7 +227,7 @@ El proceso de calcular la incertidumbre expandida para todos los puntos medidos 
 
 Después de completar los ciclos ascendente y descendente de medición, se dispone de un banco de datos crudos de velocidad y dirección. El algoritmo lee estos datos y extrae las mediciones de la parte plana estable para cada punto de forma iterativa. Este proceso se denomina \textit{parsear datos}. Luego, se muestran los datos crudos procesados en pantalla, donde el operador, desde el front-end, debe hacer clic en el botón ``Calcular Incertidumbre'', siempre que esté de acuerdo con los datos. Si no, puede reiniciar las mediciones con un nuevo perfil.
 
-Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar ($\sigma_{v}$) de las mediciones de velocidad del viento para cada punto. A continuación, se elabora el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los valores promedio. Se procede a la lectura de los datos ingresados por el operador, específicamente la resolución de los instrumentos y el área de bloqueo de los anemómetros para el cálculo del factor de bloqueo, ecuación \ref{eq:FactorDeBloqueo}, donde $S_{T}$ corresponde al área transversal de la zona de medición del túnel de viento y $S_{A}$ se corresponde al área efectiva de bloqueo del sensor y su soporte. Este valor se utiliza para corregir las mediciones del IBC y del patrón, y se incorpora su respectiva incertidumbre según la ecuación \ref{eq:incertiFactorBloqueo}.
+Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar $\sigma_{v}$ de las mediciones de velocidad del viento para cada punto. A continuación, se elabora el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los valores promedio. Se procede a la lectura de los datos ingresados por el operador, específicamente la resolución de los instrumentos y el área de bloqueo de los anemómetros para el cálculo del factor de bloqueo, ecuación \ref{eq:FactorDeBloqueo}, donde $S_{T}$ corresponde al área transversal de la zona de medición del túnel de viento y $S_{A}$ se corresponde al área efectiva de bloqueo del sensor y su soporte. Este valor se utiliza para corregir las mediciones del IBC y del patrón, y se incorpora su respectiva incertidumbre según la ecuación \ref{eq:incertiFactorBloqueo}.
 
 \begin{equation}
     \centering
@@ -377,7 +377,7 @@ Cuando se hace clic en el botón calcular incertidumbre, se activa el programa d
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frondend/curvaHisteris.png}
+    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/frondend/curvaHisteris.png}
     \caption{Curva de histéresis.}
     \label{fig:curvaHisteris}
 \end{figure}
@@ -393,7 +393,7 @@ En las Figuras \ref{fig:curvaCalib} y \ref{fig:tablaCalib} se muestran los espac
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frondend/curvaCalib.png}
+    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/frondend/curvaCalib.png}
     \caption{Curva de calibración.}
     \label{fig:curvaCalib}
 \end{figure}
@@ -410,17 +410,21 @@ En las Figuras \ref{fig:curvaCalib} y \ref{fig:tablaCalib} se muestran los espac
 \section{Integración con el hardware}\label{sec:integracionHardware}
 
 
-El software desarrollado interactúa con el hardware, permitiendo al operador configurar de manera sencilla e intuitiva la interfaz eléctrica de los anemómetros, la cadencia de toma de muestras y los puntos de velocidad del viento en el túnel. Se realiza automáticamente el cálculo de incertidumbre y se genera un reporte con los resultados, para el instrumento bajo estudio. Este trabajo estandariza un procedimiento semiautomático para la calibración de sensores de viento ultrasónicos, reduciendo los tiempos operativos, el cálculo manual y los errores sistemáticos, mejorando la calidad en la calibración. Además, el sistema de adquisición, en conjunto con el software y otro sistema de posicionamiento (no incluido en esta tesis), permitirá caracterizar la zona de medición.
+El software desarrollado interactúa con el hardware, permitiendo al operador configurar de manera sencilla e intuitiva la interfaz eléctrica de los anemómetros, la cadencia de toma de muestras y los puntos de velocidad del viento en el túnel. Se realiza automáticamente el cálculo de incertidumbre y se genera un reporte con los resultados, para el instrumento bajo estudio. Este trabajo estandariza un procedimiento automático para la calibración de sensores de viento ultrasónicos, reduciendo los tiempos operativos, el cálculo manual y los errores sistemáticos, mejorando la calidad en la calibración. Además, el sistema de adquisición, en conjunto con el software y otro sistema de posicionamiento (no incluido en esta tesis), permitirá estudiar en mejor detalle el comportamiento del flujo de aire en la zona de medición.
 
-El flujo de proceso de calibración de la figura \ref{fig:sistemaIntegral} se define a continuación:
+Los pasos para realizar el proceso de calibración incluyendo el diagrama de la figura \ref{fig:sistemaIntegral} se define a continuación:
 \begin{itemize}
-    \item Se debe armar el banco de medición, montando los sensores en un soporte dentro del túnel de viento.
-    \item Se conectan los anemómetros al datalogger y se alimenta todo el sistema con una fuente de 12 voltios. Además, se conecta el datalogger a la red LAN local del laboratorio.
-    \item Se accede a la interfaz web y se configuran los parámetros de calibración.
+    \item Se debe armar el banco de medición, montando los sensores en un soporte dentro del túnel de viento, asegurando que queden fijos y alineados.
+    \item Se deben tomar las medidas de posición de los instrumentos respecto a un sistema de referencia.
+    \item Se debe calcular el área de bloqueo de cada instrumento, incluyendo su soporte.
+    \item Se deben conectar los anemómetros al datalogger y alimentar todo el sistema con una fuente de 12 voltios. Además, se debe conectar el datalogger a la red LAN local del laboratorio.
+    \item Se debe acceder a la interfaz web y configurar los parámetros de calibración.
+    \item Se debe iniciar la adquisición de mediciones mediante la interfaz web.
     \item La aplicación Django procesa las solicitudes y envía comandos al datalogger a través de WebSocket.
     \item El datalogger controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
     \item Los datos de los anemómetros y otros sensores se registran y envían a la aplicación Django.
-    \item La aplicación procesa los datos, calcula las correcciones e incertidumbres, y almacena los resultados en la base de datos.
+    \item Terminada las mediciones, el operador debe revisar las mediciones y si son correctas activar el procesamiento.
+    \item La aplicación procesa los datos. Primero, calcula el promedio y el desvío estándar de las mediciones para cada punto del escalón. Luego, con esos datos e información ingresada por el usuario, calcula las correcciones e incertidumbres. Finalmente, almacena los resultados en la base de datos.
     \item Los resultados pueden ser visualizados y descargados a través de la interfaz web.
 \end{itemize}
 
