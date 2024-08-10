@@ -4,7 +4,7 @@ Los anemómetros ultrasónicos o mecánicos son instrumentos capaces de medir el
 
 Tradicionalmente, los túneles de viento utilizados para tales calibraciones se operan de forma manual o semi-automática. En este trabajo, se automatizó el proceso de medición mediante el control del motor del túnel de viento con un controlador PID. Este controlador recibe referencias de velocidad del viento proporcionadas por un anemómetro patrón. Además, estas mediciones se utilizan para llevar a cabo el proceso de calibración de otros anemómetros que también son afectados por el mismo flujo de viento.
 
-En resumen, el sistema no solo controla las condiciones del viento de manera precisa, sino que también permite la calibración exacta de los instrumentos de medición dentro de ese entorno.
+En resumen, el sistema no solo controla las condiciones del viento de manera precisa, sino que también permite la calibración de instrumentos bajo prueba.
 
 \section{Estado del arte}\label{sec:estado_del_arte}
 A lo largo de los años, la tecnología de sensores de viento y los métodos de calibración han experimentado una evolución significativa, impulsada por la necesidad de mayor precisión y confiabilidad en las mediciones. En sus inicios, los anemómetros eran dispositivos mecánicos simples. Uno de los ejemplos más antiguos y utilizados es el anemómetro de copa, inventado por Thomas Romney Robinson en 1846. Este dispositivo consistía en tres o cuatro copas montadas en los extremos de brazos horizontales que giraban alrededor de un eje vertical. La velocidad de rotación era proporcional a la velocidad del viento \cite{robinson1846}. La calibración de estos anemómetros se realizaba mediante métodos empíricos en campo abierto.
@@ -28,7 +28,7 @@ Además, el laboratorio busca ser acreditado bajo la norma ISO 17025 \cite{ISO17
 
 \section{Objetivos}\label{sec:objetivos}
 
-La calibración de los anemómetros debe cumplir con normas estandarizadas \cite{IEC61400-12-1} \cite{ISO16622} \cite{ISO17713-1} y ser realizada por laboratorios acreditados. Para avanzar en esta línea, mediante la realización de un relevamiento y estudio del sistema actual de verificación de viento y su proceso, se propone desarrollar un sistema que:
+La calibración de los anemómetros debe cumplir con normas estandarizadas \cite{IEC61400-12-1} \cite{ISO16622} \cite{ISO17713-1} y ser realizada por laboratorios acreditados. Para seguir este enfoque, mediante la realización de un relevamiento y estudio del sistema actual de verificación de viento y su proceso, se propone desarrollar un sistema que:
 
 \begin{enumerate}
     \item Incorpore un datalogger basado en la placa de desarrollo EDU-CIAA, que permita la adquisición y transmisión de los datos de los sensores hacia un servidor mediante Ethernet.
@@ -40,7 +40,7 @@ La calibración de los anemómetros debe cumplir con normas estandarizadas \cite
         \item Cargar los metadatos necesarios para elaborar el presupuesto de incertidumbre.
         \item Visualizar las mediciones en tiempo real, con la posibilidad de reiniciar las mediciones en caso de falla.
         \item Procesar las muestras y calcular la incertidumbre combinada para cada valor de velocidad de viento preconfigurada, una vez finalizada la adquisición de datos.
-        \item Almacenar los datos crudos, procesados, y los gráficos, tablas y metadatos de la calibración en una base de datos PostgreSQL.
+        \item Guardar en la base de datos PostgreSQL tanto los datos crudos como los procesados, incluyendo los gráficos, tablas y los metadatos pertinentes.
         \item Descargar los datos crudos, procesados, gráficos y toda la información necesaria para el análisis posterior y la generación del certificado de calibración.
     \end{itemize}
 \end{enumerate}
