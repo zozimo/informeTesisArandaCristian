@@ -1,5 +1,5 @@
 \definecolor{Sail}{rgb}{0.643,0.819,0.976}
-Este capítulo se centra en el diseño y la programación del datalogger, que será utilizado en el banco de medición para calibrar los anemómetros de ultrasonido. Este sistema está basado en la placa de desarrollo EDU-CIAA, con el agregado de un \textit{shield} (poncho) específico para la aplicación. El sistema se describe en la Figura \ref{fig:esquemaHardware} y consta de distintos módulos, a saber: un módulo para la adquisición de muestras de viento mediante el protocolo RS485, un módulo para la recepción y transmisión de datos a través de Ethernet, un módulo de alimentación de 12 \unit{\volt}, y un módulo PWM con una etapa de filtrado seguida de otra de amplificación para entregar las tensiones necesarias para el funcionamiento y control del túnel de viento. Además, se toman muestras de esta última tensión y de la fuente para monitorear por software el comportamiento del sistema.
+Este capítulo se centra en el diseño y la programación del datalogger, que será utilizado en el banco de medición para calibrar los anemómetros de ultrasonido. Este sistema está basado en la placa de desarrollo EDU-CIAA \cite{proyectoCIAA}, con el agregado de un \textit{shield} específico para la aplicación. El sistema se describe en la Figura \ref{fig:esquemaHardware} y consta de distintos módulos, a saber: un módulo para la adquisición de muestras de viento mediante el protocolo RS485, un módulo para la recepción y transmisión de datos a través de Ethernet, un módulo de alimentación de 12 \unit{\volt}, y un módulo PWM con una etapa de filtrado seguida de otra de amplificación para entregar la señal de control del túnel de viento. Además, se toman muestras de esta señal y de la fuente para monitorear por software el comportamiento del sistema.
 
 
 \begin{figure}[H]
@@ -88,29 +88,25 @@ El SMN proporcionó los sensores de viento de ultrasonido. Se trabajó con los s
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\linewidth]{Figuras/datalogger/Hardware/sensorVaisala.jpg}
-    \caption{Sensor Vaisala modelo WMT700}
-    \label{fig:sensorVaisala}
+    
+    \begin{minipage}[b]{0.45\textwidth}
+        % \centering
+        \subcaptionbox{\label{fig:sensorVaisala}}{\includegraphics[width=\textwidth]{Figuras/datalogger/Hardware/sensorVaisala.jpg}}
+    \end{minipage}
+    \hspace{1em} % Espacio vertical entre las filas
+    \begin{minipage}[b]{0.45\textwidth}
+        \subcaptionbox{\label{fig:sensorDeltaOhm}}{\includegraphics[width=\textwidth]{Figuras/datalogger/Hardware/sensorDeltaOhm.jpg}}
+    \end{minipage}
+    \caption{En (a) se muestra el sensor Vaisala modelo WMT700, en (b) se muestran el sensor Delta OHM modelo HD51.3D.}
+    \label{fig:SensoresUtilizados}
 \end{figure}
 
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\linewidth]{Figuras/datalogger/Hardware/sensorDeltaOhm.jpg}
-    \caption{Sensor Delta OHM modelo HD51.3D}
-    \label{fig:sensorDeltaOhm}
-\end{figure}
  Algunas especificaciones técnicas de este tipo de anemómetros se muestran en la tabla \ref{tab:especTecniDelta}. Las más relevantes para el proceso de calibración son, el rango de medición, la resolución, la precisión, los protocolos de comunicación, la alimentación eléctrica y el intervalo de tiempo mínimo con el que puede tomar muestras. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Módulo de alimentación electrica}\label{sec:moduloAlimentacionElectrica}
 
-Los anemómetros funcionan con una alimentación de 12 \unit{\volt} para el sistema principal y 24 \unit{\volt} para el sistema de calefacción ya que estos sensores pueden ser expuestos a entornos con temperaturas por debajo de cero grados. Por otro lado, los módulos Ethernet, RS-485 y los amplificadores operacionales trabajan con 5 \unit{\volt}, mientras que el resto de la placa de desarrollo opera con 3,3 \unit{\volt}. Por esta razón, se decide alimentar todo el sistema con una fuente de 12 \unit{\volt}, para garantizar el funcionamiento de los anemómetros en condiciones normales de temperatura dentro del laboratorio.
-
-Para lograr estos niveles de tensión, se optó por un regulador basado en el chip LM2596S (Step-Down), como se indica en la Figura \ref{fig:StepDowmLM2596S}
-. Se conectan 12 \unit{\volt} a la entrada y se ajusta el potenciómetro hasta obtener 5 \unit{\volt} a la salida. Esta salida estará disponible para conectar el resto de los módulos.
-
-Cabe aclarar que, si bien la EDU-CIAA tiene una salida de 5 \unit{\volt}, esta no proporciona la corriente suficiente para alimentar todos los módulos, ya que está limitada por los 500 \unit{\milli\ampere} que entrega un puerto USB 2.0. En contraste, el regulador DC-DC basado en el LM2596 puede entregar hasta 3 \unit{\ampere}, satisfaciendo así las necesidades de corriente de todos los módulos conectados. 
+Los anemómetros funcionan con una alimentación de 12 \unit{\volt} para el sistema principal y 24 \unit{\volt} para el sistema de calefacción, ya que estos sensores pueden ser expuestos a entornos con temperaturas por debajo de cero grados. Por otro lado, los módulos Ethernet, RS-485 y los amplificadores operacionales trabajan con 5 \unit{\volt}, mientras que el resto de la placa de desarrollo opera con 3,3 \unit{\volt}. Por esta razón, se decide alimentar todo el sistema con una fuente de 12 \unit{\volt}, para garantizar el funcionamiento de los anemómetros en condiciones normales de temperatura dentro del laboratorio. Para lograr estos niveles de tensión, se optó por un regulador basado en el chip LM2596S (Step-Down), como se indica en la Figura \ref{fig:StepDowmLM2596S}. Se conectan 12 \unit{\volt} a la entrada y se ajusta el potenciómetro hasta obtener 5 \unit{\volt} a la salida. Esta salida estará disponible para conectar el resto de los módulos. Cabe aclarar que, si bien la EDU-CIAA tiene una salida de 5 \unit{\volt}, esta no proporciona la corriente suficiente para alimentar todos los módulos, ya que está limitada por los 500 \unit{\milli\ampere} que entrega un puerto USB 2.0. En contraste, el regulador DC-DC basado en el LM2596 puede entregar hasta 3 \unit{\ampere}, satisfaciendo así las necesidades de corriente de todos los módulos conectados. 
 % Todo el sistema tiene un consumo de -- \unit{\milli\ampere}
 
 \begin{figure}[H]
@@ -120,7 +116,7 @@ Cabe aclarar que, si bien la EDU-CIAA tiene una salida de 5 \unit{\volt}, esta n
     \label{fig:StepDowmLM2596S}
 \end{figure}
 
-En la Figura \ref{fig:esquemPowerSupply} se observa el esquemático del sistema, donde se muestra cómo se conecta el módulo LM2596 con el resto de los componentes. Este esquemático incluye un divisor resistivo y un diodo Zener de 3,3 \unit{\volt} para limitar y adaptar la tensión de 12 \unit{\volt} a un rango de 3,3 \unit{\volt}, ya que se toman muestras de la tensión de alimentación a través del canal analógico-digital ADC\_CH1 de la EDU-CIAA. Esta información de la tensión se envía junto con los datos de los anemómetros, permitiendo un monitoreo preciso del sistema de alimentación. Además, se han agregado filtros de bypass a la alimentación del amplificador operacional LM358 para asegurar una operación estable y sin ruido.
+En la Figura \ref{fig:esquemPowerSupply} se observa el esquemático del sistema, donde se muestra cómo se conecta el módulo LM2596 con el resto de los componentes. Este esquemático incluye un divisor resistivo y un diodo Zener de 3,3 \unit{\volt} para limitar y adaptar la tensión de 12 \unit{\volt} a un rango de 3,3 \unit{\volt}, ya que se toman muestras de la tensión de alimentación a través del canal analógico-digital ADC\_CH1 de la EDU-CIAA. Esta información de la tensión se envía junto con los datos de los anemómetros, permitiendo un monitoreo en tiempo real del sistema de alimentación. Además, se han agregado filtros de bypass a la alimentación del amplificador operacional LM358 para asegurar una operación estable y con bajo ruido.
 
 \begin{figure}[H]
     \centering
@@ -132,57 +128,31 @@ En la Figura \ref{fig:esquemPowerSupply} se observa el esquemático del sistema,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Módulo de adquisición de datos de viento}\label{sec:moduloAdquisicionDatoViento}
 
-En la sección \ref{sec:instrumentos_med_viento} del capítulo \ref{cap:viento} describimos los distintos tipos de sensores para medir la intensidad y dirección del viento. En particular se trabajó con anemómetros de ultrasonido cuya interfaz electrónica utiliza el protocolo RS-485 \cite{rs485Protocol}, el mismo es un protocolo diferencial ampliamente utilizado en entornos industriales debido a su robustez y confiabilidad. Utiliza tres cables (A, B y GND) y transmite datos mediante la diferencia de voltaje entre A y B, ofreciendo alta inmunidad al ruido. 
-
-% Algunas características del protocolo son:
-
-% \begin{itemize}
-%     \item Tensión diferencial entre A y B para la transmisión de datos. Cuando la línea A es más positiva que la línea B por al menos 200 mV, se interpreta como un estado lógico '1'. Inversamente, cuando la línea B es más positiva que la línea A por al menos 200 mV, se interpreta como un estado lógico '0'.
-%     \item Velocidades de hasta 10 Mbps y distancia de hasta 1200 metros.
-%     \item Soporte para multidrop de hasta 32 dispositivos.
-%     \item Resistencias de terminación de $\SI{120}{\ohm}$ para minimizar reflexiones de señal.
-
-%     \item Robustez contra interferencias eléctricas en entornos industriales.
-% \end{itemize}
-
-En la Figura \ref{fig:rs485DeltaOhm} se muestra un esquema de conexión para el sensor DELTA OHM HD51.3D el cual fue utilizado para conectar dicho sensor al sistema. En particular, nos interesa dos cables para la alimentacion V+ (12 \unit{\volt}) y V- (GND), y tres cables para los datos, DATA+ (A), DATA- (B) y GND
+En la sección \ref{sec:instrumentos_med_viento} del capítulo \ref{cap:viento} describimos los distintos tipos de sensores para medir la intensidad y dirección del viento. En particular se trabajó con anemómetros de ultrasonido cuya interfaz electrónica utiliza el protocolo RS-485 \cite{rs485Protocol}, el mismo es un protocolo diferencial ampliamente utilizado en entornos industriales debido a su robustez y confiabilidad. Utiliza tres cables (A, B y GND) y transmite datos mediante la diferencia de tensión entre A y B, ofreciendo alta inmunidad al ruido. En la Figura \ref{fig:rs485DeltaOhm} se muestra un esquema de conexión entre el sensor y el sistema. En particular, nos interesa dos cables para la alimentación V+ (12 \unit{\volt}) y V- (GND), y tres cables para los datos, DATA+ (A), DATA- (B) y GND. Puesto que tanto el sensor patrón como el sensor bajo calibración trabajan con el puerto RS485 y la placa de desarrollo EDU-CIAA cuenta con un solo puerto RS485, se va a utilizar un adaptador para asi tener disponible dos puertos RS485. 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/datalogger/Hardware/rs485DeltaOhm.png}
-    \caption{Esquema de conexión de datos y alimentación del sensor HD51.3D con un Datalogger o un PLC.}
+    \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Hardware/rs485DeltaOhm.png}
+    \caption{Esquema de conexión de datos y alimentación del sensor HD51.3D con un Datalogger o un PLC.  \cite{DeltaOHM_HD51.3D_manual}}
     \label{fig:rs485DeltaOhm}
 \end{figure}
-La placa EDU-CIAA cuenta con un módulo RS-485 integrado, como se muestra en la Figura \ref{fig:rs485CIAA}. El anemómetro patrón WMT700 se conectó directamente a esta bornera. El sensor envía datos en modo ráfaga cada segundo, lo que permite una comunicación directa y eficiente sin necesidad de adaptadores adicionales.
+En la Figura \ref{fig:rs485CIAA}, se muestra el puerto RS485 integrado de la EDU-CIAA, a esta bornera se conecto directamente el anemómetro patrón WMT700. El sensor envía datos en modo ráfaga cada segundo, y este puerto permite una comunicación directa y eficiente sin necesidad de adaptadores adicionales.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.35\linewidth]{Figuras/datalogger/Hardware/rs485CIAA.jpg}
+    \includegraphics[width=0.45\linewidth]{Figuras/datalogger/Hardware/rs485CIAA.jpg}
     \caption{Puerto RS-485 integrado en la EDU-CIAA}
     \label{fig:rs485CIAA}
 \end{figure}
 
 Para conectar el anemómetro bajo calibración se utilizó el módulo MAX485, Figura \ref{fig:moduleMax485}, que convierte las señales RS-485 a niveles de la UART (TTL). 
-
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.55\linewidth]{Figuras/datalogger/Hardware/moduleMax485.png}
+    \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Hardware/moduleMax485.png}
     \caption{Módulo convertidor de RS485 a UART (TTL)}
     \label{fig:moduleMax485}
 \end{figure}
-% Los pines del módulo tienen la siguiente descripción:
 
-% \begin{itemize}
-%     \item \textbf{Pin A y B:} Conectan los cables A y B del sensor RS-485.
-%     \item \textbf{Pin GND:} Conexión a tierra para la alimentación y la señal.
-%     \item \textbf{Pin RO (Receiver Output):} Salida de datos recibidos. Entrega los datos TTL recibidos del sensor RS-485 convertidos por el MAX485.
-%     \item \textbf{Pin DI (Driver Input):} Entrada de datos de transmisión TTL hacia el módulo MAX485 para ser convertidos a señales RS-485.
-%     \item \textbf{Pin DE (Driver Enable):} Controla la transmisión de datos. Se activa para habilitar la transmisión de datos desde el pin DI.
-%     \item \textbf{Pin RE (Receiver Enable):} Controla la recepción de datos. Se activa para habilitar la recepción de datos en el pin RO.
-% \end{itemize}
-
-Como se muestra en la Figura \ref{fig:esquemRS485}, el módulo MAX485 se alimentó con 5 \unit{\volt} suministrados por el regulador LM2596S. Desde un extremo, se conectaron los cables A y B del sensor RS-485, mientras que del otro lado se conectó a la UART-RS232 de la EDU-CIAA. Para adaptar la señal TTL a la placa de desarrollo, se utilizó un resistor de 1 \unit{\kilo\ohm} entre el pin RO del MAX485 y la UART-RS232.
-
-Los pines DE y RE del MAX485 se conectaron a GND para permitir la recepción de datos desde el sensor hacia la placa. 2El pin DI no se conectó, ya que el sensor no requiere recibir datos o comandos desde la EDU-CIAA.
+ El módulo se alimentó con 5 \unit{\volt} suministrados por el regulador LM2596S. Desde un extremo, se conectaron los cables A y B del sensor RS-485, mientras que del otro lado se conectó a la UART-RS232 de la EDU-CIAA. Para adaptar la señal TTL a la placa de desarrollo, se utilizó un resistor de 1 \unit{\kilo\ohm} entre el pin RO del MAX485 y la UART-RS232. Los pines DE y RE del MAX485 se conectaron a GND para permitir la recepción de datos desde el sensor hacia la placa. El pin DI no se conectó, ya que el sensor no requiere recibir datos o comandos desde la EDU-CIAA.
 
 \begin{figure}[H]
     \centering
@@ -198,9 +168,7 @@ Los pines DE y RE del MAX485 se conectaron a GND para permitir la recepción de 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Módulo de comunicación Ethernet/SPI  }\label{sec:moduloEthernet}
 
-Para comunicar el sistema embebido con distintos servidores, como el servidor WebSocket desarrollado en la sección \ref{sec:back_end}, así como servidores NTP para sincronizar la fecha y hora, se utilizó el módulo W5100, Figura \ref{fig:moduleW5100}. Este módulo emplea el protocolo TCP/IP para proporcionar una comunicación estable. Se alimenta con 5 \unit{\volt} y utiliza una interfaz SPI para comunicarse con la placa de desarrollo.
-
-Una de las principales ventajas del módulo W5100 \cite{W5100Datasheet} es su capacidad para manejar cuatro sockets independientes, lo que permite conectarse a hasta cuatro servidores distintos de manera concurrente. Esto mejora la eficiencia y la flexibilidad del sistema, facilitando la integración con múltiples servicios de red simultáneamente.
+Para comunicar el sistema embebido con distintos servidores, como el servidor WebSocket desarrollado en la sección \ref{sec:back_end}, así como servidores NTP para sincronizar la fecha y hora, se utilizó el módulo W5100, Figura \ref{fig:moduleW5100}. Este módulo emplea el protocolo TCP/IP para proporcionar una comunicación estable. Se alimenta con 5 \unit{\volt} y utiliza una interfaz SPI para comunicarse con la placa de desarrollo. Una de las principales ventajas del módulo W5100 \cite{W5100Datasheet} es su capacidad para manejar cuatro sockets independientes, lo que permite conectarse a hasta cuatro servidores distintos de manera concurrente. Esto mejora la eficiencia y la flexibilidad del sistema, facilitando la integración con múltiples servicios de red simultáneamente.
 
 
 
@@ -222,9 +190,7 @@ Una de las principales ventajas del módulo W5100 \cite{W5100Datasheet} es su ca
 % \item \textbf{P+ y P-:} Pines para Power over Ethernet (PoE), utilizados para suministrar energía al dispositivo a través del cable Ethernet.
 % \end{itemize}
 
-Como se muestra en la Figura \ref{fig:esquemEthernet}, el módulo W5100 se alimentó con 5 \unit{\volt} y se conectaron los pines del módulo a la EDU-CIAA de la siguiente manera: el pin MO a SPI\_MOSI, el pin MI a SPI\_MISO, y el pin SCK a SPI\_SCK. Además, se conectó el pin NSS al GPIO1 para poder reiniciar el módulo cuando sea necesario por software. El resto de los pines del módulo quedaron sin conectar.
-
-Con esta configuración, se logró una comunicación bidireccional, permitiendo transmitir datos de los sensores de viento desde el datalogger hacia la aplicación web, así como recibir comandos desde la aplicación web hacia el datalogger.
+Como se muestra en la Figura \ref{fig:esquemEthernet}, el módulo W5100 se alimentó con 5 \unit{\volt} y se conectaron los pines del módulo a la EDU-CIAA de la siguiente manera: el pin MO a SPI\_MOSI, el pin MI a SPI\_MISO, y el pin SCK a SPI\_SCK. Además, se conectó el pin NSS al GPIO1 para poder reiniciar el módulo cuando sea necesario por software. El resto de los pines del módulo quedaron sin conectar. Con esta configuración, se logró una comunicación bidireccional, permitiendo transmitir datos de los sensores de viento desde el datalogger hacia la aplicación web, así como recibir comandos desde la aplicación web hacia el datalogger.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Hardware/esquemEthernet.png}
@@ -237,31 +203,19 @@ Con esta configuración, se logró una comunicación bidireccional, permitiendo 
 \subsection{Circuito PWM}\label{sec:circuitoPWM}
 
 
-En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control del variador de velocidad del túnel de viento.
-
-El tablero posee dos pulsadores: uno de marcha (BT1-NC) y otro de parada (BT2-NA), que permiten encender y apagar, respectivamente, el conjunto variador-motor del túnel de viento. Además, cuenta con dos voltímetros de corriente continua, V1 y V2, que muestran el valor de tensión que se está aplicando al motor.
-
-La velocidad del viento se regula manualmente mediante dos potenciómetros lineales: $P1 = \SI{1}{\kilo\ohm}$ y $P2 = \SI{500}{\ohm}$. Además, el circuito incluye una resistencia $R1 = \SI{1.2}{\kilo\ohm}$ conectada a la fuente $VCC = \SI{10}{\volt}$ del variador. Estos componentes, junto con los potenciómetros, forman un divisor de tensión variable que permite ajustar la tensión entre \SI{0}{\volt} y \SI{10}{\volt}, la cual se aplica al pin $VADC$.
+En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control que se conecta con el variador de velocidad del túnel de viento. El tablero posee dos pulsadores: uno de marcha (BT1-NC) y otro de parada (BT2-NA), que permiten encender y apagar, respectivamente, el conjunto variador-motor del túnel de viento. La velocidad del viento se regula manualmente mediante dos potenciómetros lineales: $P1 = \SI{1}{\kilo\ohm}$ y $P2 = \SI{500}{\ohm}$. Además, el circuito incluye una resistencia $R1 = \SI{1.2}{\kilo\ohm}$ conectada a una fuente de alimentación $VCC = \SI{10}{\volt}$, la cual es proporcionada por el tablero. Estos componentes, junto con los potenciómetros, conforman un divisor de tensión variable que permite ajustar el voltaje en un rango de \SI{0}{\volt} a \SI{10}{\volt}. Esta tensión se aplica al pin de entrada analógico-digital $V_{ADC}$ del tablero. Este nivel de baja tensión obtenido se amplifica y adapta a través de su variador a los niveles de tensión continua requeridos por el motor en el rango de \SI{0}{\volt} a \SI{300}{\volt}. El nivel de tensión aplicado al motor se puede visualizar en un voltímetro de corriente continua, \textit{V}, que incluye el tablero.
 
 Se realizó una medición con un amperímetro en serie con la resistencia $R1$ y se obtuvo que la corriente que pasa por $R1$ cuando se ajusta el potenciómetro para obtener una $VADC = \SI{3.56}{\volt}$ es de \SI{140}{\micro\ampere}. Cuando se ajusta el potenciómetro para obtener una $VADC = \SI{5}{\volt}$, la corriente es de \SI{200}{\micro\ampere}. Con estas mediciones podemos concluir que el pin $VADC$ del variador tiene una resistencia de entrada de alta impedancia, ya que el consumo de corriente no supera los \SI{500}{\micro\ampere}.
 
 
-
-%     Aca explicar como funcion el tunnel actualmente con los ponteciometros y como con el diseño de este circuito PWM logramos reemplazar los potes
-% Rango de tensiones del Vadc para alcanzar la maxima velocidad y rango real VCC = 10
-
-% quiza poner tabla para ver que esta fuente esta limitada por corriente y dcir porque no usamos esta, poner tabla de tension vs corriente.
-
-
-
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/datalogger/Hardware/esquemCircuitoControlTunel.png}
+    \includegraphics[width=0.85\linewidth]{Figuras/datalogger/Hardware/esquemCircuitoControlTunel.png}
     \caption{Esquemático circuital del tablero de control del tunel de viento.}
     \label{fig:esquemCircuitoControlTunel}
 \end{figure}
 
-Para lograr controlar el nivel de tensión $VADC$ por medio de software, se remplazó los dos potenciómetros y el resistor $R1$ por un circuito diseñado en la siguiente sección. Por otro lado, se hizo un relevamiento de la corriente máxima que puede entregar la fuente del variador $VCC$ conectando distintos valores de resistencia entre $VCC$ y $GND$. Los resultados se muestran en la tabla \ref{tab:currentVccVariador}. Como se aprecia a medida que disminuimos la carga $R$, tanto la tensión, como la corriente que puede entregar la fuente, disminuye y la corriente máxima que puede entregar esta fuente es de $\SI{100}{\milli\ampere}$, con una tensión de $\SI{2.29}{\volt}$. Tomando como referencia el consumo de corriente y la tensión que precisa el datalogger, esta fuente $VCC$ del variador no es capaz de suministrar la corriente necesaria y mantener la tensión constante, por esta razón se optó por alimentar el sistema como se explicó en la sección \ref{sec:moduloAlimentacionElectrica}
+Para lograr controlar el nivel de tensión $VADC$ por medio de software, se remplazó los dos potenciómetros y el resistor $R1$ por un circuito diseñado en la siguiente sección. Por otro lado, se hizo un relevamiento de la corriente máxima que puede entregar la fuente del variador $VCC$ conectando distintos valores de resistencia entre $VCC$ y $GND$. Los resultados se muestran en la tabla \ref{tab:currentVccVariador}. Como se observa en la tabla, a medida que disminuimos la carga $R$ de prueba, tanto la tensión, como la corriente que puede entregar la fuente $VCC$ disminuyen. Se alcanza la corriente maxima de $\SI{100}{\milli\ampere}$ a partir de una carga de $\SI{100}{\ohm}$, cuya tension de la fuente cae a $\SI{2.29}{\volt}$. Tomando como referencia el consumo de corriente y la tensión que precisa el datalogger, esta fuente $VCC$ del tablero, no es capaz de suministrar la corriente necesaria y mantener la tensión constante, por esta razón se optó por alimentar el sistema como se explicó en la sección \ref{sec:moduloAlimentacionElectrica}
 
 
 
@@ -281,7 +235,7 @@ Para lograr controlar el nivel de tensión $VADC$ por medio de software, se remp
 560              & 7,55              & 13,48             \\
 330              & 5,63              & 16,97             \\
 100              & 2,29              & 100               \\
-47               & 859               & 100               
+47               & 0,859               & 100               
 \end{tblr}
 \caption{Mediciones de tensión y corriente de la fuente del variador para distintas resistencias de carga.}
 \label{tab:currentVccVariador}
@@ -289,13 +243,13 @@ Para lograr controlar el nivel de tensión $VADC$ por medio de software, se remp
 
 \subsubsection{Simulación del circuito}\label{simulacionCircuito}
 
-En la Figura \ref{fig:pwmCircuitSimulate} se muestra el diseño del circuito del PWM \cite{EEVblog225}, que reemplaza al divisor de tensión formado por los potenciómetros $P1$, $P2$ y la resistencia $R1$, mostrado en la Figura \ref{fig:esquemCircuitoControlTunel}. La señal de entrada es una señal PWM (cuadrada) obtenida desde un pin de la EDU-CIAA. Esta señal, para un ciclo de trabajo del $100\%$, tiene una amplitud de $\SI{3.3}{\volt}$ acorde con los niveles digitales de tensión de la EDU-CIAA. 
+En la Figura \ref{fig:pwmCircuitSimulate} se muestra el diseño del circuito del PWM \cite{EEVblog225}, que reemplaza al divisor de tensión formado por los potenciómetros $P1$, $P2$ y la resistencia $R1$, mostrado en la Figura \ref{fig:esquemCircuitoControlTunel}. La señal de entrada es una señal PWM (cuadrada) obtenida desde un pin de la EDU-CIAA. Esta señal, para un ciclo de trabajo del $100\%$, tiene una amplitud de $\SI{3.3}{\volt}$ acorde con los niveles digitales de tensión de la EDU-CIAA. Luego, esta señal pasa por dos etapas de filtrado, cada una con una frecuencia de corte de $\SI{1592}{\hertz}$. 
+La tensión $\text{vFilter1}$ (señal verde) en la primera etapa del filtro pasabajo tiene un tiempo de crecimiento corto, del orden de $\SI{8}{\milli\second}$, pero presenta mayor rizado. La segunda etapa del filtro genera la tensión $\text{voutFilter}$ (señal azul), que tiene un mayor tiempo de crecimiento, del orden de $\SI{12}{\milli\second}$, pero con un rizado mucho menor. Con esta doble etapa de filtro pasa bajo, se obtiene una señal continua con menor rizado, como se muestra en la Figura \ref{fig:filter1and2}. 
 
-Luego, esta señal pasa por dos etapas de filtrado, cada una con una frecuencia de corte de $\SI{1592}{\hertz}$. Con esta doble etapa de filtro pasa bajo, se obtiene una señal continua con menor rizado, como se muestra en la Figura \ref{fig:filter1and2} (señal verde y azul).
+Posteriormente, la señal rectificada ingresa a una etapa de amplificación no inversora, implementada con el amplificador operacional LM358. Este nivel de continua es el que se conecta al pin $VADC$ del variador de velocidad del túnel de viento, pero para la simulación se reemplaza con una carga de $\SI{1}{\mega\ohm}$. La señal a la salida del amplificador tiene una ganancia de $\frac{\SI{3.5}{\volt}}{\SI{3.3}{\volt}} \approx \SI{1.06}{}$. Se decidió amplificar hasta $\SI{3.5}{\volt}$ porque se encontró que la máxima velocidad que logra alcanzar el túnel, de $\SI{25}{\meter\per\second}$, se alcanza con $\SI{3.5}{\volt}$ a la entrada del $VADC$. Esta limitación viene dada por la mecánica del motor, por lo tanto, en estas condiciones no es necesario amplificar a valores mayores de $\SI{3.5}{\volt}$, ya que el túnel no incrementa su velocidad de viento.
 
-Posteriormente, la señal rectificada ingresa a una etapa de amplificación no inversora, implementada con el amplificador operacional LM358. Este nivel de continua es el que se conecta al pin $VADC$ del variador de velocidad del túnel de viento. La señal a la salida del amplificador tiene una ganancia de $\frac{\SI{3.5}{\volt}}{\SI{3.3}{\volt}} \approx \SI{1.06}{}$. Se decidió amplificar hasta $\SI{3.5}{\volt}$ porque se encontró que la máxima velocidad que logra alcanzar el túnel, de $\SI{25}{\meter\per\second}$, se alcanza con $\SI{3.5}{\volt}$ a la entrada del $VADC$. Esta limitación viene dada por la mecánica del motor, por lo tanto, en estas condiciones no es necesario amplificar a valores mayores de $\SI{3.5}{\volt}$, ya que el túnel no incrementa su velocidad de viento.
+% No obstante, para cuando se mejore la mecánica y transmisión del motor del túnel de viento, se dejó un resistor variable (Preset) $R3=\SI{10}{\kilo\ohm}$. Con este preset se cambia la ganancia del amplificador. Se lo ajustó para alcanzar $\SI{3.5}{\volt}$ a la salida del operacional, y podrá ser recalibrado para alcanzar mayores niveles de tensión, lo que genera, mayores velocidades de viento.
 
-No obstante, para cuando se mejore la mecánica y transmisión del motor del túnel de viento, se dejó un resistor variable (Preset) $R3=\SI{10}{\kilo\ohm}$. Con este preset se cambia la ganancia del amplificador. Se lo ajustó para alcanzar $\SI{3.5}{\volt}$ a la salida del operacional, y podrá ser recalibrado para alcanzar mayores niveles de tensión, lo que genera, mayores velocidades de viento.
 
 \begin{figure}[H]
     \centering
@@ -304,25 +258,21 @@ No obstante, para cuando se mejore la mecánica y transmisión del motor del tú
     \label{fig:pwmCircuitSimulate}
 \end{figure}
 
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/filter1and2.png}
-    \caption{Circuito diseñado para obtener distintos niveles de tensión mediante la variación del ciclo de trabajo de una señal cuadrada (PWM).}
+    \caption{Señales a la salida del primer filtro LP (curva verde) y segundo filtro LP (curva azul).}
     \label{fig:filter1and2}
 \end{figure}
 
-En la Figura \ref{fig:pwm100Percent} se muestra el resultado de la simulación para un pulso $\text{vPWM}$ (señal azul) de $\SI{100}{\micro\second}$ de periodo ($\SI{10}{\kilo\hertz}$) y una amplitud de $\SI{3.3}{\volt}$ con un ciclo de trabajo del $99\%$.
+Se dejó un resistor variable (Preset) $R3=\SI{10}{\kilo\ohm}$ para poder modificar la ganancia del amplificador si fuera necesario. En este caso se lo ajustó para alcanzar $\SI{3.5}{\volt}$ a la salida del operacional. Sin embargo, para cuando sea mejorada la mecánica y transmisión del motor del túnel de viento, podrá ser recalibrado para llegar a mayores niveles de tensión, y por ende mayores velocidades de viento(talvez lo pongo abajo).
 
-La tensión $\text{vFilter1}$ (señal verde) en la primera etapa del filtro pasabajo tiene un tiempo de crecimiento corto, del orden de $\SI{10}{\milli\second}$, pero presenta mayor rizado. La segunda etapa del filtro genera la tensión $\text{voutFilter}$ (señal roja), que tiene un mayor tiempo de crecimiento, del orden de $\SI{16}{\milli\second}$, pero con un rizado mucho menor. Esto demuestra que la adición de una segunda etapa de filtrado permite obtener un nivel de continua con un rizado significativamente reducido.
-
-Finalmente, podemos observar la señal $\text{vadcTunel}$ (señal celeste). Esta señal es estable y se conecta al pin $VADC$ del variador de velocidad.
-
+En la Figura \ref{fig:pwm100Percent} se muestra el resultado de la simulación para un pulso $\text{vPWM}$ (señal verde) de $\SI{100}{\micro\second}$ de periodo ($\SI{10}{\kilo\hertz}$) y una amplitud de $\SI{3.3}{\volt}$ con un ciclo de trabajo del $100\%$. La señal $\text{vOutFilter}$ (señal en azul) es la que ingresa al amplificador operacional alcanzando su valor máximo en $\SI{3.3}{\volt}$ y la señal $\text{vAdcTunnel}$ (señal en rojo) se mide a la salida del amplificador operacional alcanzando un tension máxima de $\SI{3.5}{\volt}$ lo que produce la máxima velocidad del motor.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/pwm100Percent.png}
-    \caption{Señales simuladas para un ciclo de trabajo al 100 \% de la señal de entrada.}
+    \caption{Señales simuladas para un ciclo de trabajo del 100 \%.}
     \label{fig:pwm100Percent}
 \end{figure}
 En la simulación, al regular el ciclo de trabajo de la señal de entrada, se obtuvieron distintos niveles de tensión continua. Esto se puede observar en las Figuras \ref{fig:pwm75Percent} y \ref{fig:pwm55Percent}, que muestran los resultados para ciclos de trabajo del $75\%$ y $55\%$, respectivamente.
