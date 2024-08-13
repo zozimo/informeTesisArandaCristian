@@ -279,7 +279,7 @@ En la simulación, al regular el ciclo de trabajo de la señal de entrada, se ob
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/pwm75Percent.png}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/pwm75Percent.png}
     \caption{Señales simuladas para un ciclo de trabajo al 75 \% de la señal de entrada.}
     \label{fig:pwm75Percent}
 \end{figure}
@@ -288,7 +288,7 @@ En la simulación, al regular el ciclo de trabajo de la señal de entrada, se ob
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/pwm55Percent.png}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/pwm55Percent.png}
     \caption{Señales simuladas para un ciclo de trabajo al 55 \% de la señal de entrada.}
     \label{fig:pwm55Percent}
 \end{figure}
@@ -296,20 +296,20 @@ En la simulación, al regular el ciclo de trabajo de la señal de entrada, se ob
 
 \subsubsection{Implementación del circuito}
 
-Se implementó el circuito de la Figura \ref{fig:esquemPWM} en un protoboard de prueba con componentes Through-Hole Technology (THT), conectado a la EDU-CIAA, como se muestra en la Figura \ref{fig:BancoMedicion1}. Para comprobar y caracterizar el comportamiento del PWM, se utilizaron distintos valores de ciclo de trabajo configurados manualmente en el firmware del microcontrolador. El ciclo de trabajo de la señal cuadrada se modificó desde 1 hasta 255, equivalente a un rango de 0\% a 100\%.
+Se implementó el circuito de la Figura \ref{fig:pwmCircuitSimulate} en un \textit{protoboard} de prueba con componentes \textit{Through-Hole Technology} (THT), conectado a la EDU-CIAA, como se muestra en la Figura \ref{fig:BancoMedicion1}. Para comprobar y caracterizar el comportamiento del PWM, se utilizaron distintos valores de ciclo de trabajo programados desde el firmware del microcontrolador. El ciclo de trabajo de la señal cuadrada se modificó desde 1 hasta 255, equivalente a un rango de 0\% a 100\%.
 
-Para realizar estas mediciones, se utilizó un osciloscopio RIGOL DS2302A. En el canal 1 se midió la señal PWM de $\SI{10}{\kilo\hertz}$ con amplitud de $\SI{3.3}{\volt}$ que sale de un pin digital de la placa de desarrollo y se conecta a la entrada al circuito PWM diseñado. En el canal 2 se midió la señal continua a la salida del amplificador operacional (ADCinVariador), ajustando el potenciómetro $RV1$ del esquema de la Figura \ref{fig:esquemPWM}, para obtener $\SI{3.5}{\volt}$ cuando el ciclo de trabajo es $100\%$.
+Para realizar estas mediciones, se utilizó un osciloscopio RIGOL DS2302A. En el canal 1 se midió la señal PWM que sale de un pin digital de la placa de desarrollo y se conecta a la entrada del circuito PWM, esta señal tiene una frecuencia de $\SI{10}{\kilo\hertz}$ con amplitud de $\SI{3.3}{\volt}$ . En el canal 2 se midió la señal continua a la salida del amplificador operacional, ajustando el potenciómetro $R3Varaible$ del esquema de la Figura \ref{fig:pwmCircuitSimulate}, para obtener $\SI{3.5}{\volt}$ cuando el ciclo de trabajo es $100\%$.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/esquemPWM.png}
+%     \caption{Esquemático del circuito PWM que controla la velocidad del túnel de viento por programación.}
+%     \label{fig:esquemPWM}
+% \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/esquemPWM.png}
-    \caption{Esquemático del circuito PWM que controla la velocidad del túnel de viento por programación.}
-    \label{fig:esquemPWM}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/BancoMedicion1.jpg}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/BancoMedicion1.jpg}
     \caption{Banco de medición para caracterizar el circuito PWM.}
     \label{fig:BancoMedicion1}
 \end{figure}
@@ -355,63 +355,75 @@ Los resultados de las mediciones realizadas con el osciloscopio se muestran en l
     \caption{Medición de la señal PWM (rojo) con un ciclo de trabajo de (100\%) y la señal continua a la salida del amplificador operacional (azul) iguala $\SI{3.56}{\volt}$.}
     \label{fig:255}
 \end{figure}
-Luego de caracterizar el circuito PWM, se lo llevó al túnel de viento y se conectó la tensión de la salida del operacional al pin de entrada $VADC$ del variador de velocidad. A continuación, se realizó un barrido del ciclo de trabajo desde 0 hasta 255 (0\% a 100\%), midiendo con un voltímetro, UNI-T modelo UT89X, la tensión entregada al túnel y, con el anemómetro VAISALA WMT700 dentro del túnel, la velocidad en metros por segundo obtenida para cada ciclo de trabajo. En la tabla \ref{tab:windSpeedDataAsc} se muestran los resultados de un barrido ascendente, y en la tabla \ref{tab:windSpeedDataDesc}, los resultados de un barrido descendente.
+Luego de caracterizar el circuito PWM, se dio comienzo a las pruebas en el túnel de viento. Se conectó la tensión de la salida del operacional al pin de entrada $VADC$ del variador de velocidad. A continuación, se realizó un barrido del ciclo de trabajo desde 0 hasta 255 (0\% a 100\%), midiendo con un voltímetro, UNI-T modelo UT89X, la tensión entregada al túnel y, con el anemómetro VAISALA WMT700 dentro del túnel, la velocidad en metros por segundo obtenida para cada ciclo de trabajo. En la Figura \ref{fig:pruebaTunelCicloAsc} se muestran los resultados de un barrido ascendente, y en la Figura \ref{fig:pruebaTunelCicloDes}, los resultados de un barrido descendente.
 
-\begin{table}[H]
-\centering
-\fontsize{10}{8}\selectfont
-\begin{tblr}{
-  cells = {c},
-  row{1} = {Sail},
-  hlines,
-  vlines,
-}
-{\textbf{Ciclo de trabajo}\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{Viento [\unit{\meter\per\second}]} \\
-0                                                & 4,2                      & 1                     \\
-1                                                & 16,6                     & 1,1                   \\
-2                                                & 30,3                     & 1,2                   \\
-31                                               & 427                      & 4,5                   \\
-63                                               & 864                      & 7,8                   \\
-94                                               & 1291                     & 11,1                  \\
-127                                              & 1745                     & 14,7                  \\
-158                                              & 2170                     & 18                    \\
-191                                              & 2621                     & 21,5                  \\
-222                                              & 3048                     & 24,5                  \\
-255                                              & 3500                     & 26,3                  
-\end{tblr}
-\caption{Mediciones para ciclos de trabajo en modo Ascendente, VadcTunnel y la velocidad del viento.}
-\label{tab:windSpeedDataAsc}
-\end{table}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/MedicionesPWM/pruebaTunelCicloAsc.png}
+    \caption{Mediciones para ciclos de trabajo en modo Ascendente, del nivel de tensión en el variador y la velocidad de viento.}
+    \label{fig:pruebaTunelCicloAsc}
+\end{figure}
 
+% \begin{table}[H]
+% \centering
+% \fontsize{10}{8}\selectfont
+% \begin{tblr}{
+%   cells = {c},
+%   row{1} = {Sail},
+%   hlines,
+%   vlines,
+% }
+% {\textbf{Ciclo de trabajo}\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{Viento [\unit{\meter\per\second}]} \\
+% 0                                                & 4,2                      & 1                     \\
+% 1                                                & 16,6                     & 1,1                   \\
+% 2                                                & 30,3                     & 1,2                   \\
+% 31                                               & 427                      & 4,5                   \\
+% 63                                               & 864                      & 7,8                   \\
+% 94                                               & 1291                     & 11,1                  \\
+% 127                                              & 1745                     & 14,7                  \\
+% 158                                              & 2170                     & 18                    \\
+% 191                                              & 2621                     & 21,5                  \\
+% 222                                              & 3048                     & 24,5                  \\
+% 255                                              & 3500                     & 26,3                  
+% \end{tblr}
+% \caption{Mediciones para ciclos de trabajo en modo Ascendente, VadcTunnel y la velocidad del viento.}
+% \label{tab:windSpeedDataAsc}
+% \end{table}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/MedicionesPWM/pruebaTunelCicloDes.png}
+    \caption{Mediciones para ciclos de trabajo en modo descendente, del nivel de tensión en el variador y la velocidad de viento.}
+    \label{fig:pruebaTunelCicloDes}
+\end{figure}
 
-\begin{table}[H]
-\centering
-\fontsize{10}{8}\selectfont
-\begin{tblr}{
-  cells = {c},
-  row{1} = {Sail},
-  hlines,
-  vlines,
-}
-{\textbf{Ciclo de trabajo}\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{Viento [\unit{\meter\per\second}]} \\
-255                               & 3501                     & 25,9                  \\
-222                               & 3048                     & 24,5                  \\
-191                               & 2622                     & 21,3                  \\
-158                               & 2170                     & 18                    \\
-127                               & 1744                     & 14,7                  \\
-94                                & 1291                     & 11,1                  \\
-63                                & 865                      & 7,8                   \\
-31                                & 426                      & 4,5                   \\
-2                                 & 30                       & 1,3                   \\
-1                                 & 16                       & 1,1                   \\
-0                                 & 4                        & 1,0                   
-\end{tblr}
-\caption{Mediciones para ciclos de trabajo en modo Descendente, VadcTunnel y la velocidad del viento.}
-\label{tab:windSpeedDataDesc}
-\end{table}
+% \begin{table}[H]
+% \centering
+% \fontsize{10}{8}\selectfont
+% \begin{tblr}{
+%   cells = {c},
+%   row{1} = {Sail},
+%   hlines,
+%   vlines,
+% }
+% {\textbf{Ciclo de trabajo}\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{Viento [\unit{\meter\per\second}]} \\
+% 255                               & 3501                     & 25,9                  \\
+% 222                               & 3048                     & 24,5                  \\
+% 191                               & 2622                     & 21,3                  \\
+% 158                               & 2170                     & 18                    \\
+% 127                               & 1744                     & 14,7                  \\
+% 94                                & 1291                     & 11,1                  \\
+% 63                                & 865                      & 7,8                   \\
+% 31                                & 426                      & 4,5                   \\
+% 2                                 & 30                       & 1,3                   \\
+% 1                                 & 16                       & 1,1                   \\
+% 0                                 & 4                        & 1,0                   
+% \end{tblr}
+% \caption{Mediciones para ciclos de trabajo en modo Descendente, VadcTunnel y la velocidad del viento.}
+% \label{tab:windSpeedDataDesc}
+% \end{table}
 
-A partir de los resultados obtenidos para el ciclo de trabajo versus la tensión en el variador y el ciclo de trabajo versus la velocidad del viento medida con el anemómetro, se determina una velocidad máxima de viento de $\SI{26}{\meter\per\second}$ para una tensión de $\SI{3.5}{\volt}$. Además, dado que se tienen 255 niveles de tensión, se obtiene una resolución en tensión de $\frac{\SI{3.5}{\volt}}{255} = \SI{13.7}{\milli\volt}$ y una resolución en velocidad del viento de $\frac{\SI{26}{\meter\per\second}}{255} = \SI{0.101}{\meter\per\second}$. Con estas mediciones y la caracterización del circuito PWM, éste quedó listo para ser integrado en un PCB. Este circuito será la interfaz electrónica para un controlador PID, el cual se explica en la sección \ref{sec:sistemaDeControlPid}.
+A partir de los resultados obtenidos para el ciclo de trabajo versus la tensión en el variador y el ciclo de trabajo versus la velocidad del viento medida con el anemómetro, se determina una velocidad máxima de viento de $\SI{26}{\meter\per\second}$ para una tensión de $\SI{3.5}{\volt}$. Además, dado que se tienen 255 niveles de tensión, y considerando que tanto el viento como la tensión \textit{VADC} del variador tienen respuesta lineal en el rango de 0 a 255, se obtiene una resolución en tensión de $\frac{\SI{3.5}{\volt}}{255} = \SI{13.7}{\milli\volt}$ y una resolución en velocidad del viento de $\frac{\SI{26}{\meter\per\second}}{255} = \SI{0.101}{\meter\per\second}$. Con estas mediciones y la caracterización del circuito PWM, éste quedó listo para ser integrado en un PCB. Este circuito será la interfaz electrónica para un controlador PID, el cual se explica en la sección \ref{sec:sistemaDeControlPid}.
 
 
 % \subsubsection{Caracterizacion en el tunel de viento}
@@ -419,102 +431,116 @@ A partir de los resultados obtenidos para el ciclo de trabajo versus la tensión
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Circuito de adquisición de tensión del variador}\label{sec:adquisicionVadcTunel}
 
-En esta sección se diseñó un circuito que permite tomar muestras de la tensión entregada al variador del túnel de viento. El circuito funciona como un voltímetro que mide la tensión instantánea y la envía a un canal analógico-digital (ADC\_CH2) de la EDU-CIAA. 
+En esta sección se describe el diseño de un circuito que permite tomar muestras de la tensión entregada al variador del túnel de viento. El circuito funciona como un voltímetro que mide la tensión instantánea y la envía a un canal analógico-digital (ADC\_CH2) de la EDU-CIAA. 
 
 Debido a que la señal de continua, para un ciclo de trabajo del 100\%, es de $\SI{3.5}{\volt}$, fue necesario adaptar esta señal a $\SI{3.3}{\volt}$, ya que esta es la tensión máxima de entrada para los canales ADC de la EDU-CIAA.
 
 \subsubsection{Simulación del circuito}
 
-En la Figura \ref{fig:adcCiaaCircuitSimulate} se muestra el diseño del circuito, la señal de continua $\text{VadcTunnel}$ se conecta al segundo operacional del chip LM358, en modo seguidor para adaptar la impedancia y no cargar a la etapa anterior, luego a la salida del operacional se conecta un divisor de tensión para adaptar la tensión a $\SI{3.3}{\volt}$, además se agrega una etapa de protección con dos diodos conectados entre la fuente de $\SI{3.3}{\volt}$ y GND para limitar el voltaje en caso de que la tensión a la salida del operacional sea superior  $\SI{3.3}{\volt}$. Finalmente, se pone una resistencia de $\SI{1}{\kilo\ohm}$ para limitar la corriente en  $\text{VadcCIAA}$.
+En la Figura \ref{fig:adcCiaaCircuitSimulate} se muestra el diseño del circuito, la señal de continua $\text{VadcTunnel}$ se conecta al segundo operacional del chip LM358, en modo seguidor para adaptar la impedancia y no cargar a la etapa anterior, luego a la salida del operacional se conecta un divisor de tensión para adaptar la tensión a $\SI{3.3}{\volt}$, además se agrega una etapa de protección con dos diodos conectados entre la fuente de $\SI{3.3}{\volt}$ y GND para limitar el voltaje en caso de que la tensión a la salida del operacional sea superior  $\SI{3.3}{\volt}$. Finalmente, se pone una resistencia de $\SI{1}{\kilo\ohm}$ para limitar la corriente en  $\text{VadcCIAA}$ y para simular la resistencia de entrada del ADC, agregamos un resistor de $\SI{1.2}{\mega\ohm}$ \cite{LPC435x_datasheet}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/adcCiaaCircuitSimulate.png}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/adcCiaaCircuitSimulate.png}
     \caption{Circuito diseñado para tomar muestras de la señal que se suministra al variador de velocidad y se las envía a una canal analógico-digital de la EDU-CIAA.}
     \label{fig:adcCiaaCircuitSimulate}
 \end{figure}
-Los resultados de la simulación del circuito descrito se muestran en la Figura \ref{fig:adc100PercentPwm} para un ciclo de trabajo del $100\%$ y en la Figura \ref{fig:adc55PercentPwm} para un ciclo de trabajo del $55\%$. En ambos casos, se puede apreciar que la señal $\text{vadcCIAA}$ (azul) está por debajo de la señal $\text{vadcTunel}$ (verde), lo cual garantiza que no se superen los $\SI{3.3}{\volt}$ a la entrada del pin analógico-digital de la placa de desarrollo.
+Los resultados de la simulación del circuito descrito, se muestran en la Figura \ref{fig:adc100PercentPwm} para un ciclo de trabajo del $100\%$ y en la Figura \ref{fig:adc55PercentPwm} para un ciclo de trabajo del $55\%$. En ambos casos, se puede apreciar que la señal $\text{vadcCIAA}$ (verde) está por debajo de la señal $\text{vadcTunel}$ (azul), lo cual garantiza que no se superen los $\SI{3.3}{\volt}$ a la entrada del pin analógico-digital de la placa de desarrollo.
 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/adc100PercentPwm.png}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/adc100PercentPwm.png}
     \caption{Señales simuladas a la salida del variador de velocidad y a la entrada del pin analógico-digital de la EDU-CIAA para un ciclo de trabajo del 100\%.}
     \label{fig:adc100PercentPwm}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/adc55PercentPwm.png}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/adc55PercentPwm.png}
     \caption{Señales simuladas a la salida del variador de velocidad y a la entrada del pin analógico-digital de la EDU-CIAA para un ciclo de trabajo del 55\%.}
     \label{fig:adc55PercentPwm}
 \end{figure}
 
 \subsubsection{Implementación del circuito}
 
-Se implementó el circuito de la Figura \ref{fig:esquemADCTunel}. Para ajustar los niveles de tensión de $\SI{3.5}{\volt}$ a $\SI{3.3}{\volt}$, se agregó en el divisor de tensión, un resistor variable (trimmer) de RV2 = $\SI{10}{\kilo\ohm}$. Luego se conectó los diodos a la fuente de $\SI{3.3}{\volt}$ de la EDU-CIAA y se agregó un la resistencia limitadora de tensión de $R18 = \SI{1}{\kilo\ohm}$, esta señal de continua se muestrea con una resolución  de $\frac{\SI{3.3}{\volt}}{1024} = \SI{3.22}{\milli\volt}$  en el canal ADC\_CH2 de la placa de desarrollo.
+Se implementó el circuito de la Figura \ref{fig:adcCiaaCircuitSimulate}. Para ajustar los niveles de tensión de $\SI{3.5}{\volt}$ a $\SI{3.3}{\volt}$, se agregó en el divisor de tensión, un resistor variable con un \textit{preset} de $R5 = \SI{10}{\kilo\ohm}$. Luego se conectó los diodos Schottky 1N5819 \cite{1N5819_datasheet} a la fuente de $\SI{3.3}{\volt}$ de la EDU-CIAA y se agregó un la resistencia limitadora de tensión de $R7 = \SI{1}{\kilo\ohm}$, esta señal de continua se muestrea con una resolución  de $\frac{\SI{3.3}{\volt}}{1024} = \SI{3.22}{\milli\volt}$  en el canal ADC\_CH2 de la placa de desarrollo.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/esquemADCTunel.png}
+%     \caption{Esquemático de la implementación del circuito que toma muestras de la señal continua que ingresa al variador de velocidad.}
+%     \label{fig:esquemADCTunel}
+% \end{figure}
+
+Por ultimo, para caracterizar este circuito se conectó dos voltímetros, uno en la señal de entrada del variador y otro en la señal que ingresa al ADC de la EDU-CIAA, los resultados de estas mediciones se observan en las Figura \ref{fig:pruebaTunelCiaaAsc} para un barrido ascendente y \ref{fig:pruebaTunelCiaaDes} para un barrido descendente.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/datalogger/Hardware/esquemADCTunel.png}
-    \caption{Esquemático de la implementación del circuito que toma muestras de la señal continua que ingresa al variador de velocidad.}
-    \label{fig:esquemADCTunel}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/MedicionesPWM/pruebaTunelCiaaAsc.png}
+    \caption{Mediciones a la entrada pin $VADC$ del variador y en el pin ADC\_CH2 de la EDU-CIAA, para un barrido ascendente  del ciclo de trabajo.}
+    \label{fig:pruebaTunelCiaaAsc}
 \end{figure}
 
-Se conectó dos voltímetros, uno en la señal de entrada del variador y otro en la señal que ingresa al ADC de la EDU-CIAA, los resultados de estas mediciones se observan en las tablas \ref{tab:medicionesVadcCIAA_ascendente} para un barrido ascendente y \ref{tab:medicionesVadcCIAA_descendente} para un barrido descendente.
-\begin{table}[H]
-\centering
-\fontsize{10}{8}\selectfont
-\begin{tblr}{
-  cells = {c},
-  row{1} = {Sail},
-  hlines,
-  vlines,
-}
-{\textbf{Ciclo de trabajo }\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{VadcCIAA [\unit{\milli\volt}]} \\
-0                                                & 4,2                      & 20                        \\
-1                                                & 16,6                     & 16,7                      \\
-2                                                & 30,3                     & 37,3                      \\
-31                                               & 427                      & 421,3                     \\
-63                                               & 864                      & 856                       \\
-94                                               & 1291                     & 1280                      \\
-127                                              & 1745                     & 1725                      \\
-158                                              & 2170                     & 2146                      \\
-191                                              & 2621                     & 2593                      \\
-222                                              & 3048                     & 3013                      \\
-255                                              & 3500                     & 3364                      
-\end{tblr}
-\caption{Mediciones a la entrada pin $VADC$ del variador y en el pin ADC\_CH2 de la EDU-CIAA, para un barrido ascendente  del ciclo de trabajo.}
-\label{tab:medicionesVadcCIAA_ascendente}
-\end{table}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/MedicionesPWM/pruebaTunelCiaaDes.png}
+    \caption{Mediciones a la entrada pin $VADC$ del variador y en el pin ADC\_CH2 de la EDU-CIAA, para un barrido descendente del ciclo de trabajo.}
+    \label{fig:pruebaTunelCiaaDes}
+\end{figure}
+% \begin{table}[H]
+% \centering
+% \fontsize{10}{8}\selectfont
+% \begin{tblr}{
+%   cells = {c},
+%   row{1} = {Sail},
+%   hlines,
+%   vlines,
+% }
+% {\textbf{Ciclo de trabajo }\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{VadcCIAA [\unit{\milli\volt}]} \\
+% 0                                                & 4,2                      & 20                        \\
+% 1                                                & 16,6                     & 16,7                      \\
+% 2                                                & 30,3                     & 37,3                      \\
+% 31                                               & 427                      & 421,3                     \\
+% 63                                               & 864                      & 856                       \\
+% 94                                               & 1291                     & 1280                      \\
+% 127                                              & 1745                     & 1725                      \\
+% 158                                              & 2170                     & 2146                      \\
+% 191                                              & 2621                     & 2593                      \\
+% 222                                              & 3048                     & 3013                      \\
+% 255                                              & 3500                     & 3364                      
+% \end{tblr}
+% \caption{Mediciones a la entrada pin $VADC$ del variador y en el pin ADC\_CH2 de la EDU-CIAA, para un barrido ascendente  del ciclo de trabajo.}
+% \label{tab:medicionesVadcCIAA_ascendente}
+% \end{table}
 
 
 
-\begin{table}[H]
-\centering
-\fontsize{10}{8}\selectfont
-\begin{tblr}{
-  cells = {c},
-  row{1} = {Sail},
-  hlines,
-  vlines,
-}
-{\textbf{Ciclo de trabajo }\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{VadcCIAA [\unit{\milli\volt}]} \\
-255                                              & 3501                     & 3364                    \\
-222                                              & 3048                     & 3012                    \\
-191                                              & 2622                     & 2593                    \\
-158                                              & 2170                     & 2146                    \\
-127                                              & 1744                     & 1725                    \\
-94                                               & 1291                     & 1277                    \\
-63                                               & 865                      & 855                     \\
-31                                               & 426                      & 422                     \\
-2                                                & 30                       & 38                      \\
-1                                                & 16                       & 27                      \\
-0                                                & 4                        & 21                      
-\end{tblr}
-\caption{Mediciones a la entrada pin $VADC$ del variador y en el pin ADC\_CH2 de la EDU-CIAA, para un barrido descendente del ciclo de trabajo.}
-\label{tab:medicionesVadcCIAA_descendente}
-\end{table}
+% \begin{table}[H]
+% \centering
+% \fontsize{10}{8}\selectfont
+% \begin{tblr}{
+%   cells = {c},
+%   row{1} = {Sail},
+%   hlines,
+%   vlines,
+% }
+% {\textbf{Ciclo de trabajo }\\\textbf{[0 - 255]}} & \textbf{VadcTunnel [\unit{\milli\volt}]} & \textbf{VadcCIAA [\unit{\milli\volt}]} \\
+% 255                                              & 3501                     & 3364                    \\
+% 222                                              & 3048                     & 3012                    \\
+% 191                                              & 2622                     & 2593                    \\
+% 158                                              & 2170                     & 2146                    \\
+% 127                                              & 1744                     & 1725                    \\
+% 94                                               & 1291                     & 1277                    \\
+% 63                                               & 865                      & 855                     \\
+% 31                                               & 426                      & 422                     \\
+% 2                                                & 30                       & 38                      \\
+% 1                                                & 16                       & 27                      \\
+% 0                                                & 4                        & 21                      
+% \end{tblr}
+% \caption{Mediciones a la entrada pin $VADC$ del variador y en el pin ADC\_CH2 de la EDU-CIAA, para un barrido descendente del ciclo de trabajo.}
+% \label{tab:medicionesVadcCIAA_descendente}
+% \end{table}
 Este circuito permite monitorear por software los niveles de tensión que estamos entregando al variador de velocidad y su correspondiente ciclo de trabajo.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -523,7 +549,7 @@ Se diseñó el circuito de la Figura \ref{fig:esquemLedsSensor}  para encender y
 
 Cada circuito permite que el LED correspondiente parpadee cada vez que se recibe un dato del anemómetro, con un intervalo predeterminado por software. Si el LED no parpadea, indica que el anemómetro no está enviando datos.% Por el contrario, si el LED parpadea, confirma la recepción de datos del anemómetro.
 
-El diseño de cada circuito incluye un transistor NPN y dos resistencias, conectados a un diodo LED. La señal de entrada llega al resistor $ R_4 = \SI{1}{\kilo\ohm} $, el cual está conectado a la base del transistor. El colector del transistor está conectado a una fuente de $\SI{5}{\volt} $, mientras que el emisor está conectado a una resistencia limitadora de corriente $ R5 = \SI{39}{\ohm}$ y luego al ánodo del LED, con su cátodo a masa. Ambos circuitos son prácticamente idénticos, diferenciándose únicamente en los colores de los LEDs y los canales RS-485 a los que están conectados.
+% El diseño de cada circuito incluye un transistor NPN y dos resistencias, conectados a un diodo LED. La señal de entrada llega al resistor $ R_4 = \SI{1}{\kilo\ohm} $, el cual está conectado a la base del transistor. El colector del transistor está conectado a una fuente de $\SI{5}{\volt} $, mientras que el emisor está conectado a una resistencia limitadora de corriente $ R5 = \SI{39}{\ohm}$ y luego al ánodo del LED, con su cátodo a masa. Ambos circuitos son prácticamente idénticos, diferenciándose únicamente en los colores de los LEDs y los canales RS-485 a los que están conectados.
 
 \begin{figure}[H]
     \centering
@@ -547,7 +573,7 @@ En La Figura \ref{fig:esquemLedStatusSocket} se muestra un circuito similar al p
 
 \section{Diseño y construcción del PCB}
 
-En las secciones anteriores se ha descrito el diseño y funcionamiento electrónico de los distintos módulos y circuitos que forman parte del datalogger. Para integrar todo en un solo lugar, se diseñó un shield (poncho) que se conecta sobre la EDU-CIAA. Para ello, se trabajó con la lista de templates que ofrece el proyecto CIAA \cite{CIAA_Ponchos}. Este template tiene un diseño acorde con las dimensiones de la placa EDU-CIAA.
+En las secciones anteriores se ha descrito el diseño y funcionamiento electrónico de los distintos módulos y circuitos que forman parte del datalogger. Para integrar todo en un solo lugar, se diseñó un \textit{shield} que se conecta sobre la EDU-CIAA. Para ello, se trabajó con la lista de templates que ofrece el proyecto CIAA \cite{CIAA_Ponchos}. Este template tiene un diseño acorde con las dimensiones de la placa EDU-CIAA.
 
 Para el desarrollo del PCB, se utilizó el software KiCad. Primero se cargó el template de la Figura \ref{fig:HojaTemplatePonchoCiaa} que incluye una hoja jerárquica con los pines disponibles en los conectores P1 y P2 y luego se agregaron etiquetas jerárquicas por cada pin utilizado en este desarrollo.
 
@@ -559,13 +585,11 @@ Para el desarrollo del PCB, se utilizó el software KiCad. Primero se cargó el 
 \end{figure}
 
 
-Por cada módulo, se agregó una hoja jerárquica que contiene el circuito esquemático como se indica en la Figura \ref{fig:esquematicoPonchoDatalogger}. En total, se dividió en seis hojas jerárquicas: una para el módulo RS485, otra para el módulo Ethernet W5100, otra para el circuito PWM, otra para la fuente de alimentación (power supply), otra para los LEDs y una más para el circuito que mide la tensión en el variador del túnel.
-
-Además, se diseñaron los símbolos para los módulos W5100, RS485-TTL y el convertidor DC-DC usando el editor de símbolos de KiCad, ya que estos no vienen precargados en el software. También se diseñaron sus respectivos footprints con el editor de huellas, tomando las dimensiones y la distribución de pines de cada módulo para que se puedan agregar correctamente al PCB.
+Por cada módulo, se agregó una hoja jerárquica que contiene el circuito esquemático como se indica en la Figura \ref{fig:esquematicoPonchoDatalogger}. En total, se dividió en seis hojas jerárquicas: una para el módulo RS485, otra para el módulo Ethernet W5100, otra para el circuito PWM, otra para la fuente de alimentación (power supply), otra para los LEDs y una más para el circuito que mide la tensión en el variador del túnel. Además, se diseñaron los símbolos para los módulos W5100, RS485-TTL y el convertidor DC-DC usando el editor de símbolos de KiCad, ya que estos no vienen precargados en el software. También se diseñaron sus respectivos footprints con el editor de huellas, tomando las dimensiones y la distribución de pines de cada módulo para que se puedan agregar correctamente al PCB.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\linewidth]{Figuras/datalogger/Hardware/esquematicoPonchoDatalogger.png}
+    \includegraphics[width=0.90\linewidth]{Figuras/datalogger/Hardware/esquematicoPonchoDatalogger.png}
     \caption{Diseño del esquemático que integra los módulos desarrollados.}
     \label{fig:esquematicoPonchoDatalogger}
 \end{figure}
@@ -574,16 +598,14 @@ Además, se diseñaron los símbolos para los módulos W5100, RS485-TTL y el con
 
 % mostrar el diseño del poncho esquematico, PCB y la placa armada (fabricacion SMN o LCI)
 
-En la Figura \ref{fig:pcbDesing} se muestra el diseño del PCB de doble capa, con la capa inferior (\textit{Bottom}) en azul y la capa superior (\textit{Top}) en rojo. Las dimensiones de los bordes recortados y la tira de 20 pines en la parte superior e inferior forman parte del template; el resto del circuito se diseñó en función de las necesidades de cada módulo.
-
-Las pistas tienen un ancho de entre 30 y 40 mils. Se agregaron vías de \SI{2}{\milli\meter} de diámetro con un agujero de \SI{1}{\milli\meter} para conectar la capa superior con la capa inferior. Además, los pads tienen un tamaño de \SI{2}{\milli\meter}.
+En la Figura \ref{fig:pcbDesing} se muestra el diseño del PCB de doble capa, con la capa inferior (\textit{Bottom}) en azul y la capa superior (\textit{Top}) en rojo. Las dimensiones de los bordes recortados y la tira de 20 pines en la parte superior e inferior forman parte del template; el resto del circuito se diseñó en función de las necesidades de cada módulo. Las pistas tienen un ancho de entre 30 y 40 mils. Se agregaron vías de \SI{2}{\milli\meter} de diámetro con un agujero de \SI{1}{\milli\meter} para conectar la capa superior con la capa inferior. Además, los pads tienen un tamaño de \SI{2}{\milli\meter}.
 
 
 % Se armó el circuito con componentes SMD para la capa bottom y otro componetes thoguhole para la capa TOP, se hizo de esta forma poque 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{Figuras/datalogger/Hardware/pcbDesing.png}
-    \caption{Diseño PCB del Shield (poncho) que contiene todos los módulos descritos en las secciones anteriores.}
+    \caption{Diseño PCB del \textit{shield} que contiene todos los módulos descritos en las secciones anteriores.}
     \label{fig:pcbDesing}
 \end{figure}
 
@@ -607,35 +629,38 @@ Por otro lado, en la capa superior (TOP) se han añadido los tres LEDs con monta
     \label{fig:pcb3dTop}
 \end{figure}
 
-Para la construcción del \textit{shield}, se seleccionó una placa simple FAS por su disponibilidad en el Servicio Meteorológico Nacional (SMN). Debido a restricciones de tiempo, se optó por ensamblar la placa en el laboratorio del SMN, siguiendo estos pasos:
+Para la construcción del \textit{shield}, se seleccionó una placa simple faz por su disponibilidad en el Servicio Meteorológico Nacional (SMN). Debido a restricciones de tiempo, se optó por ensamblar la placa en el laboratorio del SMN, siguiendo estos pasos:
 
 Inicialmente, se empleó una insoladora de tubos UV y papel fotosensible para transferir el diseño a la placa. Los negativos del diseño se imprimieron en papel transparente.
 
-Después, se utilizó ácido perclórico para retirar el cobre sobrante. Finalizado este procedimiento, se cortó la placa a la medida deseada y se perforaron los \textit{pads} con una herramienta \textit{Dremel}. Se aplicó una capa de máscara antisoldante para facilitar la soldadura de los componentes y proteger la placa. Dado que la placa era de tipo simple FAS, se añadieron manualmente las pistas de la capa superior (\textit{Top}) usando pequeños cables. El proceso concluyó con la soldadura de todos los módulos y componentes. Las Figuras \ref{fig:poncho1} y \ref{fig:poncho2} ilustran el resultado final del montaje.
+Después, se utilizó ácido perclórico para retirar el cobre remanente. Finalizado este procedimiento, se cortó la placa a la medida deseada y se perforaron los \textit{pads} con una herramienta \textit{Dremel}. Se aplicó una capa de máscara antisoldante para facilitar la soldadura de los componentes y proteger la placa. Dado que la placa era de tipo simple faz, se añadieron manualmente las pistas de la capa superior (\textit{Top}) usando pequeños cables. El proceso concluyó con la soldadura de todos los módulos y componentes. 
+
+En la Figura \ref{fig:poncho3Final} se ilustra el resultado final del montaje. Se conecta un cable USB al puerto \texttt{USB-DEBUG} para programar y depurar la placa. El sensor de viento patrón se conectará a la bornera azul del puerto \texttt{RS485 EDU-CIAA}, mientras que el anemómetro bajo calibración se conectará a la bornera verde del módulo \texttt{RS485 MAX485}. En la parte superior de la figura, se observa una bornera azul para conectar los tres cables provenientes del variador de velocidad del túnel: \texttt{VCC}, \texttt{VADC} y \texttt{GND}. En el lado izquierdo, se ha conectado un cable UTP a la red local del SMN a través de \texttt{Ethernet}, y en la bornera verde situada en la parte inferior izquierda, se ha conectado la alimentación de entrada de $V_{in} = \SI{12}{\volt}$. Para alimentar la placa sin USB, se dejan dos pines \texttt{Vcc\_5V} y \texttt{GND} que tienen \SI{5}{\volt} provenientes del módulo \texttt{DC-DC} y se conectan a la \texttt{fuente externa de 5V} con dos cables. Adicionalmente, se encuentran disponibles los dos \textit{presets} para recalibrar tanto el amplificador operacional como el circuito encargado del muestreo de esta señal. Finalmente, se observan los indicadores LED: el LED verde parpadea al recibir datos por el puerto RS485 de la EDU-CIAA, el LED amarillo parpadea al recibir datos por el puerto RS485 del módulo, y el LED blanco cambia a verde cuando la placa está conectada al servidor, o a rojo si no lo está.
+
+
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Hardware/poncho1.jpg}
+%     \caption{Shield conectado a la placa EDU-CIAA}
+%     \label{fig:poncho1}
+% \end{figure}
+
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Hardware/poncho2.jpg}
+%     \caption{Otra vista del Shield diseñado para esta aplicación.}
+%     \label{fig:poncho2}
+% \end{figure}
+
 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Hardware/poncho1.jpg}
-    \caption{Shield conectado a la placa EDU-CIAA}
-    \label{fig:poncho1}
-\end{figure}
-
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Hardware/poncho2.jpg}
-    \caption{Otra vista del Shield diseñado para esta aplicación.}
-    \label{fig:poncho2}
-\end{figure}
-
-Como se indica en la Figura \ref{fig:poncho3}, se conectó el USB para programar y depurar la placa. Se conectó en la bornera azul de la EDU-CIAA el sensor patrón y en la bornera verde del módulo RS485 se conectó el anemómetro bajo calibración. En la parte superior de la figura está una  bornera azul, ahi se conectaron los tres cables que vienen del variador de velocidad del túnel. En el lado izquierdo, se conectó un cable UTP que está conectado a la red local del SMN, y en la bornera verde que está abajo a la izquierda,  se conectó la alimentación de \SI{12}{\volt}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/poncho3.jpg}
-    \caption{Vista superior de la placa Shield conectada a la EDU-CIAA}
-    \label{fig:poncho3}
+    \includegraphics[width=1\linewidth]{Figuras/datalogger/Hardware/poncho3Final.png}
+    \caption{Vista superior de la placa \textit{shield} conectada a la EDU-CIAA}
+    \label{fig:poncho3Final}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
