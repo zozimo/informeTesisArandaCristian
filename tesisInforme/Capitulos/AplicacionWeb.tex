@@ -244,7 +244,7 @@ Luego, se obtienen los datos de calibración del sensor patrón a partir de un a
 
 Con todas estas incertidumbres normalizadas y multiplicadas por su coeficiente de sensibilidad $c_{i}$, se obtiene la incertidumbre estándar para cada punto. Luego, se realiza la suma de los cuadrados de cada incertidumbre y se calcula la raíz cuadrada para obtener la incertidumbre combinada para cada punto
 \[
-u_c = \sqrt{\sum_{i=1}^{n} (u_i^2)}.
+u_c = \sqrt{\sum_{i=1}^{n} (u_{i} \cdot c_{i})^2}.
 \]
 
 En base al número de mediciones, se calculan los grados de libertad efectivos para cada punto y con este número, solicitando un intervalo de confianza del 95\%, se evalúa la distribución $t$ de Student para obtener el factor de cobertura ($k$). Luego, se multiplica este número por cada incertidumbre combinada correspondiente para obtener la incertidumbre expandida 
