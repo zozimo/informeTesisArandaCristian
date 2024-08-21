@@ -667,9 +667,7 @@ En la Figura \ref{fig:poncho3Final} se ilustra el resultado final del montaje. S
 %-----------------------------------------------------------------------------------------------------
 \section{Desarrollo del firmware}\label{sec:desarrolloFirmware}
 
-El proyecto CIAA brinda un framework para programar las placas de desarrollo. La última versión, el \texttt{firmware\_v3} \cite{ciaa2024}, es un proyecto basado en makefile para desarrollar firmware en C/C++. En particular se utilizó la biblioteca sAPI, que ofrece ejemplos para programar los periféricos del microcontrolador.
-
-Además, el proyecto incluye un lanzador de aplicaciones Figura \ref{fig:ciaaLauncher}, que trae integrado el IDE GNU MCU Eclipse como entorno de programación, OpenOCD para programación y depuración, drivers para conectar la EDU-CIAA a la PC, entre otras herramientas. 
+El proyecto CIAA brinda un framework para programar las placas de desarrollo. La última versión, el \texttt{firmware\_v3} \cite{ciaa2024}, es un proyecto basado en makefile para desarrollar firmware en C/C++. En particular se utilizó la biblioteca sAPI, que ofrece ejemplos para programar los periféricos del microcontrolador. Además, el proyecto incluye un lanzador de aplicaciones Figura \ref{fig:ciaaLauncher}, que trae integrado el IDE GNU MCU Eclipse como entorno de programación, OpenOCD para programación y depuración, drivers para conectar la EDU-CIAA a la PC, entre otras herramientas. 
 
 \begin{figure}[H]
     \centering
@@ -805,7 +803,7 @@ En el estado \textbf{CONFIG\_NTP}, se invoca la función \texttt{opConfigNtpViaT
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/datalogger/Firmware/ntpServer.jpg}
+    \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Firmware/sc_configRTC.png}
     \caption{Máquina de estados para configurar el RTC del datalogger a través de un servidor NTP.}
     \label{fig:ntpServer}
 \end{figure}
@@ -855,7 +853,7 @@ Si se presenta un fallo en cualquiera de los estados previos, la máquina de est
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/datalogger/Firmware/connectWebSocket.jpg}
+    \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Firmware/sc_connectionWebSocket.png}
     \caption{Máquina de estados para establecer una conexión bidireccional con un servidor WebSocket.}
     \label{fig:connectWebSocket}
 \end{figure}
@@ -870,7 +868,7 @@ El estado final de la región \texttt{ConexionWebSocket} de la Figura \ref{fig:c
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/keepAlive.jpg}
+    \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Firmware/sc_keepAlive.png}
     \caption{Máquina de estados para mantener la conexión con el servidor y elevar un raise en caso de que se reciba información del servidor.}
     \label{fig:keepAlive}
 \end{figure}
@@ -892,7 +890,7 @@ En el estado \textbf{TX\_MESSAGE}, independientemente de si se han recibido dato
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/processComand.jpg}
+    \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Firmware/sc_processComand.png}
     \caption{Máquina de estados para procesar los mensajes recibidos del servidor WebSocket.}
     \label{fig:processComand}
 \end{figure}
@@ -970,22 +968,29 @@ typedef struct{
  
 En las Figuras \ref{fig:MuestraIBC} y \ref{fig:MuestraPAT} se muestran las regiones que contienen las máquinas de estado \textbf{MuestraIBC} y \textbf{MuestraPAT}, respectivamente, para adquirir los datos de viento. La máquina de estado, por ejemplo, del IBC comienza en el estado \textbf{IDLE}. Cuando el comando \texttt{startMeasure} es \texttt{True}, se transiciona al estado \textbf{SENSOR\_IBC}, donde se invoca la función \texttt{opBufferRS485\_On(prtAnemo)}. Esta función recibe un puntero con todos los datos de configuración del anemómetro y los carga en su respectiva UART. Además, inicializa un callback y habilita la interrupción correspondiente de la UART. De esta manera, cada vez que los sensores envían datos, se activa una función que se encarga de procesar y separar los datos recibidos. Cuando \texttt{startMeasure} se configura como \texttt{false}, la máquina de estado transiciona al estado \textbf{OFF\_SENSOR\_IBC}, donde se desactiva la interrupción y el microcontrolador deja de tomar muestras de los anemómetros.
 
+% \begin{figure}[H]
+%     \centering
+%     \begin{subfigure}[b]{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=1.2\linewidth]{Figuras/datalogger/Firmware/MuestraIBC.jpg}
+%         \caption{Máquina de estados para tomar muestras de sensor bajo calibración.}
+%         \label{fig:MuestraIBC}
+%     \end{subfigure}\hspace{0.09\textwidth}
+%     \begin{subfigure}[b]{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=1.2\linewidth]{Figuras/datalogger/Firmware/MuestraPAT.jpg}
+%         \caption{Máquina de estados para tomar muestras de sensor patrón.}
+%         \label{fig:MuestraPAT}
+%     \end{subfigure}
+%     \caption{}
+%     \label{fig:mainFigures}
+% \end{figure}
+
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.2\linewidth]{Figuras/datalogger/Firmware/MuestraIBC.jpg}
-        \caption{Máquina de estados para tomar muestras de sensor bajo calibración.}
-        \label{fig:MuestraIBC}
-    \end{subfigure}\hspace{0.09\textwidth}
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.2\linewidth]{Figuras/datalogger/Firmware/MuestraPAT.jpg}
-        \caption{Máquina de estados para tomar muestras de sensor patrón.}
-        \label{fig:MuestraPAT}
-    \end{subfigure}
-    \caption{}
-    \label{fig:mainFigures}
+    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/sc_sampleSensorWind.png}
+    \caption{Máquina de estados para tomar muestras de los sensores viento.}
+    \label{fig:sc_sampleSensorWind}
 \end{figure}
 
 El string del patrón VAISALA, modelo WMT700 tiene el formato \texttt{\$--MWV,021,R,003.34,N,A*14}, mientras que el del instrumento bajo calibración DELTAOHM, modelo HD51.3 tiene el formato \texttt{28.30 359.3 998.3<CR><LF>}. Para procesar y separar estos datos, se utiliza un diccionario de punteros a funciones, como se muestra en el fragmento de Código \ref{cdg:dicPuntFuncionPreprocesoAnemo}. Desde el software, el operador preconfigura el modelo del anemómetro y, por lo tanto, a la máquina de estados, asegurándose de llamar a la función correspondiente para procesar los datos de cada anemómetro.
@@ -1002,22 +1007,30 @@ void (*opProcesoDatosViento[])(amenometerSerialParam_t * data) = {
 En las Figuras \ref{fig:muestreBat} y \ref{fig:muestreAdc} se muestran las regiones que contienen las máquinas de estado \textbf{MuestreoBateria} y \textbf{MuestreoAdcTunel}, respectivamente, para adquirir los niveles de tensión de la fuente de alimentación y los niveles de tensión del variador de velocidad en las variables declaradas en el Código \ref{cdg:var_const_Adquisition}. Por ejemplo, para el muestreo del ADC del variador, la máquina de estado comienza en el estado \textbf{INICIO} y automáticamente transita al estado \textbf{IDLE}. Luego, siempre que la condición \texttt{startMeasure} sea igual a \texttt{True}, se produce una transición al estado \textbf{ADQ\_BAT}, donde se invoca la función \texttt{opAdquirirDNB(ptrVoltajeMuestra)} para tomar una muestra del nivel de tensión. Después de transcurrido el tiempo definido en \texttt{IntervaloMuestra} en segundos, se procede a guardar las muestras y se eleva (se hace un \textit{raise}) a través del evento (señal) \texttt{siMuestrasNuevas} que permite activar una máquina de estado de otra región. Finalmente, se regresa al estado \textbf{IDLE} para repetir el ciclo indefinidamente o hasta que la condición \texttt{startMeasure} sea \texttt{False}.
 
 
+% \begin{figure}[H]
+%     \centering
+%     \begin{subfigure}[b]{0.9\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{Figuras/datalogger/Firmware/muestreBat.jpg}
+%         \caption{Máquina de estado para tomar muestras de la fuente de alimentación del datalogger.}
+%         \label{fig:muestreBat}
+%     \end{subfigure}\hspace{0.09\textwidth}
+%     \begin{subfigure}[b]{0.9\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{Figuras/datalogger/Firmware/muestreAdc.jpg}
+%         \caption{Máquina de estado para tomar muestras de la tensión que inyecta al variador de velocidad del tunel de viento.}
+%         \label{fig:muestreAdc}
+%     \end{subfigure}
+%     \caption{}
+%     \label{fig:mainFigure}
+% \end{figure}
+
+
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[b]{0.9\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{Figuras/datalogger/Firmware/muestreBat.jpg}
-        \caption{Máquina de estado para tomar muestras de la fuente de alimentación del datalogger.}
-        \label{fig:muestreBat}
-    \end{subfigure}\hspace{0.09\textwidth}
-    \begin{subfigure}[b]{0.9\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{Figuras/datalogger/Firmware/muestreAdc.jpg}
-        \caption{Máquina de estado para tomar muestras de la tensión que inyecta al variador de velocidad del tunel de viento.}
-        \label{fig:muestreAdc}
-    \end{subfigure}
-    \caption{}
-    \label{fig:mainFigure}
+    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/sc_sampleSensorVoltage.png}
+    \caption{Máquina de estado para tomar muestras de la tensión del alimentacion y del variador.}
+    \label{fig:sc_sampleSensorVoltage}
 \end{figure}
 
 En el Código \ref{cdg:adqProcesam} se muestra las variables declaradas para contabilizar el número de muestras y la cantidad de datos acumulados cada vez que se realiza una iteración para tomar muestras de los sensores de viento y los niveles de tensión detallados arriba. 
@@ -1038,7 +1051,7 @@ Por ejemplo, si el operador definió un intervalo de muestras de 1 segundo y un 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/datalogger/Firmware/AcumularProcesarMuestras.jpg}
+    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/sc_processing.png}
     \caption{Máquina de estados para acumular muestras en una tabla y realizar un preprocesamiento de esos datos.}
     \label{fig:AcumularProcesarMuestras}
 \end{figure}
@@ -1068,7 +1081,7 @@ En caso de fallo en la transmisión, la máquina de estados transiciona al estad
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/datalogger/Firmware/transmisionServer.jpg}
+    \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Firmware/sc_transmisionServer.png}
     \caption{Máquina de estados para gestionar la transmisión de datos al servidor WebSocket.}
     \label{fig:transmisionServer}
 \end{figure}
@@ -1132,7 +1145,7 @@ Si el operador detiene las mediciones a través del software, se envía un coman
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\linewidth]{Figuras/datalogger/Firmware/pidControlTunel.jpg}
+    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/sc_controlTunnel.png}
     \caption{Máquina de estados que ejecuta el control PID con valores de referencia enviados por el servidor.}
     \label{fig:pidControlTunel}
 \end{figure}
