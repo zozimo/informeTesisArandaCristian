@@ -295,7 +295,7 @@ En la simulación, al regular el ciclo de trabajo de la señal de entrada, se ob
 
 
 \subsubsection{Implementación del circuito}
-
+(cambiar a ensayos del circucuito)
 Se implementó el circuito de la Figura \ref{fig:pwmCircuitSimulate} en un \textit{protoboard} de prueba con componentes \textit{Through-Hole Technology} (THT), conectado a la EDU-CIAA, como se muestra en la Figura \ref{fig:BancoMedicion1}. Para comprobar y caracterizar el comportamiento del PWM, se utilizaron distintos valores de ciclo de trabajo programados desde el firmware del microcontrolador. El ciclo de trabajo de la señal cuadrada se modificó desde 1 hasta 255, equivalente a un rango de 0\% a 100\%.
 
 Para realizar estas mediciones, se utilizó un osciloscopio RIGOL DS2302A. En el canal 1 se midió la señal PWM que sale de un pin digital de la placa de desarrollo y se conecta a la entrada del circuito PWM, esta señal tiene una frecuencia de $\SI{10}{\kilo\hertz}$ con amplitud de $\SI{3.3}{\volt}$ . En el canal 2 se midió la señal continua a la salida del amplificador operacional, ajustando el potenciómetro $R3Varaible$ del esquema de la Figura \ref{fig:pwmCircuitSimulate}, para obtener $\SI{3.5}{\volt}$ cuando el ciclo de trabajo es $100\%$.
@@ -764,7 +764,8 @@ event siProccesMsjServer
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Configuración y conexión con los servidores}\label{sec:confServers}
-Como se detalló en la sección \ref{sec:moduloEthernet}, se utilizó el módulo W5100 para transferir datos desde el datalogger hacia los servidores y recibir datos de los mismos. El módulo cuenta con cuatro socket independientes y permite configurar un sistema embebido como servidor o cliente, como se muestra en la Figura \ref{fig:socketModoDeTrabajoW5100}.
+Como se detalló en la sección \ref{sec:moduloEthernet}, se utilizó el módulo W5100 para transferir datos desde el datalogger hacia los servidores y recibir datos de los mismos. El módulo cuenta con cuatro socket independientes y permite configurar un sistema embebido como servidor o cliente.
+%  como se muestra en la Figura \ref{fig:socketModoDeTrabajoW5100}.
 
 \begin{figure}[H]
     \centering
