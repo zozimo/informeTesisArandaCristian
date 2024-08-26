@@ -721,7 +721,7 @@ Se crearon doce regiones donde cada una contiene una maquina de estados. A parti
     \label{fig:ordenRegiones}
 \end{figure}
 
-Se utilizó una licencia educativa, gratuita de Yakindu, integrándola con el IDE de Eclipse para editar y generar el código a partir de los \textit{statecharts}. En particular, se configuró el proyecto en Yakindu C/C++ para poder agregar código en C a las máquinas de estado, incluyendo la importación de archivos \texttt{.h}, declaración de variables, punteros globales y constantes. Para mas detalle del código se puede acceder al repositorio \url{https://github.com/InstrumentalSMN/Sistema-de-calibracion-de-anemometros/tree/ethernet_comunication_websocket}.
+Se utilizó una licencia educativa, gratuita de Yakindu, integrándola con el IDE de Eclipse para editar y generar el código a partir de los \textit{statecharts}. En particular, se configuró el proyecto en Yakindu C/C++ para poder agregar código en C a las máquinas de estado, incluyendo la importación de archivos \texttt{.h}, declaración de variables, punteros globales y constantes. Para mas detalle del código se puede acceder al código de repositorio del proyecto \cite{FirmwareSCA2024}.
 
 La máquina de estado principal (\textit{main}) se muestra en la figura \ref{fig:sc_main} e inicializa y configura la placa, el SPI, las UARTs, un contador de ticks y el resto de las máquinas de estado. Luego, pasa a un estado inactivo, esperando alguna interrupción. Cuando ocurre una interrupción, se verifica el estado de un \textit{flag} del temporizador principal del sistema. Si el \textit{flag} está activo, se actualizan todos los \textit{ticks} de los temporizadores. Posteriormente, el sistema escanea todos los \textit{ticks} de los temporizadores para verificar eventos pendientes. Si hay eventos pendientes, estos se levantan en su respectiva máquina de estados. Finalmente, la máquina de estados ejecuta un ciclo para manejar los eventos levantados (\textit{raiseEvent}). Luego, el sistema regresa al estado inactivo, esperando la próxima interrupción.
 
@@ -809,7 +809,7 @@ Para la configuración del RTC del datalogger, se estableció una conexión con 
 % \end{lstlisting}}
 
 
-La máquina comienza en el estado \textbf{Inicio} y, luego de un tiempo predefinido, transiciona al estado \textbf{Configurar socket}, el cual se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP locales. Posteriormente, estos parámetros se cargan en uno de los cuatro sockets del módulo W5100, se configura el protocolo de transporte (TCP en este caso), se asigna un puerto y se abre la conexión para establecer comunicación con el servidor. Si la apertura y configuración son correctas, la máquina de estados transiciona al estado \textbf{Configurar servidor NTP}, donde se configura la dirección IP y el puerto, y con estos datos se solicita una conexión al servidor NTP. En caso de que la conexión esté lista, el servidor devuelve la fecha y la hora actual en formato UTC. La máquina de estados transiciona al estado \textbf{Establecer fecha y hora}, donde se procesa la información recibida y se actualiza el RTC del datalogger. Finalmente, se cierra la conexión con el servidor NTP, pasando al estado \textbf{Inactividad}. Cuando se realiza esta última transición, se eleva un evento a través de la señal \texttt{s\_Iniciar configuración}, la cual será un disparador para transicionar entre estados de otra máquina de estados que gestiona la conexión con el servidor \textit{WebSocket}. En caso de fallo en cualquiera de los estados previos, se transiciona al estado \textbf{Establecer Fecha y hora por defecto}, donde se establece por valores predeterminados.
+La máquina comienza en el estado \textbf{Inicio} y, luego de un tiempo predefinido, transiciona al estado \textbf{Configurar socket}, el cual se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP locales. Posteriormente, estos parámetros se cargan en uno de los cuatro sockets del módulo W5100, se configura el protocolo de transporte (TCP en este caso), se asigna un puerto y se abre la conexión para establecer comunicación con el servidor. Si la apertura y configuración son correctas, la máquina de estados transiciona al estado \textbf{Configurar servidor NTP}, donde se configura la dirección IP y el puerto, y con estos datos se solicita una conexión al servidor NTP. En caso de que la conexión esté lista, el servidor devuelve la fecha y la hora actual en formato UTC. La máquina de estados transiciona al estado \textbf{Establecer fecha y hora}, donde se procesa la información recibida y se actualiza el RTC (reloj de tiempo real) del datalogger. Finalmente, se cierra la conexión con el servidor NTP, pasando al estado \textbf{Inactividad}. Cuando se realiza esta última transición, se eleva un evento a través de la señal \texttt{s\_Iniciar configuración}, la cual será un disparador para transicionar entre estados de otra máquina de estados que gestiona la conexión con el servidor \textit{WebSocket}. En caso de fallo en cualquiera de los estados previos, se transiciona al estado \textbf{Establecer Fecha y hora por defecto}, donde se establece por valores predeterminados.
 
 % La máquina comienza en el estado \textbf{INIT} y luego de un período de \texttt{DelatInit} segundos, pasa al estado \textbf{CONFIG\_SOCKET}. En este estado, se llama a la función \texttt{opConfigNtpSocketViaTCP()}, que se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP. 
 
@@ -851,33 +851,36 @@ Sec-WebSocket-Protocol: chat
 
 La clave \texttt{Sec-WebSocket-Accept} es generada por el servidor a partir de la clave \texttt{Sec-WebSocket-Key} enviada por el cliente, lo que confirma que el servidor entiende y acepta la solicitud de WebSocket. Una vez establecido el \textit{handshake}, el cliente y el servidor pueden enviar datos en forma de \textit{frames} de WebSocket, que pueden ser datos de texto o binarios.
 
-A Continuación se pasa a explicar como se implementó la comunicación. Para ello se declaran las variables de estado que se muestran en el Código \ref{cdg:setWebSocket} y permiten la transición de estados de la región \texttt{ConexionWebSocket} que se muestra en la figura \ref{fig:connectWebSocket}
+% A continuación se pasa a explicar como se implementó la comunicación. Para ello se declaran las variables de estado que se muestran en el Código \ref{cdg:setWebSocket} y permiten la transición de estados de la región \texttt{ConexionWebSocket} que se muestra en la figura \ref{fig:connectWebSocket}
 
-\begin{lstlisting}[style=yakindustyle, caption={Declaración de variables booleanas para validar la conexion con el servidor WebSocket.}, label=cdg:setWebSocket,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-// Variables para la conexion al servidor WebSocket
-ar socketConnect: uint8_t = FALSE
-var isConnectWebServer: uint8_t=FALSE
-var buffertempLleno: uint8_t = TRUE
-var txKeep:uint8_t=FALSE
-\end{lstlisting}
+% \begin{lstlisting}[style=yakindustyle, caption={Declaración de variables booleanas para validar la conexion con el servidor WebSocket.}, label=cdg:setWebSocket,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% // Variables para la conexion al servidor WebSocket
+% ar socketConnect: uint8_t = FALSE
+% var isConnectWebServer: uint8_t=FALSE
+% var buffertempLleno: uint8_t = TRUE
+% var txKeep:uint8_t=FALSE
+% \end{lstlisting}
 
-La máquina de estados inicia en el estado \textbf{IDLE}. La transición al estado \textbf{CONFIG\_SOCKET} se desencadena por el evento de la señal \texttt{siStartMeasure}, generado tras la correcta configuración del tiempo por la máquina de estados del servidor NTP. Esto asegura que no se inicie la medición hasta que la hora esté precisamente sincronizada. En el estado \textbf{CONFIG\_SOCKET}, se invoca la función \texttt{opConfigSocket()}, responsable de configurar los parámetros de red del módulo W5100, incluyendo el gateway, la máscara de subred, la dirección MAC y una dirección IP. También se establece el protocolo TCP, asignando un número de puerto al cliente. Tras abrir el socket, la máquina de estados avanza al estado \textbf{INI\_WEB\_SOCKET} sin requerir validación adicional.
-
-En el estado \textbf{INI\_WEB\_SOCKET}, se ejecuta la función \texttt{opInitWebSocket()}, que prepara los datos necesarios para la conexión con el servidor WebSocket, como la dirección IP del servidor y el puerto. Esta configuración permite actualizar la variable \texttt{socketConnect} a \texttt{True}, habilitando el avance al estado \textbf{CONNECT\_WEBSOCKET}. Aquí, la función \texttt{opConnectToWebSocket()} gestiona el envío de la solicitud de \textit{handshake} al servidor y procesa su respuesta. Si la conexión es exitosa, la variable \texttt{isConnectWebServer} se establece en \texttt{True}, indicando que la conexión está lista para el intercambio de datos en modo full-duplex.
-
-Si se presenta un fallo en cualquiera de los estados previos, la máquina de estados regresa al estado \textbf{CONFIG\_SOCKET} para intentar una nueva conexión con el servidor.
+La máquina de estados que gestiona la conexión con el servidor \textit{WebSocket} se muestra en la figura \ref{fig:sc_connectionWebSocket}. Comienza en el estado \textbf{Inicio}, la transición al estado \textbf{Configurar socket} se desencadena por el evento de la señal \texttt{s\_Iniciar configuración}, generado por la máquina de estados que configura el RTC. Esto asegura que no se inicie la configuración del servidor \textit{WebSocket} hasta que la hora esté correctamente sincronizada. En el estado \textbf{Configurar socket}, nuevamente se configura  los parámetros de red del módulo W5100 y también se establece el protocolo TCP, asignando un número de puerto al cliente. Tras abrir el socket con exito, la máquina de estados avanza al estado \textbf{Iniciar Cliente} donde se prepara los datos necesarios para la conexión con el servidor WebSocket, como la dirección IP del servidor, el puerto y el mensaje de \textit{handshake}. Luego de preparar el cliente, se transiciona al estado \textbf{Conectar al servidor}. Aquí se gestiona el envío de la solicitud de \textit{handshake} al servidor y se procesa su respuesta. Si la conexión es exitosa, se establece un \textit{flag} en true, lo que servira como condicion de guarda para la transicion de otras maquinas de estado concurrentes. Finalmente la conexión está lista para el intercambio de datos en modo full-duplex. Si se presenta un fallo en cualquiera de los estados previos, la máquina de estados regresa al estado \textbf{Configurar socket} para intentar una nueva conexión con el servidor.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Firmware/sc_connectionWebSocket.png}
     \caption{Máquina de estados para establecer una conexión bidireccional con un servidor WebSocket.}
-    \label{fig:connectWebSocket}
+    \label{fig:sc_connectionWebSocket}
 \end{figure}
 % Luego hablar del keep alive 
 
-Para prevenir la desconexión automática del protocolo WebSocket en ausencia de intercambio de datos, se implementó una región denominada \texttt{KeepAlive\_lecturaBuffer}. Esta región tiene un doble propósito: primero, mantener activa la comunicación con el servidor incluso cuando no hay tráfico de datos; y segundo, realizar una consulta periódica (\textit{polling}) con un retardo no bloqueante para verificar si se ha recibido algún mensaje del servidor.
+Para prevenir la desconexión automática del con el servidor en ausencia de intercambio de datos, se implementó una maquina de estados de la Figura \ref{fig:sc_keepAlive}, que tiene un doble propósito: primero, mantener activa la comunicación con el servidor incluso cuando no hay tráfico de datos; y segundo, realizar una consulta periódica (\textit{polling}) con un retardo no bloqueante para verificar si se ha recibido algún mensaje del servidor.
 
-El estado final de la región \texttt{ConexionWebSocket} de la Figura \ref{fig:connectWebSocket}, al completar su secuencia de operaciones, genera un evento con la señal \texttt{siKeepAlive}. Esta señal, en conjunción con la condición de que \texttt{isConnectWebServer} esté establecida en \texttt{True}, facilita la transición desde el estado \textbf{IDLE} hacia el estado \textbf{TX\_MESSAGE}. En este último estado, se pueden transmitir mensajes al servidor, manteniendo así la conexión WebSocket activa y funcional.
+El estado final \textbf{Conectar al servidor} de la máquina de estados de la Figura \ref{fig:sc_connectionWebSocket}, al completar su secuencia de operaciones, genera un evento con la señal \texttt{s\_KeepAlive}. Esta señal, en conjunción con la condición de que lac conexion con el serviodor esta establecida permite la transición desde el estado \textbf{Inactividad} hacia el estado \textbf{Tx KeepAlive y Rx mensajes}. En este último estado, se transmiten los mensajes de \textit{keepAlive} hacia el servidor para mantener la conexion con el mismo cada \SI{500}{\milli\second} y ademas se escanea si el servidor ha enviado un mensaje al datalooger. Además se activa otro evento a traves de la señal \texttt{s\_ProccesMsjServer} que permitira transicionar la siguiente maquina de estados.
+
+
+
+Para prevenir la desconexión automática del con el servidor en ausencia de intercambio de datos, se implementó una máquina de estados, como se muestra en la Figura \ref{fig:sc_keepAlive}. Esta máquina tiene un doble propósito: primero, mantener activa la comunicación con el servidor incluso cuando no hay tráfico de datos; y segundo, realizar una consulta periódica (\textit{polling}) con un retardo no bloqueante para verificar si se ha recibido algún mensaje del servidor.
+
+El estado final \textbf{Conectar al servidor} de la máquina de estados de la Figura \ref{fig:sc_connectionWebSocket}, al completar su secuencia de operaciones, genera un evento con la señal \texttt{s\_KeepAlive}. Esta señal, en conjunción con la condición de que la conexión con el servidor está establecida, permite la transición desde el estado \textbf{Inactividad} hacia el estado \textbf{Tx KeepAlive y Rx mensajes}. En este último estado, se transmiten los mensajes de \textit{keepAlive} hacia el servidor para mantener la conexión con el mismo cada \SI{500}{\milli\second} y, además, se verifica si el servidor ha enviado algún mensaje al datalogger. Además, en ese estado, se activa otro evento a través de la señal \texttt{s\_ProccesMsjServer} que permitirá una transición de la siguiente máquina de estados.
+
 
 % En este estado se invoca a la función \texttt{KeepAlive(ptrSizeBuff)} que se encarga de enviar un mensaje vacío al servidor para mantener la comunicación y revisar si hay algún mensaje del servidor guardándolo en un buffer. En caso de 
 
@@ -886,121 +889,85 @@ El estado final de la región \texttt{ConexionWebSocket} de la Figura \ref{fig:c
     \centering
     \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Firmware/sc_keepAlive.png}
     \caption{Máquina de estados para mantener la conexión con el servidor y elevar un raise en caso de que se reciba información del servidor.}
-    \label{fig:keepAlive}
+    \label{fig:sc_keepAlive}
 \end{figure}
 
-% La recepcion de comandos para configurar
-Puesto que se puede recibir datos del servidor, se declaran las siguientes variables del Código \ref{cdg:SetCommanBuffer}
+% % La recepcion de comandos para configurar
+% Puesto que se puede recibir datos del servidor, se declaran las siguientes variables del Código \ref{cdg:SetCommanBuffer}
 
-\begin{lstlisting}[style=yakindustyle, caption={Declaración de variables para validar y procesar la recepción de datos del servidor.}, label=cdg:SetCommanBuffer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-//Procesamiento de comandos
-//Size de comandos
-var sizeBuff: uint16_t =0
-var ptrSizeBuff: ptrUnt16_t
-//Estructura de configuracion a traves de comandos
-var configCommand:config_t
-var ptrConfigCommand:ptrConfig_t=configCommand.pointer
-\end{lstlisting}
+% \begin{lstlisting}[style=yakindustyle, caption={Declaración de variables para validar y procesar la recepción de datos del servidor.}, label=cdg:SetCommanBuffer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% //Procesamiento de comandos
+% //Size de comandos
+% var sizeBuff: uint16_t =0
+% var ptrSizeBuff: ptrUnt16_t
+% //Estructura de configuracion a traves de comandos
+% var configCommand:config_t
+% var ptrConfigCommand:ptrConfig_t=configCommand.pointer
+% \end{lstlisting}
 
-En el estado \textbf{TX\_MESSAGE}, independientemente de si se han recibido datos del servidor, se genera un evento hacia la región \texttt{ProcesoDeComandos}. Este evento facilita la transición del estado \textbf{IDLE} al estado \textbf{PROCESS\_COMMAND}, condicionada a que la longitud del mensaje recibido del servidor sea mayor a cero. Si se cumple esta condición, en el estado \textbf{PROCESS\_COMMAND} se invoca la función \texttt{opProcessMessageFromServer(ptrSizeBuff, ptrConfigCommand)}, que se encarga de procesar los mensajes provenientes del servidor. Estos mensajes pueden incluir comandos de configuración para el datalogger o valores de referencia para el control del túnel, los cuales serán detallados en la sección \ref{sec:sistemaDeControlPid}.
+La máquina de estados de la figura \ref{fig:sc_processComand} se encarga de procesar los datos recibidos por el servidor \textit{WebSocket}. Se inicia en el estado de \textbf{Inactividad} y, cuando se activa la señal \texttt{s\_ProccesMsjServer} y el tamaño de los datos recibidos es mayor a cero, se transiciona al estado \textbf{Procesar mensaje}, donde se procesan los mensajes provenientes del servidor. Estos mensajes pueden incluir comandos de configuración para el datalogger o valores de referencia para el control del túnel, detallados la tabla \ref{tab:comandoDataloggerWeb}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Firmware/sc_processComand.png}
     \caption{Máquina de estados para procesar los mensajes recibidos del servidor WebSocket.}
-    \label{fig:processComand}
+    \label{fig:sc_processComand}
 \end{figure}
 
-Para gestionar eficientemente los comandos destinados a configurar diversas partes del datalogger con la información proporcionada por el software, se establece un diccionario de punteros a función. Este diccionario, ilustrado en el código~\ref{cdg:diccCommand}, permite ejecutar una función específica en respuesta a cada comando o petición contenida en el mensaje recibido.
+Para gestionar eficientemente los comandos destinados a configurar diversas partes del datalogger con la información proporcionada por el software, se establece un diccionario de punteros a función detallado en el repositorio del proyecto \cite{FirmwareSCA2024}.
 
-\begin{lstlisting}[style=cstyle, caption={Funciones que permiten configurar o modificar el comportamiento del dataloger.}, label=cdg:diccCommand,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-char *diccCommands[]={
-				"start",
-				"stop",
-				"setIBC",
-				"setPAT",
-				"setTimes",
-				"refWindVel",
-				"NAN"};
-bool_t (*diccProcesos[])(config_t * commandConfig)={
-							start,
-							stop,
-							setIBC,
-							setPAT,
-							setTimes,
-							refWindVel};
+% Este diccionario, ilustrado en el código~\ref{cdg:diccCommand}, permite ejecutar una función específica en respuesta a cada comando o petición contenida en el mensaje recibido.
 
-\end{lstlisting}
+% \begin{lstlisting}[style=cstyle, caption={Funciones que permiten configurar o modificar el comportamiento del dataloger.}, label=cdg:diccCommand,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% char *diccCommands[]={
+% 				"start",
+% 				"stop",
+% 				"setIBC",
+% 				"setPAT",
+% 				"setTimes",
+% 				"refWindVel",
+% 				"NAN"};
+% bool_t (*diccProcesos[])(config_t * commandConfig)={
+% 							start,
+% 							stop,
+% 							setIBC,
+% 							setPAT,
+% 							setTimes,
+% 							refWindVel};
+
+% \end{lstlisting}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Muestreo, adquisición y procesamiento}\label{sec:muestreo_adquisicion_procesamiento}
 
-Para almacenar las muestras de los sensores de viento, patrón y bajo calibración, así como los niveles de tensión de la fuente y la tensión que ingresa al variador de velocidad, se han declarado las variables, punteros y constantes mostrados en el Código \ref{cdg:var_const_Adquisition}. Cada variable está asociada a un puntero, ya que cada función de cada estado o transición requiere recibir un puntero específico a una variable para poder modificar su valor.
+% Para almacenar las muestras de los sensores de viento, patrón y bajo calibración, así como los niveles de tensión de la fuente y la tensión que ingresa al variador de velocidad, se han declarado las variables y constantes que van a interactuar con las maquinas de estado.
+Los sensores de viento estan configurados en modo rafaga y envian los datos con una cadencia de un segundo. Para configurar cada anemómetro, se requiere la información especificada en la tabla \ref{tab:sensorDataStruct}. Los primeros cuatro datos son ingresados por el operador a través de la aplicación web descrita en el capítulo \ref{cap:aplicacionweb}. A continuación, se dispone de dos buffers: el primero, de 100 caracteres, se utiliza para almacenar temporalmente cada mensaje recibido por el sensor. Posteriormente, los datos procesados se almacenan en el segundo buffer y quedan listos para ser enviados al servidor websocket.
 
-\begin{lstlisting}[style=yakindustyle, caption={Variables para almacenar en cada iteración una muestra de su magnitud correspondiente.}, label=cdg:var_const_Adquisition,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-//Variable interna para guardar las muestras de voltaje DC
-var viVoltajeMuestra: real32_t
-//Puntero Correspodiente
-var ptrVoltajeMuestra: ptrReal32_t
-//MuestraDelAdcDelTunnel
-//Variable interna para guardar las muestras de voltaje DC
-var viTunelTensionMuestra: real32_t
-//Puntero Correspodiente
-var ptrTunelTensionMuestra: ptrReal32_t
-// IBC
-var ptrAnemoIBC:ptrAmenometerSerialParam_t =configCommand.AnemoIBC.pointer
-//PAT
-var ptrAnemoPat:ptrAmenometerSerialParam_t=configCommand.AnemoPAT.pointer
-
-\end{lstlisting}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/var_const_Adquisition.jpg}
-%     \caption{Variables para almacenar en cada iteración una muestra de su magnitud correspondiente.}
-%     \label{fig:var_const_Adquisition}
-% \end{figure}
-
-Para configurar cada anemómetro, se ha declarado una estructura como se muestra en el fragmento de código \ref{cdg:estructuraAnemo}. Esta estructura se inicializa con datos ingresados por el operador a través de la aplicación web descrita en el capítulo \ref{cap:aplicacionweb}. Cada estructura requiere configurar el número de \texttt{Uart}, el \texttt{LED} de recepción y el \texttt{BaudRate}, valores que deben coincidir con las especificaciones de cada anemómetro. Además, se dispone de un buffer de 100 caracteres para almacenar los strings de datos recibidos, con un puntero asociado para modificar su contenido. También se incluyen dos arreglos de números reales para almacenar los datos numéricos convertidos a \texttt{real32\_t} a partir de los strings de cada sensor, cada uno con su respectivo puntero para su modificación. Por último, se introduce el tipo de dato del sensor, \texttt{sensor\_t}, que enumera los sensores utilizados.
+\begin{table}[H]
+    \centering
+    \fontsize{10}{8}\selectfont
+    \begin{tblr}{
+      cells = {c},
+      row{1} = {Sail},
+      hlines,
+      vlines,
+    }
+    Variable & Memoria [bits] & Descripcion                              \\
+    UART     & 16             & Número de Uart.                          \\
+    LED      & 16             & Número de LED de la placa.               \\
+    BAUDRATE & 32             & Velocidad de comunicación RS485.         \\
+    SENSOR   & 15x8           & Modelo de sensor.\\              
+    BUFFER1  & 100x8          & Buffer para almacenar string del sensor. \\
+    BUFFER2    & 7x32           & Buffer para almacenar el dato procesado. \\
+    
+    \end{tblr}
+    \caption{Conjunto de variables asociadas a un sensor de viento.}
+    \label{tab:sensorDataStruct}
+\end{table}
 
 
-
-% Ejemplo codigo en c agregado desde un archivo
-% \lstinputlisting[style=cstyle, caption={Ejemplo de código en C.}, label=lst:estructuraAnemo]{Codigos/estructuraAnemo.c}
-% Ejemplo de código C copiando el codigo 
-\begin{lstlisting}[style=cstyle, caption={Estructura de datos para anemómetro.}, label=cdg:estructuraAnemo,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-typedef struct{
-	uint16_t Uart;
-	uint16_t LED;
-	uint32_t BaudRate;
-	char Buffer[100];
-	char * ptrUartBuffer;
-	real32_t DataAnemometer[7];
-	real32_t * ptrDataAnemometer;
-	sensor_t Sensor;
-}amenometerSerialParam_t;
-\end{lstlisting}
- 
-En las Figuras \ref{fig:MuestraIBC} y \ref{fig:MuestraPAT} se muestran las regiones que contienen las máquinas de estado \textbf{MuestraIBC} y \textbf{MuestraPAT}, respectivamente, para adquirir los datos de viento. La máquina de estado, por ejemplo, del IBC comienza en el estado \textbf{IDLE}. Cuando el comando \texttt{startMeasure} es \texttt{True}, se transiciona al estado \textbf{SENSOR\_IBC}, donde se invoca la función \texttt{opBufferRS485\_On(prtAnemo)}. Esta función recibe un puntero con todos los datos de configuración del anemómetro y los carga en su respectiva UART. Además, inicializa un callback y habilita la interrupción correspondiente de la UART. De esta manera, cada vez que los sensores envían datos, se activa una función que se encarga de procesar y separar los datos recibidos. Cuando \texttt{startMeasure} se configura como \texttt{false}, la máquina de estado transiciona al estado \textbf{OFF\_SENSOR\_IBC}, donde se desactiva la interrupción y el microcontrolador deja de tomar muestras de los anemómetros.
-
-% \begin{figure}[H]
-%     \centering
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=1.2\linewidth]{Figuras/datalogger/Firmware/MuestraIBC.jpg}
-%         \caption{Máquina de estados para tomar muestras de sensor bajo calibración.}
-%         \label{fig:MuestraIBC}
-%     \end{subfigure}\hspace{0.09\textwidth}
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=1.2\linewidth]{Figuras/datalogger/Firmware/MuestraPAT.jpg}
-%         \caption{Máquina de estados para tomar muestras de sensor patrón.}
-%         \label{fig:MuestraPAT}
-%     \end{subfigure}
-%     \caption{}
-%     \label{fig:mainFigures}
-% \end{figure}
+En la figura \ref{fig:sc_sampleSensorWind}, se muestra la máquina de estados encargada de adquirir los datos de los sensores de viento. La máquina de estados comienza en el estado \textbf{Inactividad}. Luego, cuando se recibe el comando de iniciar mediciones desde el servidor, se transiciona al estado \textbf{Activar interrupción Uart\_n}. En este estado, primero se configuran los datos según la tabla \ref{tab:sensorDataStruct} y luego se activa la interrupción de la correspondiente UART, quedando el datalogger listo para recibir datos de los sensores de viento. Cada vez que se activa la interrupción, se ejecuta un callback que llama a una función encargada de procesar y separar los datos recibidos. Si se recibe del servidor el comando de detener mediciones, la máquina de estados transiciona al estado \textbf{Desactivar interrupción Uart\_n}, donde se desactiva la interrupción y el microcontrolador deja de tomar muestras de los anemómetros.
 
 \begin{figure}[H]
     \centering
@@ -1009,16 +976,16 @@ En las Figuras \ref{fig:MuestraIBC} y \ref{fig:MuestraPAT} se muestran las regio
     \label{fig:sc_sampleSensorWind}
 \end{figure}
 
-El string del patrón VAISALA, modelo WMT700 tiene el formato \texttt{\$--MWV,021,R,003.34,N,A*14}, mientras que el del instrumento bajo calibración DELTAOHM, modelo HD51.3 tiene el formato \texttt{28.30 359.3 998.3<CR><LF>}. Para procesar y separar estos datos, se utiliza un diccionario de punteros a funciones, como se muestra en el fragmento de Código \ref{cdg:dicPuntFuncionPreprocesoAnemo}. Desde el software, el operador preconfigura el modelo del anemómetro y, por lo tanto, a la máquina de estados, asegurándose de llamar a la función correspondiente para procesar los datos de cada anemómetro.
+El string del patrón VAISALA, modelo WMT700 tiene el formato \texttt{\$--MWV,021,R,003.34,N,A*14}, mientras que el del instrumento bajo calibración DELTAOHM, modelo HD51.3 tiene el formato \texttt{28.30 359.3 998.3<CR><LF>}. Para procesar y separar estos datos, se utiliza un diccionario de punteros a funciones. Desde el software, el operador preconfigura el modelo del anemómetro y, por lo tanto, a la máquina de estados, asegurándose de llamar a la función correspondiente para procesar los datos de cada anemómetro.
 
-\begin{lstlisting}[style=cstyle, caption={Diccionario de punteros a función para procesar los datos recibidos de los anemómetros.}, label=cdg:dicPuntFuncionPreprocesoAnemo,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-// Diccionario de punteros a funcion para procesar en funcion del sensor elegido
-void (*opProcesoDatosViento[])(amenometerSerialParam_t * data) = {
-    opPreprocesoDeltaOHM,
-    opPreprocesoWMT700,
-    opPreprocesoVentus
-};
-\end{lstlisting}
+% \begin{lstlisting}[style=cstyle, caption={Diccionario de punteros a función para procesar los datos recibidos de los anemómetros.}, label=cdg:dicPuntFuncionPreprocesoAnemo,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% // Diccionario de punteros a funcion para procesar en funcion del sensor elegido
+% void (*opProcesoDatosViento[])(amenometerSerialParam_t * data) = {
+%     opPreprocesoDeltaOHM,
+%     opPreprocesoWMT700,
+%     opPreprocesoVentus
+% };
+% \end{lstlisting}
 
 En las Figuras \ref{fig:muestreBat} y \ref{fig:muestreAdc} se muestran las regiones que contienen las máquinas de estado \textbf{MuestreoBateria} y \textbf{MuestreoAdcTunel}, respectivamente, para adquirir los niveles de tensión de la fuente de alimentación y los niveles de tensión del variador de velocidad en las variables declaradas en el Código \ref{cdg:var_const_Adquisition}. Por ejemplo, para el muestreo del ADC del variador, la máquina de estado comienza en el estado \textbf{INICIO} y automáticamente transita al estado \textbf{IDLE}. Luego, siempre que la condición \texttt{startMeasure} sea igual a \texttt{True}, se produce una transición al estado \textbf{ADQ\_BAT}, donde se invoca la función \texttt{opAdquirirDNB(ptrVoltajeMuestra)} para tomar una muestra del nivel de tensión. Después de transcurrido el tiempo definido en \texttt{IntervaloMuestra} en segundos, se procede a guardar las muestras y se eleva (se hace un \textit{raise}) a través del evento (señal) \texttt{siMuestrasNuevas} que permite activar una máquina de estado de otra región. Finalmente, se regresa al estado \textbf{IDLE} para repetir el ciclo indefinidamente o hasta que la condición \texttt{startMeasure} sea \texttt{False}.
 
