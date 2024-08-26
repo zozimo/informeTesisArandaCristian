@@ -671,7 +671,7 @@ El proyecto CIAA brinda un framework para programar las placas de desarrollo. La
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.35\linewidth]{Figuras/datalogger/Firmware/ciaaLauncher.png}
+    \includegraphics[width=0.3\linewidth]{Figuras/datalogger/Firmware/ciaaLauncher.png}
     \caption{Lanzador de aplicaciones integradas para el desarrollo de firmware para la EDU-CIAA.}
     \label{fig:ciaaLauncher}
 \end{figure}
@@ -684,7 +684,7 @@ Se clonó el repositorio que contiene el \texttt{firmware\_v3} de GitHub en el I
     \caption{Estructura de carpetas, del proyecto Datalogger}
     \label{fig:projectDataloggerFolder}
 \end{figure}
-En particular, la lógica del programa se implementó mediante el uso de máquinas de estado (\textit{statecharts}) de Harel, empleando el software Itemis Yakindu \cite{itemis_create}. Los \textit{statecharts} de Harel amplían los diagramas de estados tradicionales incorporando conceptos de modularidad, jerarquía y estructura organizacional. Estos diagramas se caracterizan por el uso de estados compuestos y subdiagramas que preservan la claridad y la organización, y facilitan la ejecución concurrente de múltiples submáquinas de estado a través de regiones ortogonales. Además, los eventos habilitan la comunicación por difusión, mientras que las transiciones condicionales, los estados históricos, la lógica temporal y las acciones de entrada/salida potencian la funcionalidad de los \textit{statecharts}, optimizando la modelización de sistemas complejos de manera eficiente. La Tabla~\ref{tab:compStateCharts} presenta un análisis comparativo entre las máquinas de estado simples, como las de Mealy y Moore, y las máquinas de estado más avanzadas de UML y Harel.
+En particular, la lógica del programa se implementó mediante el uso de máquinas de estado (\textit{statecharts}) de Harel, empleando el software Itemis Yakindu \cite{itemis_create}. Los \textit{statecharts} de Harel amplían los diagramas de estados tradicionales incorporando conceptos de modularidad, jerarquía y estructura organizacional, similar a las maquinas de estado UML \cite{uml_state_machine}. Estos diagramas se caracterizan por el uso de estados compuestos y subdiagramas que preservan la claridad y la organización, y facilitan la ejecución concurrente de múltiples submáquinas de estado a través de regiones ortogonales. Además, los eventos que inician con (\textit{e\_}) habilitan la comunicación por difusión, mientras que las transiciones condicionales que se denotan entre llaves ([\textit{condición de guarda}]), los estados históricos, la lógica temporal y las acciones de entrada/salida potencian la funcionalidad de los \textit{statecharts}, optimizando la modelización de sistemas complejos de manera eficiente. La Tabla~\ref{tab:compStateCharts} presenta un análisis comparativo entre las máquinas de estado simples, como las de Mealy y Moore, y las máquinas de estado más avanzadas de UML y Harel.
 
 
 \begin{table}[H]
@@ -705,14 +705,14 @@ En particular, la lógica del programa se implementó mediante el uso de máquin
     Profundidad (jerarquías, estados compuestos) & $\chi$   & $\chi$ & \checkmark   & \checkmark \\
     Ortogonalidad (submáquinas de estado paralelas) & $\chi$    & $\chi$    & \checkmark    & \checkmark\\
     Comunicación por difusión (eventos) & $\chi$    & $\chi$    & \checkmark    & \checkmark\\
-    Historial, acciones, retrasos, tiempos de espera, condiciones & $\chi$    & $\chi$    & \checkmark    & \checkmark\\
+    Historial, acciones, retrasos, tiempos de espera, condicione de guarda & $\chi$    & $\chi$    & \checkmark    & \checkmark\\
 \end{tblr}
 \caption{Diferencias entre los tipos de máquinas de estados.}
 \label{tab:compStateCharts}
 \end{table}
 
 
-Se crearon doce regiones que trabajan de forma concurrente (de forma ortogonal), como se muestra en la Figura \ref{fig:ordenRegiones}, y se comunican entre sí mediante eventos internos. A cada región se le asigna una prioridad en función de su posición; las que están más arriba tienen mayor prioridad de ejecución respecto a las de más abajo.
+Se crearon doce regiones donde cada una contiene una maquina de estados. A partir de una maquina principal (\textit{main}) el resto de estas trabajan de forma concurrente (de forma ortogonal). En la Figura \ref{fig:ordenRegiones} se muestran las regiones  y se comunican entre sí mediante eventos y señales internas. A cada región se le asigna una prioridad en función de su posición; las que están más arriba tienen mayor prioridad de ejecución respecto a las de más abajo.
 
 \begin{figure}[H]
     \centering
@@ -721,50 +721,61 @@ Se crearon doce regiones que trabajan de forma concurrente (de forma ortogonal),
     \label{fig:ordenRegiones}
 \end{figure}
 
-Se utilizó una licencia gratuita de Yakindu, integrándola con el IDE de Eclipse para editar y generar el código a partir de los \textit{statecharts}. En particular, se configuró el proyecto en Yakindu C/C++ para poder agregar código en C a las máquinas de estado, incluyendo la importación de archivos \texttt{.h}, declaración de variables, punteros globales y constantes, como se ejemplifica en el Código \ref{cdg:configuracionStateChart}.
+Se utilizó una licencia educativa, gratuita de Yakindu, integrándola con el IDE de Eclipse para editar y generar el código a partir de los \textit{statecharts}. En particular, se configuró el proyecto en Yakindu C/C++ para poder agregar código en C a las máquinas de estado, incluyendo la importación de archivos \texttt{.h}, declaración de variables, punteros globales y constantes. Para mas detalle del código se puede acceder al repositorio \url{https://github.com/InstrumentalSMN/Sistema-de-calibracion-de-anemometros/tree/ethernet_comunication_websocket}.
+
+La máquina de estado principal (\textit{main}) se muestra en la figura \ref{fig:sc_main} e inicializa y configura la placa, el SPI, las UARTs, un contador de ticks y el resto de las máquinas de estado. Luego, pasa a un estado inactivo, esperando alguna interrupción. Cuando ocurre una interrupción, se verifica el estado de un \textit{flag} del temporizador principal del sistema. Si el \textit{flag} está activo, se actualizan todos los \textit{ticks} de los temporizadores. Posteriormente, el sistema escanea todos los \textit{ticks} de los temporizadores para verificar eventos pendientes. Si hay eventos pendientes, estos se levantan en su respectiva máquina de estados. Finalmente, la máquina de estados ejecuta un ciclo para manejar los eventos levantados (\textit{raiseEvent}). Luego, el sistema regresa al estado inactivo, esperando la próxima interrupción.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\linewidth]{Figuras/datalogger/Firmware/sc_main.png}
+    \caption{Maquina de estados principal, que gestiona la ejecución del resto de las maquinas de estado.}
+    \label{fig:sc_main}
+\end{figure}
+
+% como se ejemplifica en el Código \ref{cdg:configuracionStateChart}.
 
 % Para reducir el tamaño de letra del código
 % basicstyle=\ttfamily\fontsize{8}{8}\selectfont
 
-\begin{lstlisting}[style=yakindustyle, caption={Configuración principal del modelo statechart dataloggerSA.}, label=cdg:configuracionStateChart,basicstyle=\ttfamily\fontsize{8}{8}\selectfont] 
-import:"inc/common.h"
-import:"inc/da_acquisition.h"
-import:"inc/da_processing.h"
-import:"inc/da_transmision.h"
-import:"inc/da_rtc.h"
-import:"inc/da_configDatalogger.h"
-import:"inc/controlTunnel.h"
-/*Datalogger para Sistema anemometrico con EDU-CIAA-NXP */
-interface:
-//Variables
-var startMesuare:uint8_t = FALSE
-//Puntero
-var ptrStartMesuare:ptrUnt8_t
-var viTeclaOprim: uint16_t
-//Constantes
-const TRUE: uint8_t =1
-const FALSE: uint8_t =0
-const Tec1: uint16_t = 1<<0
-const Tec2: uint16_t = 1<<1
-\end{lstlisting}
+% \begin{lstlisting}[style=yakindustyle, caption={Configuración principal del modelo statechart dataloggerSA.}, label=cdg:configuracionStateChart,basicstyle=\ttfamily\fontsize{8}{8}\selectfont] 
+% import:"inc/common.h"
+% import:"inc/da_acquisition.h"
+% import:"inc/da_processing.h"
+% import:"inc/da_transmision.h"
+% import:"inc/da_rtc.h"
+% import:"inc/da_configDatalogger.h"
+% import:"inc/controlTunnel.h"
+% /*Datalogger para Sistema anemometrico con EDU-CIAA-NXP */
+% interface:
+% //Variables
+% var startMesuare:uint8_t = FALSE
+% //Puntero
+% var ptrStartMesuare:ptrUnt8_t
+% var viTeclaOprim: uint16_t
+% //Constantes
+% const TRUE: uint8_t =1
+% const FALSE: uint8_t =0
+% const Tec1: uint16_t = 1<<0
+% const Tec2: uint16_t = 1<<1
+% \end{lstlisting}
 
- También se agregaron eventos internos que permiten transicionar del estado de una región a otro estado de otra región (\textit{raiseEvent} en inglés), como se muestra en el Código \ref{cdg:eventosInternos}.
-\begin{lstlisting}[style=yakindustyle, caption={Declaración de eventos internos que permiten transicionar entre regiones del statechart.}, label=cdg:eventosInternos,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-internal:
-//En forma interna tengo seniales para vincular las maquinas de estado
-event siDatosListosParaBdtos
-event siDatoProcesado
-event siMuestrasNuevas
-event siStartMeasure
-event siKeepAlive
-event siProccesMsjServer
-\end{lstlisting}
+%  También se agregaron eventos internos que permiten transicionar del estado de una región a otro estado de otra región (\textit{raiseEvent} en inglés), como se muestra en el Código \ref{cdg:eventosInternos}.
+% \begin{lstlisting}[style=yakindustyle, caption={Declaración de eventos internos que permiten transicionar entre regiones del statechart.}, label=cdg:eventosInternos,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% internal:
+% //En forma interna tengo seniales para vincular las maquinas de estado
+% event siDatosListosParaBdtos
+% event siDatoProcesado
+% event siMuestrasNuevas
+% event siStartMeasure
+% event siKeepAlive
+% event siProccesMsjServer
+% \end{lstlisting}
 
 % En cada subseccion agregar su region de yakindu
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Configuración y conexión con los servidores}\label{sec:confServers}
-Como se detalló en la sección \ref{sec:moduloEthernet}, se utilizó el módulo W5100 para transferir datos desde el datalogger hacia los servidores y recibir datos de los mismos. El módulo cuenta con cuatro socket independientes y permite configurar un sistema embebido como servidor o cliente.
+Como se detalló en la sección \ref{sec:moduloEthernet}, se utilizó el módulo W5100 para transferir datos desde el datalogger hacia los servidores y recibir datos de los mismos. El módulo cuenta con cuatro socket independientes que permiten configurar un sistema embebido como servidor o cliente.
 %  como se muestra en la Figura \ref{fig:socketModoDeTrabajoW5100}.
 
 \begin{figure}[H]
@@ -774,39 +785,43 @@ Como se detalló en la sección \ref{sec:moduloEthernet}, se utilizó el módulo
     \label{fig:socketModoDeTrabajoW5100}
 \end{figure}
 
-El datalogger se comunica con los servidores en modo cliente (apertura activa), enviando una solicitud de conexión a un servidor, estableciendo la comunicación e intercambiando datos. Luego, realiza una solicitud de desconexión y se cierra el enlace. Utiliza, en la capa de transporte, el protocolo TCP y, en la capa de red, el protocolo IP. En la capa de aplicación, se utilizó el protocolo WebSocket para intercambio de datos y el protocolo NTP para configurar el RTC del datalogger. Dado que estos protocolos no están incluidos en la biblioteca del chip W5100, se implementó la conexión, el intercambio de datos y la desconexión de los servidores mediante sockets, como se indica en el diagrama de flujo de la figura \ref{fig:socketDiagramClientW5100}.
+El datalogger se comunica con los servidores en modo cliente (apertura activa), enviando una solicitud de conexión a un servidor, estableciendo la comunicación e intercambiando datos. Luego, realiza una solicitud de desconexión y se cierra el enlace. Utiliza, en la capa de transporte, el protocolo TCP y, en la capa de red, el protocolo IP. En la capa de aplicación, se utilizó el protocolo WebSocket para intercambio de datos y el protocolo NTP para configurar el RTC del datalogger. Dado que estos protocolos no están incluidos en la biblioteca del chip W5100, se implementó la conexión, el intercambio de datos y la desconexión de los servidores mediante sockets.
+% , como se indica en el diagrama de flujo de la figura \ref{fig:socketDiagramClientW5100}.
 
-Un socket es una interfaz que permite la comunicación entre dispositivos a través de redes. En términos simples, un socket es un punto final para enviar y recibir datos en una red, y está compuesto por una dirección IP y un número de puerto.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/datalogger/Firmware/socketDiagramClientW5100.png}
-    \caption{Diagrama de flujo para establer una comunicación, en modo cliente, con un servidor utilizando sockets.}
-    \label{fig:socketDiagramClientW5100}
-\end{figure}
+% Un socket es una interfaz que permite la comunicación entre dispositivos a través de redes. En términos simples, un socket es un punto final para enviar y recibir datos en una red, y está compuesto por una dirección IP y un número de puerto.
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.9\linewidth]{Figuras/datalogger/Firmware/socketDiagramClientW5100.png}
+%     \caption{Diagrama de flujo para establer una comunicación, en modo cliente, con un servidor utilizando sockets.}
+%     \label{fig:socketDiagramClientW5100}
+% \end{figure}
 
 \subsubsection{Servidor NTP}\label{sec:serverNTP}
 % poner diagrama de Config RTC, para que esta
-Para la configuración del RTC del datalogger, se estableció una conexión con los servidores NTP del Instituto Nacional de Estándares y Tecnología (\textit{NIST}). Se seleccionó una de las múltiples IPs disponibles, específicamente la dirección 128.138.141.172 a través del puerto 13. Esta conexión retorna una cadena de caracteres, \texttt{59992 23-02-17 17:47:01 00 0 0 831.5 UTC(NIST)*}, que se procesó e integró en la estructura del RTC del datalogger. Para gestionar y validar esta comunicación con el servidor NTP, se configuró una región específica dentro del sistema. Las variables declaradas en el Código \ref{cdg:serRTC} se utilizan para validar cada transición dentro de la máquina de estados ilustrada en la Figura \ref{fig:ntpServer}.
+Para la configuración del RTC del datalogger, se estableció una conexión con los servidores NTP del Instituto Nacional de Estándares y Tecnología (\textit{NIST}). Se seleccionó una de las múltiples IPs disponibles, específicamente la dirección 128.138.141.172 a través del puerto 13. El servidor retorna una cadena de caracteres, \texttt{59992 23-02-17 17:47:01 00 0 0 831.5 UTC(NIST)*}, que se procesa y se guarda en una estructura que contiene las variables de hora y fecha del RTC. Para gestionar y validar esta comunicación con el servidor NTP, se configuró una maquina de estados específica dentro del sistem ilustrada en la Figura \ref{fig:sc_configRTC}.
 
 
-\begin{lstlisting}[style=yakindustyle, caption={Declaración de variables booleanas para validar la conexion con el servidor NTP.}, label=cdg:serRTC,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-// Variables para la conexion al servidor NTP
-var ConfigNtpSocket: uint8_t=FALSE
-var setRtc: uint8_t = FALSE
-var ConfigNTP:uint8_t = FALSE
-\end{lstlisting}
+% \\textsc{begin{lstlisting}[style=yakindustyle, caption={Declaración de variables booleanas para validar la conexion con el servidor NTP.}, label=cdg:serRTC,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% // Variables para la conexion al servidor NTP
+% var ConfigNtpSocket: uint8_t=FALSE
+% var setRtc: uint8_t = FALSE
+% var ConfigNTP:uint8_t = FALSE
+% \end{lstlisting}}
 
-La máquina comienza en el estado \textbf{INIT} y luego de un período de \texttt{DelatInit} segundos, pasa al estado \textbf{CONFIG\_SOCKET}. En este estado, se llama a la función \texttt{opConfigNtpSocketViaTCP()}, que se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP. 
 
-Luego, estos parámetros se asignan a uno de los cuatro sockets del módulo W5100, y se configura el protocolo de transporte (TCP en este caso), el puerto, y se abre la conexión para establecer una comunicación con el servidor. Esta función devuelve \texttt{True} si la apertura y configuración son correctas, almacenando este resultado en la variable \texttt{ConfigNtpSocket}. Si la configuración es exitosa, la máquina de estados transiciona al estado \textbf{CONFIG\_NTP}.
+La máquina comienza en el estado \textbf{Inicio} y, luego de un tiempo predefinido, transiciona al estado \textbf{Configurar socket}, el cual se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP locales. Posteriormente, estos parámetros se cargan en uno de los cuatro sockets del módulo W5100, se configura el protocolo de transporte (TCP en este caso), se asigna un puerto y se abre la conexión para establecer comunicación con el servidor. Si la apertura y configuración son correctas, la máquina de estados transiciona al estado \textbf{Configurar servidor NTP}, donde se configura la dirección IP y el puerto, y con estos datos se solicita una conexión al servidor NTP. En caso de que la conexión esté lista, el servidor devuelve la fecha y la hora actual en formato UTC. La máquina de estados transiciona al estado \textbf{Establecer fecha y hora}, donde se procesa la información recibida y se actualiza el RTC del datalogger. Finalmente, se cierra la conexión con el servidor NTP, pasando al estado \textbf{Inactividad}. Cuando se realiza esta última transición, se eleva un evento a través de la señal \texttt{s\_Iniciar configuración}, la cual será un disparador para transicionar entre estados de otra máquina de estados que gestiona la conexión con el servidor \textit{WebSocket}. En caso de fallo en cualquiera de los estados previos, se transiciona al estado \textbf{Establecer Fecha y hora por defecto}, donde se establece por valores predeterminados.
 
-En el estado \textbf{CONFIG\_NTP}, se invoca la función \texttt{opConfigNtpViaTCP()}, encargada de configurar la conexión con el servidor NTP. Esta función establece la dirección IP y el puerto del servidor y realiza un intento de conexión. Si la conexión es exitosa, la función retorna \texttt{True} y el resultado se almacena en la variable \texttt{ConfigNTP}. Una vez configurado, el servidor responde con la hora y fecha actual en formato UTC, que se guarda en una variable interna. Posteriormente, la máquina de estados avanza al estado \textbf{SET\_RTC\_VIA\_SOCKET}, donde se procesa la información recibida y se actualiza el RTC del datalogger. Finalmente, se cierra la conexión con el servidor NTP pasando al estado \textbf{IDLE}, cuando se realiza esta última transición se eleva un evento a través de la señal \texttt{siStartMeasure}, la cual será un disparador para iniciar otra máquina de estado en otra región. En caso de fallo en cualquiera de los estados previos, se transiciona al estado \textbf{SET\_RTC\_DEFAULT}, donde se establece una hora predeterminada.
+% La máquina comienza en el estado \textbf{INIT} y luego de un período de \texttt{DelatInit} segundos, pasa al estado \textbf{CONFIG\_SOCKET}. En este estado, se llama a la función \texttt{opConfigNtpSocketViaTCP()}, que se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP. 
+
+% Luego, estos parámetros se asignan a uno de los cuatro sockets del módulo W5100, y se configura el protocolo de transporte (TCP en este caso), el puerto, y se abre la conexión para establecer una comunicación con el servidor. Esta función devuelve \texttt{True} si la apertura y configuración son correctas, almacenando este resultado en la variable \texttt{ConfigNtpSocket}. Si la configuración es exitosa, la máquina de estados transiciona al estado \textbf{CONFIG\_NTP}.
+
+% En el estado \textbf{CONFIG\_NTP}, se invoca la función \texttt{opConfigNtpViaTCP()}, encargada de configurar la conexión con el servidor NTP. Esta función establece la dirección IP y el puerto del servidor y realiza un intento de conexión. Si la conexión es exitosa, la función retorna \texttt{True} y el resultado se almacena en la variable \texttt{ConfigNTP}. Una vez configurado, el servidor responde con la hora y fecha actual en formato UTC, que se guarda en una variable interna. Posteriormente, la máquina de estados avanza al estado \textbf{SET\_RTC\_VIA\_SOCKET}, donde se procesa la información recibida y se actualiza el RTC del datalogger. Finalmente, se cierra la conexión con el servidor NTP pasando al estado \textbf{IDLE}, cuando se realiza esta última transición se eleva un evento a través de la señal \texttt{siStartMeasure}, la cual será un disparador para iniciar otra máquina de estado en otra región. En caso de fallo en cualquiera de los estados previos, se transiciona al estado \textbf{SET\_RTC\_DEFAULT}, donde se establece una hora predeterminada.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Firmware/sc_configRTC.png}
     \caption{Máquina de estados para configurar el RTC del datalogger a través de un servidor NTP.}
-    \label{fig:ntpServer}
+    \label{fig:sc_configRTC}
 \end{figure}
 
 \subsubsection{Servidor WebSocket}\label{sec:serverWebSocket}
