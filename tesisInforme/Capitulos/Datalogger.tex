@@ -1000,31 +1000,29 @@ La máquina de estado de la figura \ref{fig:sc_processing} inicia en un estado d
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Transmisión al servidor}
 
-El protocolo WebSocket establece una comunicación en tiempo real entre clientes y servidores, adaptando el encabezado del mensaje según su tamaño. Para mensajes hasta 125 bytes, se usa un encabezado de 2 bytes. Para mensajes mayores, se añade un encabezado extendido con 2 bytes adicionales para la longitud. Independientemente del tamaño, todos los mensajes se enmascaran con una clave de 32 bits aplicada mediante XOR a la carga útil, protegiendo la transmisión contra vulnerabilidades y garantizando la integridad de los datos. Este mecanismo asegura que todos los mensajes, independientemente de su tamaño, se transmitan de manera confiable y conforme a las normas del protocolo. Para una transmisión exitosa desde el datalogger hacia el servidor, se declara la variable de Código \ref{cdg:transmitionServer}, esta variable controla el estado de la transmisión en la máquina de estados de la región \texttt{TransmisionAlServer} de la figura \ref{fig:transmisionServer}.
+El protocolo WebSocket establece una comunicación en tiempo real entre clientes y servidores, adaptando el encabezado del mensaje según su tamaño. Para mensajes hasta 125 bytes, se usa un encabezado de 2 bytes. Para mensajes mayores, se añade un encabezado extendido con 2 bytes adicionales para la longitud. Independientemente del tamaño, todos los mensajes se enmascaran con una clave de 32 bits aplicada mediante XOR a la carga útil, protegiendo la transmisión contra vulnerabilidades y garantizando la integridad de los datos. Este mecanismo asegura que todos los mensajes, independientemente de su tamaño, se transmitan de manera confiable y conforme a las normas del protocolo \cite{websockeWiki}. 
 
-\begin{lstlisting}[style=yakindustyle, caption={Declaración de variable para controlar el estado de una transmisión al servidor.}, label=cdg:transmitionServer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-//Transmision por Ethernet
-var TransmisionExitosa: uint8_t=FALSE
-\end{lstlisting}
+% Para una transmisión exitosa desde el datalogger hacia el servidor, se declara la variable de Código \ref{cdg:transmitionServer}, esta variable controla el estado de la transmisión en la máquina de estados de la región \texttt{TransmisionAlServer} de la figura \ref{fig:transmisionServer}.
 
-La máquina de estados de la figura \ref{fig:transmisionServer} inicia en el estado \textbf{IDLE}. Cuando se detecta la señal \texttt{siDatosListosParaBdtos} y la condición \texttt{isConnectWebServer} está en \texttt{True}, se realiza una transición al estado \textbf{TX\_MESSAGE}. En este estado, se invoca la función\\ \texttt{opTransmitWebSocketEthernet(ptrCantDatosProcesado)}, la cual tiene como responsabilidad codificar y enviar el mensaje a través del socket conectado al servidor web.
+% \begin{lstlisting}[style=yakindustyle, caption={Declaración de variable para controlar el estado de una transmisión al servidor.}, label=cdg:transmitionServer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% //Transmision por Ethernet
+% var TransmisionExitosa: uint8_t=FALSE
+% \end{lstlisting}
 
-La codificación del mensaje depende de su longitud, para ello se implementaron dos funciones internas:
+La máquina de estados de la figura \ref{fig:sc_transmisionServer} inicia en el estado \textbf{Inactividad}. Cuando se detecta la señal \texttt{s\_tx\_WebSocketServer} y el comando de iniciar mediciones esté activo, se realiza una transición al estado \textbf{Transmisión de mensaje}. En este estado se codifica y envia el mensaje a través del socket del módulo Ethernet conectado al servidor web. La codificación del mensaje depende de su longitud, para ello se implementaron dos métodos internos:
 \begin{itemize}
-  \item Si la longitud es de hasta 125 bytes, se utiliza la función \texttt{encodeMessage125()}. El encabezado del mensaje codificado consta de 2 bytes.
-  \item Si la longitud supera los 125 bytes, se emplea la función \texttt{encodeMessage126()}, que añade un campo adicional de 2 bytes para indicar la longitud extendida del mensaje.
+  \item Si la longitud es de hasta 125 bytes, se utiliza un método específico. El encabezado del mensaje codificado consta de 2 bytes.
+  \item Si la longitud supera los 125 bytes, se emplea otro método, que añade un campo adicional de 2 bytes para indicar la longitud extendida del mensaje.
 \end{itemize}
 
-Tras la codificación, se procede con el envío del mensaje. El servidor, al recibir el mensaje, responde con la longitud del mensaje recibido. Si la longitud coincide con la del mensaje enviado, se considera que la transmisión ha sido exitosa. De lo contrario, se asume que la transmisión ha fallado.
-
-En caso de fallo en la transmisión, la máquina de estados transiciona al estado \textbf{BACK\_UP}. Este estado se encarga de almacenar los datos hasta que se restablezca la comunicación con el servidor. Si la transmisión es exitosa, se incrementa un contador y se retorna al estado \textbf{IDLE}, quedando listo para una nueva transmisión.
+Tras la codificación, se procede con el envío del mensaje. El servidor, al recibir el mensaje, responde con la longitud del mensaje recibido. Si la longitud coincide con la del mensaje enviado, se considera que la transmisión ha sido exitosa. De lo contrario, se asume que la transmisión ha fallado. En caso de fallo en la transmisión, la máquina de estados transiciona al estado \textbf{BackUp Mensaje}. Este estado se encarga de almacenar temporalmente los datos hasta que se restablezca la comunicación con el servidor. Si la transmisión es exitosa, se incrementa un contador y se retorna al estado \textbf{Inactividad}, quedando listo para una nueva transmisión.
 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Firmware/sc_transmisionServer.png}
     \caption{Máquina de estados para gestionar la transmisión de datos al servidor WebSocket.}
-    \label{fig:transmisionServer}
+    \label{fig:sc_transmisionServer}
 \end{figure}
 
 
@@ -1035,58 +1033,36 @@ En la Sección \ref{sec:circuitoPWM}, se detalla el desarrollo del circuito \tex
 
 El circuito PWM se utiliza para la implementación de un controlador \textbf{PID} de lazo cerrado. La referencia de la velocidad del viento, en metros por segundo, se obtiene del servidor. Paralelamente, se toma una muestra de la velocidad del viento a través de un sensor patrón, también en metros por segundo. La diferencia entre la referencia y la muestra se define como el error, sobre el cual se aplica el control PID.
 
-Las variables necesarias para el control PID se declaran como se muestra en el Código \ref{cdg:controlPID}. Las variables \texttt{viIntesidadPatron} y \texttt{viIntesidadReferencia} almacenan las muestras del viento patrón y la referencia respectivamente. La variable \texttt{viPwmValue} guarda el valor de PWM calculado por el controlador, y en \texttt{viPid} se almacenan los parámetros del controlador PID.
+% Las variables necesarias para el control PID se declaran como se muestra en el Código \ref{cdg:controlPID}. Las variables \texttt{viIntesidadPatron} y \texttt{viIntesidadReferencia} almacenan las muestras del viento patrón y la referencia respectivamente. La variable \texttt{viPwmValue} guarda el valor de PWM calculado por el controlador, y en \texttt{viPid} se almacenan los parámetros del controlador PID.
 
-\begin{lstlisting}[style=yakindustyle, caption={Declaración de variables para el controlador PID del motor del túnel de viento.}, label=cdg:controlPID,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-// Control del tunel
-// Valor del patron de viento
-var viIntesidadPatron: real32_t = 0
-var ptriIntesidadPatron: ptrReal32_t
-// Valor de referencia de viento
-var viIntesidadReferencia: real32_t = 0
-var ptriIntesidadReferencia: ptrReal32_t
-// Valor de PWM
-var viPwmValue: int32_t = 0
-var ptrPwmValue: ptrInt32_t = &viPwmValue
-// Controlador PID
-var viPid: pidController_t 
-var prtPid: ptrPidController_t = &viPid
-\end{lstlisting}
+% \begin{lstlisting}[style=yakindustyle, caption={Declaración de variables para el controlador PID del motor del túnel de viento.}, label=cdg:controlPID,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% // Control del tunel
+% // Valor del patron de viento
+% var viIntesidadPatron: real32_t = 0
+% var ptriIntesidadPatron: ptrReal32_t
+% // Valor de referencia de viento
+% var viIntesidadReferencia: real32_t = 0
+% var ptriIntesidadReferencia: ptrReal32_t
+% // Valor de PWM
+% var viPwmValue: int32_t = 0
+% var ptrPwmValue: ptrInt32_t = &viPwmValue
+% // Controlador PID
+% var viPid: pidController_t 
+% var prtPid: ptrPidController_t = &viPid
+% \end{lstlisting}
 
-En el Código \ref{cdg:structurePID}, se presenta la declaración de una estructura que define los parámetros del controlador PID. Estos parámetros incluyen las ganancias proporcional (\texttt{kp}), integral (\texttt{ki}) y derivativa (\texttt{kd}). Además, se registran variables para el manejo del error actual (\texttt{error}), el error anterior (\texttt{lastError}), la suma acumulada del error (\texttt{integral}) y la derivada del error (\texttt{derivative}) y se incluye el tiempo de muestreo (\texttt{Ts}), puesto que es un controlador en tiempo discreto.
-
-\begin{lstlisting}[style=cstyle, caption={Estructura para los parámetros y variables del controlador PID.}, label=cdg:structurePID,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-// Estructura del controlador PID
-typedef struct {
-	real32_t kp;        // Ganancia proporcional
-	real32_t ki;        // Ganancia integral
-	real32_t kd;        // Ganancia derivativa
-	real32_t error;     // Error actual
-	real32_t lastError; // Error anterior
-	real32_t integral;  // Integral del error
-	real32_t derivative;// Derivada del error
-	real32_t Ts;        // Tiempo de muestreo
-} pidController_t;
-\end{lstlisting}
-
-Finalmente, se aplica el algoritmo de control \textbf{PID} sobre el error calculado para regular la salida del circuito PWM y, consecuentemente, la velocidad del viento en el túnel. La máquina de estados comienza en el estado \texttt{INICIO}, donde se ejecuta la función \texttt{configPID(prtPid)}. Esta función configura los parámetros del controlador PID, obtenidos heurísticamente, con $kp = 3$; $kd = 0,5$; $ki = 0$; y el tiempo de muestreo $Ts = \SI{1}{\second}$. Además, prepara el pin digital de la EDU-CIAA para habilitar la salida PWM con un valor inicial de cero.
-
-Si el indicador \texttt{starMesuare} se encuentra en \texttt{True}, se transiciona al estado \textbf{MESUARE\_PAT}. En este estado, se invoca la función \texttt{opMesuareWindPAT(ptrAnemoPat, ptriIntesidadPatron, ptriIntesidadReferencia)}, que obtiene la intensidad instantánea del viento del anemómetro patrón y la intensidad de referencia enviada por el servidor, almacenando estos valores en variables correspondientes.
-
-Posteriormente, se avanza al estado \textbf{CONTROL\_TUNNEL}. Aquí, se llama a la función \texttt{pidControlTunnel(prtPid,ptriIntesidadPatron,ptriIntesidadReferencia,ptrPwmValue)}, que ejecuta las siguientes acciones:
+El controlador PID cuenta con los siguientes parámetros, las ganancias proporcional $k_{p}$, integral $k_{i}$ y derivativa $k_{d}$ y para el manejo del error $e_{i}$, el error anterior $e_{i-1}$, la suma acumulada del error $e_{int_{i}}$ y la derivada del error $e_{dev_{i}}$ y se incluye el tiempo de muestreo $T_{s}$, puesto que es un controlador en tiempo discreto. Con estos parametros se aplica el algoritmo de control \textbf{PID} sobre el error calculado para regular la salida del circuito PWM y, consecuentemente, la velocidad del viento en el túnel. Este proceso se realiza en la maquina de estados de la figura \ref{fig:sc_controlTunnel}, está comienza en el estado \textbf{Configurar PID}, donde se configura los parámetros del controlador PID, obtenidos heurísticamente, con $kp = 3$; $kd = 0,5$; $ki = 0.1$; y el tiempo de muestreo $Ts = \SI{1}{\second}$. Además, se configura el pin digital de la EDU-CIAA para habilitar la salida PWM con un valor inicial de cero. Cuando el comando iniciar mediciones esta activo se transiciona al estado \textbf{Medición}, en este estado, se lee  intensidad instantánea del viento del anemómetro patrón y la intensidad de referencia enviada por el servidor, almacenando estos valores en variables. Posteriormente, se avanza al estado \textbf{Contro motor tunel}. Aquí, se ejecuta las siguientes acciones:
 \begin{itemize}
-    \item Calcula el error proporcional $e_{i} = vel_{ref_{i}} - vel_{pat_{i}}$.
-    \item Determina el término integral $e_{int_{i}} = e_{i} \cdot Ts$.
-    \item Estima el término derivativo $e_{dev_{i}} = \frac{e_{i} - e_{i-1}}{Ts}$.
+    \item Calcular el error proporcional $e_{i} = vel_{ref_{i}} - vel_{pat_{i}}$.
+    \item Calcular el término integral $e_{int_{i}} = e_{i} \cdot Ts$.
+    \item Calcular el término derivativo $e_{dev_{i}} = \frac{e_{i} - e_{i-1}}{Ts}$.
     \item Actualiza el error y calcula la acción de control como $u_{c_{i}} = kp \cdot e_{i} + ki \cdot e_{int_{i}} + kd \cdot e_{dev_{i}}$.
 \end{itemize}
-El valor de $u_{c}$ se somete a un saturador entre 0 y 255, y luego se aplica al pin de salida PWM. Este ciclo se repite cada $\SI{1}{\second}$, correspondiente al tiempo de muestreo $Ts$.
-
-Si el operador detiene las mediciones a través del software, se envía un comando que establece el indicador \texttt{starMesuare} en \texttt{False}. Esto hace que el controlador se ponga en cero y permanezca en espera para iniciar nuevas mediciones.
+El valor de $u_{c}$ se somete a un saturador entre 0 y 255, y luego se aplica esa tensión al pin de salida PWM. Este ciclo se repite cada $\SI{1}{\second}$, correspondiente al tiempo de muestreo $Ts$. Si se activa el comando que detiene las mediciones a través del software, Se vuele al estado \textbf{Configurar PID} donde se reincia el controlador y permanece en espera hasta iniciar nuevas mediciones.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/sc_controlTunnel.png}
     \caption{Máquina de estados que ejecuta el control PID con valores de referencia enviados por el servidor.}
-    \label{fig:pidControlTunel}
+    \label{fig:sc_controlTunnel}
 \end{figure}
