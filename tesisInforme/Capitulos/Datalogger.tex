@@ -1,5 +1,5 @@
 \definecolor{Sail}{rgb}{0.643,0.819,0.976}
-Este capítulo se centra en el diseño y la programación del datalogger, que será utilizado en el banco de medición para calibrar los anemómetros de ultrasonido. Este sistema está basado en la placa de desarrollo EDU-CIAA \cite{proyectoCIAA}, con el agregado de un \textit{shield} específico para la aplicación. El sistema se describe en la Figura \ref{fig:esquemaHardware} y consta de distintos módulos, a saber: un módulo para la adquisición de muestras de viento mediante el protocolo RS485, un módulo para la recepción y transmisión de datos a través de Ethernet, un módulo de alimentación de 12 \unit{\volt}, y un módulo PWM con una etapa de filtrado seguida de otra de amplificación para entregar la señal de control del túnel de viento. Además, se toman muestras de esta señal y de la fuente para monitorear por software el comportamiento del sistema.
+Este capítulo se centra en el diseño y la programación del sistema de medición y control, que en adelante se denominará \textit{datalogger}. Este sistema será utilizado en el banco de medición para calibrar los anemómetros de ultrasonido y está basado en la placa de desarrollo EDU-CIAA \cite{proyectoCIAA}, con el agregado de un \textit{shield} específico para la aplicación. El sistema se describe en la Figura \ref{fig:esquemaHardware} y consta de distintos módulos, a saber: un módulo para la adquisición de muestras de viento mediante el protocolo RS485, un módulo para la recepción y transmisión de datos a través de Ethernet, un módulo de alimentación de 12 \unit{\volt}, y un módulo PWM con una etapa de filtrado seguida de otra de amplificación para entregar la señal de control del túnel de viento. Además, se toman muestras de esta señal y de la fuente para monitorear por software el comportamiento del sistema.
 
 
 \begin{figure}[H]
@@ -15,7 +15,7 @@ Este capítulo se centra en el diseño y la programación del datalogger, que se
 \section{Desarrollo del hardware}\label{sec:desarrolloHardware}
 
 
-Para el desarrollo del Hardware, en una primera etapa se realizó un proceso de investigación de hojas de datos, manuales, artículos y videos de internet para ver qué módulos y componentes comprar para la implementación de la aplicación. Además, se utilizaron herramientas como LT Spice para la simulación de circuitos y KiCad para el diseño de PCB. 
+Para el desarrollo del hardware, en una primera etapa se realizó un proceso de investigación de hojas de datos, manuales, artículos y videos de internet para ver qué módulos y componentes comprar para la implementación de la aplicación. Además, se utilizaron herramientas como LT Spice para la simulación de circuitos y KiCad para el diseño de PCB. 
 
 La placa de desarrollo EDU-CIAA-NXP, se muestra en la Figura \ref{fig:EduCiaaPlaca}, es una versión de bajo costo de la CIAA-NXP \cite{proyectoCIAA} pensada para la enseñanza universitaria, terciaria y secundaria. 
 \begin{figure}[H]
@@ -133,10 +133,10 @@ En la sección \ref{sec:instrumentos_med_viento} del capítulo \ref{cap:viento} 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Hardware/rs485DeltaOhm.png}
-    \caption{Esquema de conexión de datos y alimentación del sensor HD51.3D con un Datalogger o un PLC.  \cite{DeltaOHM_HD51.3D_manual}}
+    \caption{Esquema de conexión de datos y alimentación del sensor HD51.3D con un \textit{Datalogger} o un PLC.  \cite{DeltaOHM_HD51.3D_manual}}
     \label{fig:rs485DeltaOhm}
 \end{figure}
-En la Figura \ref{fig:rs485CIAA}, se muestra el puerto RS485 integrado de la EDU-CIAA, a esta bornera se conecto directamente el anemómetro patrón WMT700. El sensor envía datos en modo ráfaga cada segundo, y este puerto permite una comunicación directa y eficiente sin necesidad de adaptadores adicionales.
+En la Figura \ref{fig:rs485CIAA}, se muestra el puerto RS485 integrado de la EDU-CIAA, a esta bornera se conecto directamente el anemómetro patrón WMT700. El sensor envía datos en modo ráfaga cada segundo, y este puerto permite una comunicación directa sin necesidad de adaptadores adicionales.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\linewidth]{Figuras/datalogger/Hardware/rs485CIAA.jpg}
@@ -152,7 +152,7 @@ Para conectar el anemómetro bajo calibración se utilizó el módulo MAX485, Fi
     \label{fig:moduleMax485}
 \end{figure}
 
- El módulo se alimentó con 5 \unit{\volt} suministrados por el regulador LM2596S. Desde un extremo, se conectaron los cables A y B del sensor RS-485, mientras que del otro lado se conectó a la UART-RS232 de la EDU-CIAA. Para adaptar la señal TTL a la placa de desarrollo, se utilizó un resistor de 1 \unit{\kilo\ohm} entre el pin RO del MAX485 y la UART-RS232. Los pines DE y RE del MAX485 se conectaron a GND para permitir la recepción de datos desde el sensor hacia la placa. El pin DI no se conectó, ya que el sensor no requiere recibir datos o comandos desde la EDU-CIAA.
+ El módulo se alimentó con 5 \unit{\volt} suministrados por el regulador LM2596S. Desde un extremo, se conectaron los cables A y B del sensor RS-485, mientras que del otro lado se conectó a la UART-RS232 de la EDU-CIAA. Para adaptar la señal TTL a la placa de desarrollo, se utilizó un resistor de 1 \unit{\kilo\ohm} entre el pin RO del MAX485 y el pin Rx de la UART-RS232. Los pines DE y RE del MAX485 se conectaron a GND para permitir la recepción de datos desde el sensor hacia la placa. El pin DI no se conectó, ya que el sensor no requiere recibir datos o comandos desde la EDU-CIAA.
 
 \begin{figure}[H]
     \centering
@@ -168,14 +168,14 @@ Para conectar el anemómetro bajo calibración se utilizó el módulo MAX485, Fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Módulo de comunicación Ethernet/SPI  }\label{sec:moduloEthernet}
 
-Para comunicar el sistema embebido con distintos servidores, como el servidor WebSocket desarrollado en la sección \ref{sec:back_end}, así como servidores NTP para sincronizar la fecha y hora, se utilizó el módulo W5100, Figura \ref{fig:moduleW5100}. Este módulo emplea el protocolo TCP/IP para proporcionar una comunicación estable. Se alimenta con 5 \unit{\volt} y utiliza una interfaz SPI para comunicarse con la placa de desarrollo. Una de las principales ventajas del módulo W5100 \cite{W5100Datasheet} es su capacidad para manejar cuatro sockets independientes, lo que permite conectarse a hasta cuatro servidores distintos de manera concurrente. Esto mejora la eficiencia y la flexibilidad del sistema, facilitando la integración con múltiples servicios de red simultáneamente.
+Para comunicar el sistema embebido con distintos servidores, como el servidor \textit{WebSocket} desarrollado en la sección \ref{sec:back_end}, así como servidores NTP para sincronizar la fecha y hora, se utilizó el módulo W5100, Figura \ref{fig:moduleW5100}. Este módulo emplea el protocolo TCP/IP para proporcionar una comunicación estable. Se alimenta con 5 \unit{\volt} y utiliza una interfaz SPI para comunicarse con la placa de desarrollo. Una de las principales ventajas del módulo W5100 \cite{W5100Datasheet} es su capacidad para manejar cuatro \textit{sockets} independientes, lo que permite conectarse con hasta cuatro servidores distintos de manera concurrente. Esto mejora la eficiencia y la flexibilidad del sistema, facilitando la integración con múltiples servicios de red simultáneamente.
 
 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Hardware/moduleW5100.png}
-    \caption{Módulo W5100 utilizado para realizar la conectividad a internet a través de la interfaz SPI del microcontrolador.}
+    \caption{Módulo W5100 utilizado para realizar la conectividad a una red o internet a través de la interfaz SPI del microcontrolador.}
     \label{fig:moduleW5100}
 \end{figure}
 % Descripción de los Pines del Módulo W5100 Ethernet
@@ -190,7 +190,7 @@ Para comunicar el sistema embebido con distintos servidores, como el servidor We
 % \item \textbf{P+ y P-:} Pines para Power over Ethernet (PoE), utilizados para suministrar energía al dispositivo a través del cable Ethernet.
 % \end{itemize}
 
-Como se muestra en la Figura \ref{fig:esquemEthernet}, el módulo W5100 se alimentó con 5 \unit{\volt} y se conectaron los pines del módulo a la EDU-CIAA de la siguiente manera: el pin MO a SPI\_MOSI, el pin MI a SPI\_MISO, y el pin SCK a SPI\_SCK. Además, se conectó el pin NSS al GPIO1 para poder reiniciar el módulo cuando sea necesario por software. El resto de los pines del módulo quedaron sin conectar. Con esta configuración, se logró una comunicación bidireccional, permitiendo transmitir datos de los sensores de viento desde el datalogger hacia la aplicación web, así como recibir comandos desde la aplicación web hacia el datalogger.
+Como se muestra en la Figura \ref{fig:esquemEthernet}, el módulo W5100 se alimentó con 5 \unit{\volt} y se conectaron los pines del módulo a la EDU-CIAA de la siguiente manera: el pin MO a SPI\_MOSI, el pin MI a SPI\_MISO, y el pin SCK a SPI\_SCK. Además, se conectó el pin NSS al GPIO1 para poder reiniciar el módulo cuando sea necesario por software. El resto de los pines del módulo quedaron sin conectar. Con esta configuración, se logró una comunicación bidireccional, permitiendo transmitir datos de los sensores de viento desde el \textit{datalogger} hacia la aplicación Web, así como recibir comandos desde la aplicación Web hacia el \textit{datalogger}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Hardware/esquemEthernet.png}
@@ -203,9 +203,9 @@ Como se muestra en la Figura \ref{fig:esquemEthernet}, el módulo W5100 se alime
 \subsection{Circuito PWM}\label{sec:circuitoPWM}
 
 
-En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control que se conecta con el variador de velocidad del túnel de viento. El tablero posee dos pulsadores: uno de marcha (BT1-NC) y otro de parada (BT2-NA), que permiten encender y apagar, respectivamente, el conjunto variador-motor del túnel de viento. La velocidad del viento se regula manualmente mediante dos potenciómetros lineales: $P1 = \SI{1}{\kilo\ohm}$ y $P2 = \SI{500}{\ohm}$. Además, el circuito incluye una resistencia $R1 = \SI{1.2}{\kilo\ohm}$ conectada a una fuente de alimentación $VCC = \SI{10}{\volt}$, la cual es proporcionada por el tablero. Estos componentes, junto con los potenciómetros, conforman un divisor de tensión variable que permite ajustar el voltaje en un rango de \SI{0}{\volt} a \SI{10}{\volt}. Esta tensión se aplica al pin de entrada analógico-digital $V_{ADC}$ del tablero. Este nivel de baja tensión obtenido se amplifica y adapta a través de su variador a los niveles de tensión continua requeridos por el motor en el rango de \SI{0}{\volt} a \SI{300}{\volt}. El nivel de tensión aplicado al motor se puede visualizar en un voltímetro de corriente continua, \textit{V}, que incluye el tablero.
+En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control que se conecta con el variador de velocidad del túnel de viento. El tablero posee dos pulsadores: uno de marcha (BT1-NC) y otro de parada (BT2-NA), que permiten encender y apagar, respectivamente, el conjunto variador-motor del túnel de viento. La velocidad del viento se regula manualmente mediante dos potenciómetros lineales: $P_{1} = \SI{1}{\kilo\ohm}$ y $P_{2} = \SI{500}{\ohm}$. Además, el circuito incluye una resistencia $R_{1} = \SI{1.2}{\kilo\ohm}$ conectada a una fuente de alimentación $V_{CC} = \SI{10}{\volt}$ que es proporcionada por el tablero. Estos componentes, junto con los potenciómetros, conforman un divisor de tensión variable que permite ajustar el voltaje en un rango de \SI{0}{\volt} a \SI{10}{\volt}. Esta tensión se aplica al pin de entrada analógico-digital $V_{ADC}$ del tablero. Este nivel de baja tensión obtenido se amplifica y adapta a través de su variador a los niveles de tensión continua requeridos por el motor en el rango de \SI{0}{\volt} a \SI{300}{\volt}. El nivel de tensión aplicado al motor se puede visualizar en un voltímetro de corriente continua, \textit{V}, que incluye el tablero.
 
-Se realizó una medición con un amperímetro en serie con la resistencia $R1$ y se obtuvo que la corriente que pasa por $R1$ cuando se ajusta el potenciómetro para obtener una $VADC = \SI{3.56}{\volt}$ es de \SI{140}{\micro\ampere}. Cuando se ajusta el potenciómetro para obtener una $VADC = \SI{5}{\volt}$, la corriente es de \SI{200}{\micro\ampere}. Con estas mediciones podemos concluir que el pin $VADC$ del variador tiene una resistencia de entrada de alta impedancia, ya que el consumo de corriente no supera los \SI{500}{\micro\ampere}.
+Se realizó una medición con un amperímetro en serie con la resistencia $R_{1}$ y se obtuvo que la corriente que pasa por $R_{1}$ cuando se ajusta el potenciómetro para obtener una $V_{ADC} = \SI{3.56}{\volt}$ es de \SI{140}{\micro\ampere}. Cuando se ajusta el potenciómetro para obtener una $VADC = \SI{5}{\volt}$, la corriente es de \SI{200}{\micro\ampere}. Con estas mediciones podemos concluir que el pin $V_{ADC}$ del variador tiene una resistencia de entrada de alta impedancia, ya que el consumo de corriente no supera los \SI{500}{\micro\ampere}.
 
 
 \begin{figure}[H]
@@ -215,7 +215,7 @@ Se realizó una medición con un amperímetro en serie con la resistencia $R1$ y
     \label{fig:esquemCircuitoControlTunel}
 \end{figure}
 
-Para lograr controlar el nivel de tensión $VADC$ por medio de software, se remplazó los dos potenciómetros y el resistor $R1$ por un circuito diseñado en la siguiente sección. Por otro lado, se hizo un relevamiento de la corriente máxima que puede entregar la fuente del variador $VCC$ conectando distintos valores de resistencia entre $VCC$ y $GND$. Los resultados se muestran en la tabla \ref{tab:currentVccVariador}. Como se observa en la tabla, a medida que disminuimos la carga $R$ de prueba, tanto la tensión, como la corriente que puede entregar la fuente $VCC$ disminuyen. Se alcanza la corriente maxima de $\SI{100}{\milli\ampere}$ a partir de una carga de $\SI{100}{\ohm}$, cuya tension de la fuente cae a $\SI{2.29}{\volt}$. Tomando como referencia el consumo de corriente y la tensión que precisa el datalogger, esta fuente $VCC$ del tablero, no es capaz de suministrar la corriente necesaria y mantener la tensión constante, por esta razón se optó por alimentar el sistema como se explicó en la sección \ref{sec:moduloAlimentacionElectrica}
+Para lograr controlar el nivel de tensión $V_{ADC}$ por medio de software, se remplazó los dos potenciómetros y el resistor $R_{1}$ por un circuito diseñado en la siguiente sección. Por otro lado, se hizo un relevamiento de la corriente máxima que puede entregar la fuente del variador $V_{CC}$ conectando distintos valores de resistencia entre $V_{CC}$ y $GND$. Los resultados se muestran en la tabla \ref{tab:currentVccVariador}. Como se observa en la tabla, a medida que disminuimos la carga $R$ de prueba, tanto la tensión, como la corriente que puede entregar la fuente $V_{CC}$ disminuyen. Se alcanza la corriente maxima de $\SI{100}{\milli\ampere}$ a partir de una carga de $\SI{100}{\ohm}$, cuya tension de la fuente cae a $\SI{2.29}{\volt}$. Tomando como referencia el consumo de corriente y la tensión que precisa el \textit{datalogger}, esta fuente $V_{CC}$ del tablero, no es capaz de suministrar la corriente necesaria y mantener la tensión constante, por esta razón se optó por alimentar el sistema como se explicó en la sección \ref{sec:moduloAlimentacionElectrica}
 
 
 
@@ -243,10 +243,10 @@ Para lograr controlar el nivel de tensión $VADC$ por medio de software, se remp
 
 \subsubsection{Simulación del circuito}\label{simulacionCircuito}
 
-En la Figura \ref{fig:pwmCircuitSimulate} se muestra el diseño del circuito del PWM \cite{EEVblog225}, que reemplaza al divisor de tensión formado por los potenciómetros $P1$, $P2$ y la resistencia $R1$, mostrado en la Figura \ref{fig:esquemCircuitoControlTunel}. La señal de entrada es una señal PWM (cuadrada) obtenida desde un pin de la EDU-CIAA. Esta señal, para un ciclo de trabajo del $100\%$, tiene una amplitud de $\SI{3.3}{\volt}$ acorde con los niveles digitales de tensión de la EDU-CIAA. Luego, esta señal pasa por dos etapas de filtrado, cada una con una frecuencia de corte de $\SI{1592}{\hertz}$. 
-La tensión $\text{vFilter1}$ (señal verde) en la primera etapa del filtro pasabajo tiene un tiempo de crecimiento corto, del orden de $\SI{8}{\milli\second}$, pero presenta mayor rizado. La segunda etapa del filtro genera la tensión $\text{voutFilter}$ (señal azul), que tiene un mayor tiempo de crecimiento, del orden de $\SI{12}{\milli\second}$, pero con un rizado mucho menor. Con esta doble etapa de filtro pasa bajo, se obtiene una señal continua con menor rizado, como se muestra en la Figura \ref{fig:filter1and2}. 
+En la Figura \ref{fig:pwmCircuitSimulate} se presenta el diseño del circuito del PWM \cite{EEVblog225}, el cual reemplaza al divisor de tensión compuesto por los potenciómetros $P_{1}$, $P_{2}$ y la resistencia $R_{1}$, mostrado en la Figura \ref{fig:esquemCircuitoControlTunel}. La señal de entrada es una señal PWM (cuadrada), que en la simulación se obtiene mediante la fuente \textit{Pulse}, mientras que en la implementación del circuito se obtendrá desde un pin de la EDU-CIAA. Esta señal, para un ciclo de trabajo del $100\%$, tiene una amplitud de $\SI{3.3}{\volt}$, acorde con los niveles digitales de tensión de la EDU-CIAA. Posteriormente, esta señal pasa por dos etapas de filtrado, cada una con una frecuencia de corte de $\SI{1592}{\hertz}$. En la Figura \ref{fig:filter1and2} se muestra la tensión de la primera etapa del filtro pasabajo, $\text{vFilter1}$ (señal verde), que tiene un tiempo de crecimiento corto, del orden de $\SI{8}{\milli\second}$, pero presenta mayor rizado. La segunda etapa del filtro genera la tensión $\text{voutFilter}$ (señal azul), que tiene un mayor tiempo de crecimiento, del orden de $\SI{12}{\milli\second}$, pero con un rizado mucho menor. Con esta doble etapa de filtro pasabajo, se obtiene una señal continua, estable, controlada por PWM.
 
-Posteriormente, la señal rectificada ingresa a una etapa de amplificación no inversora, implementada con el amplificador operacional LM358. Este nivel de continua es el que se conecta al pin $VADC$ del variador de velocidad del túnel de viento, pero para la simulación se reemplaza con una carga de $\SI{1}{\mega\ohm}$. La señal a la salida del amplificador tiene una ganancia de $\frac{\SI{3.5}{\volt}}{\SI{3.3}{\volt}} \approx \SI{1.06}{}$. Se decidió amplificar hasta $\SI{3.5}{\volt}$ porque se encontró que la máxima velocidad que logra alcanzar el túnel, de $\SI{25}{\meter\per\second}$, se alcanza con $\SI{3.5}{\volt}$ a la entrada del $VADC$. Esta limitación viene dada por la mecánica del motor, por lo tanto, en estas condiciones no es necesario amplificar a valores mayores de $\SI{3.5}{\volt}$, ya que el túnel no incrementa su velocidad de viento.
+
+Posteriormente, la señal rectificada ingresa a una etapa de amplificación no inversora, implementada con el amplificador operacional LM358. Este nivel de continua es el que se conecta al pin $V_{ADC}$ del variador de velocidad del túnel de viento, pero para la simulación esta entrada se reemplaza con una carga de $\SI{1}{\mega\ohm}$. La señal a la salida del amplificador tiene una ganancia de $\frac{\SI{3.5}{\volt}}{\SI{3.3}{\volt}} \approx \SI{1.06}{}$. Se decidió amplificar hasta $\SI{3.5}{\volt}$ porque realizando pruebas con una fuente de laboratorio, se encontró que la máxima velocidad que logra alcanzar el túnel, de $\SI{25}{\meter\per\second}$, se alcanza con $\SI{3.5}{\volt}$ a la entrada del $V_{ADC}$. Esta limitación viene dada por la mecánica del motor, por lo tanto, en estas condiciones no es necesario amplificar a valores mayores de $\SI{3.5}{\volt}$, ya que el túnel no incrementa su velocidad de viento.
 
 % No obstante, para cuando se mejore la mecánica y transmisión del motor del túnel de viento, se dejó un resistor variable (Preset) $R3=\SI{10}{\kilo\ohm}$. Con este preset se cambia la ganancia del amplificador. Se lo ajustó para alcanzar $\SI{3.5}{\volt}$ a la salida del operacional, y podrá ser recalibrado para alcanzar mayores niveles de tensión, lo que genera, mayores velocidades de viento.
 
@@ -265,7 +265,7 @@ Posteriormente, la señal rectificada ingresa a una etapa de amplificación no i
     \label{fig:filter1and2}
 \end{figure}
 
-Se dejó un resistor variable (Preset) $R3=\SI{10}{\kilo\ohm}$ para poder modificar la ganancia del amplificador si fuera necesario. En este caso se lo ajustó para alcanzar $\SI{3.5}{\volt}$ a la salida del operacional. Sin embargo, para cuando sea mejorada la mecánica y transmisión del motor del túnel de viento, podrá ser recalibrado para llegar a mayores niveles de tensión, y por ende mayores velocidades de viento(talvez lo pongo abajo).
+Se dejó un resistor variable (Preset) $R_{3}=\SI{10}{\kilo\ohm}$ para poder modificar la ganancia del amplificador si fuera necesario. En este caso se lo ajustó para alcanzar $\SI{3.5}{\volt}$ a la salida del operacional. Sin embargo, para cuando sea mejorada la mecánica y transmisión del motor del túnel de viento, podrá ser recalibrado para llegar a mayores niveles de tensión, y por ende mayores velocidades de viento.
 
 En la Figura \ref{fig:pwm100Percent} se muestra el resultado de la simulación para un pulso $\text{vPWM}$ (señal verde) de $\SI{100}{\micro\second}$ de periodo ($\SI{10}{\kilo\hertz}$) y una amplitud de $\SI{3.3}{\volt}$ con un ciclo de trabajo del $100\%$. La señal $\text{vOutFilter}$ (señal en azul) es la que ingresa al amplificador operacional alcanzando su valor máximo en $\SI{3.3}{\volt}$ y la señal $\text{vAdcTunnel}$ (señal en rojo) se mide a la salida del amplificador operacional alcanzando un tension máxima de $\SI{3.5}{\volt}$ lo que produce la máxima velocidad del motor.
 
@@ -294,11 +294,11 @@ En la simulación, al regular el ciclo de trabajo de la señal de entrada, se ob
 \end{figure}
 
 
-\subsubsection{Implementación del circuito}
-(cambiar a ensayos del circucuito)
+\subsubsection{Ensayo del circuito}
+
 Se implementó el circuito de la Figura \ref{fig:pwmCircuitSimulate} en un \textit{protoboard} de prueba con componentes \textit{Through-Hole Technology} (THT), conectado a la EDU-CIAA, como se muestra en la Figura \ref{fig:BancoMedicion1}. Para comprobar y caracterizar el comportamiento del PWM, se utilizaron distintos valores de ciclo de trabajo programados desde el firmware del microcontrolador. El ciclo de trabajo de la señal cuadrada se modificó desde 1 hasta 255, equivalente a un rango de 0\% a 100\%.
 
-Para realizar estas mediciones, se utilizó un osciloscopio RIGOL DS2302A. En el canal 1 se midió la señal PWM que sale de un pin digital de la placa de desarrollo y se conecta a la entrada del circuito PWM, esta señal tiene una frecuencia de $\SI{10}{\kilo\hertz}$ con amplitud de $\SI{3.3}{\volt}$ . En el canal 2 se midió la señal continua a la salida del amplificador operacional, ajustando el potenciómetro $R3Varaible$ del esquema de la Figura \ref{fig:pwmCircuitSimulate}, para obtener $\SI{3.5}{\volt}$ cuando el ciclo de trabajo es $100\%$.
+Para realizar estas mediciones, se utilizó un osciloscopio RIGOL DS2302A. En el canal 1 se midió la señal PWM que sale de un pin digital de la placa de desarrollo y se conecta a la entrada del circuito PWM, esta señal tiene una frecuencia de $\SI{10}{\kilo\hertz}$ con amplitud de $\SI{3.3}{\volt}$ . En el canal 2 se midió la señal continua a la salida del amplificador operacional, ajustando el potenciómetro $R_{3_{variable}}$ del esquema de la Figura \ref{fig:pwmCircuitSimulate}, para obtener $\SI{3.5}{\volt}$ cuando el ciclo de trabajo es $100\%$.
 
 % \begin{figure}[H]
 %     \centering
@@ -355,7 +355,7 @@ Los resultados de las mediciones realizadas con el osciloscopio se muestran en l
     \caption{Medición de la señal PWM (rojo) con un ciclo de trabajo de (100\%) y la señal continua a la salida del amplificador operacional (azul) iguala $\SI{3.56}{\volt}$.}
     \label{fig:255}
 \end{figure}
-Luego de caracterizar el circuito PWM, se dio comienzo a las pruebas en el túnel de viento. Se conectó la tensión de la salida del operacional al pin de entrada $VADC$ del variador de velocidad. A continuación, se realizó un barrido del ciclo de trabajo desde 0 hasta 255 (0\% a 100\%), midiendo con un voltímetro, UNI-T modelo UT89X, la tensión entregada al túnel y, con el anemómetro VAISALA WMT700 dentro del túnel, la velocidad en metros por segundo obtenida para cada ciclo de trabajo. En la Figura \ref{fig:pruebaTunelCicloAsc} se muestran los resultados de un barrido ascendente, y en la Figura \ref{fig:pruebaTunelCicloDes}, los resultados de un barrido descendente.
+Luego de caracterizar el circuito PWM, se dio comienzo a las pruebas en el túnel de viento. Se conectó la tensión de la salida del operacional al pin de entrada $V_{ADC}$ del variador de velocidad. A continuación, se realizó un barrido del ciclo de trabajo desde 0 hasta 255 (0\% a 100\%), midiendo con un voltímetro, UNI-T modelo UT89X, la tensión entregada al túnel y, con el anemómetro VAISALA WMT700 dentro del túnel, la velocidad en metros por segundo obtenida para cada ciclo de trabajo. En la Figura \ref{fig:pruebaTunelCicloAsc} se muestran los resultados de un barrido ascendente, y en la Figura \ref{fig:pruebaTunelCicloDes}, los resultados de un barrido descendente.
 
 \begin{figure}[H]
     \centering
@@ -423,7 +423,7 @@ Luego de caracterizar el circuito PWM, se dio comienzo a las pruebas en el túne
 % \label{tab:windSpeedDataDesc}
 % \end{table}
 
-A partir de los resultados obtenidos para el ciclo de trabajo versus la tensión en el variador y el ciclo de trabajo versus la velocidad del viento medida con el anemómetro, se determina una velocidad máxima de viento de $\SI{26}{\meter\per\second}$ para una tensión de $\SI{3.5}{\volt}$. Además, dado que se tienen 255 niveles de tensión, y considerando que tanto el viento como la tensión \textit{VADC} del variador tienen respuesta lineal en el rango de 0 a 255, se obtiene una resolución en tensión de $\frac{\SI{3.5}{\volt}}{255} = \SI{13.7}{\milli\volt}$ y una resolución en velocidad del viento de $\frac{\SI{26}{\meter\per\second}}{255} = \SI{0.101}{\meter\per\second}$. Con estas mediciones y la caracterización del circuito PWM, éste quedó listo para ser integrado en un PCB. Este circuito será la interfaz electrónica para un controlador PID, el cual se explica en la sección \ref{sec:sistemaDeControlPid}.
+A partir de los resultados obtenidos para el ciclo de trabajo versus la tensión en el variador y el ciclo de trabajo versus la velocidad del viento medida con el anemómetro, se determina una velocidad máxima de viento de $\SI{26}{\meter\per\second}$ para una tensión de $\SI{3.5}{\volt}$. Además, dado que se tienen 255 niveles de tensión, y considerando que tanto el viento como la tensión $V_{ADC}$ del variador tienen respuesta lineal en el rango de 0 a 255, se obtiene una resolución en tensión de $\frac{\SI{3.5}{\volt}}{255} = \SI{13.7}{\milli\volt}$ y una resolución en velocidad del viento de $\frac{\SI{26}{\meter\per\second}}{255} = \SI{0.101}{\meter\per\second}$. Con estas mediciones y la caracterización del circuito PWM, éste quedó listo para ser integrado en un PCB. Este circuito será la interfaz electrónica para un controlador PID, el cual se explica en la sección \ref{sec:sistemaDeControlPid}.
 
 
 % \subsubsection{Caracterizacion en el tunel de viento}
@@ -462,9 +462,9 @@ Los resultados de la simulación del circuito descrito, se muestran en la Figura
     \label{fig:adc55PercentPwm}
 \end{figure}
 
-\subsubsection{Implementación del circuito}
+\subsubsection{Ensayo del circuito}
 
-Se implementó el circuito de la Figura \ref{fig:adcCiaaCircuitSimulate}. Para ajustar los niveles de tensión de $\SI{3.5}{\volt}$ a $\SI{3.3}{\volt}$, se agregó en el divisor de tensión, un resistor variable con un \textit{preset} de $R5 = \SI{10}{\kilo\ohm}$. Luego se conectó los diodos Schottky 1N5819 \cite{1N5819_datasheet} a la fuente de $\SI{3.3}{\volt}$ de la EDU-CIAA y se agregó un la resistencia limitadora de tensión de $R7 = \SI{1}{\kilo\ohm}$, esta señal de continua se muestrea con una resolución  de $\frac{\SI{3.3}{\volt}}{1024} = \SI{3.22}{\milli\volt}$  en el canal ADC\_CH2 de la placa de desarrollo.
+Se implementó el circuito de la Figura \ref{fig:adcCiaaCircuitSimulate}. Para ajustar los niveles de tensión de $\SI{3.5}{\volt}$ a $\SI{3.3}{\volt}$, se agregó en el divisor de tensión, un resistor variable con un \textit{preset} de $R_{5} = \SI{10}{\kilo\ohm}$. Luego se conectó los diodos Schottky 1N5819 \cite{1N5819_datasheet} a la fuente de $\SI{3.3}{\volt}$ de la EDU-CIAA y se agregó un la resistencia limitadora de tensión de $R_{7} = \SI{1}{\kilo\ohm}$, esta señal de continua se muestrea con una resolución  de $\frac{\SI{3.3}{\volt}}{1024} = \SI{3.22}{\milli\volt}$  en el canal ADC\_CH2 de la placa de desarrollo.
 
 % \begin{figure}[H]
 %     \centering
@@ -559,12 +559,12 @@ Cada circuito permite que el LED correspondiente parpadee cada vez que se recibe
     \label{fig:esquemLedsSensor}
 \end{figure}
 
-En La Figura \ref{fig:esquemLedStatusSocket} se muestra un circuito similar al previamente descrito, en el que se utiliza un LED dual como indicador de la conectividad del sistema de la placa de desarrollo con el servidor Websocket descrito en la sección \ref{sec:back_end}. El LED dual se enciende en rojo cuando el sistema de la placa de desarrollo está desconectado del servidor. Al establecerse la conexión a través de Ethernet, el LED cambia a verde. Este cambio de color ocurre automáticamente según el estado de la conectividad con el servidor. El LED dual tiene tres pines: dos ánodos y un cátodo común conectado a masa. Los ánodos están conectados a circuitos que controlan el encendido y apagado del LED según las señales de los pines digitales de la placa de desarrollo.
+En La Figura \ref{fig:esquemLedStatusSocket} se muestra un circuito similar al previamente descrito, en el que se utiliza un LED dual como indicador de la conectividad del sistema de la placa de desarrollo con el servidor \textit{WebSocket} descrito en la sección \ref{sec:back_end}. El LED dual se enciende en rojo cuando el sistema de la placa de desarrollo está desconectado del servidor. Al establecerse la conexión a través de Ethernet, el LED cambia a verde. Este cambio de color ocurre automáticamente según el estado de la conectividad con el servidor. El LED dual tiene tres pines: dos ánodos y un cátodo común conectado a masa. Los ánodos están conectados a circuitos que controlan el encendido y apagado del LED según las señales de los pines digitales de la placa de desarrollo.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{Figuras/datalogger/Hardware/esquemLedStatusSocket.png}
-    \caption{Esquemático del circuito de un LED dual que se enciende en rojo cuando el sistema no está conectado al servidor Websocket y en verde cuando hay una conexión estable con el servidor.}
+    \caption{Esquemático del circuito de un LED dual que se enciende en rojo cuando el sistema no está conectado al servidor \textit{WebSocket} y en verde cuando hay una conexión estable con el servidor.}
     \label{fig:esquemLedStatusSocket}
 \end{figure}
 
@@ -573,7 +573,7 @@ En La Figura \ref{fig:esquemLedStatusSocket} se muestra un circuito similar al p
 
 \section{Diseño y construcción del PCB}
 
-En las secciones anteriores se ha descrito el diseño y funcionamiento electrónico de los distintos módulos y circuitos que forman parte del datalogger. Para integrar todo en un solo lugar, se diseñó un \textit{shield} que se conecta sobre la EDU-CIAA. Para ello, se trabajó con la lista de templates que ofrece el proyecto CIAA \cite{CIAA_Ponchos}. Este template tiene un diseño acorde con las dimensiones de la placa EDU-CIAA.
+En las secciones anteriores se ha descrito el diseño y funcionamiento electrónico de los distintos módulos y circuitos que forman parte del \textit{datalogger}. Para integrar todo en un solo lugar, se diseñó un \textit{shield} que se conecta sobre la EDU-CIAA. Para ello, se trabajó con la lista de templates que ofrece el proyecto CIAA \cite{CIAA_Ponchos}. Este template tiene un diseño acorde con las dimensiones de la placa EDU-CIAA.
 
 Para el desarrollo del PCB, se utilizó el software KiCad. Primero se cargó el template de la Figura \ref{fig:HojaTemplatePonchoCiaa} que incluye una hoja jerárquica con los pines disponibles en los conectores P1 y P2 y luego se agregaron etiquetas jerárquicas por cada pin utilizado en este desarrollo.
 
@@ -585,7 +585,7 @@ Para el desarrollo del PCB, se utilizó el software KiCad. Primero se cargó el 
 \end{figure}
 
 
-Por cada módulo, se agregó una hoja jerárquica que contiene el circuito esquemático como se indica en la Figura \ref{fig:esquematicoPonchoDatalogger}. En total, se dividió en seis hojas jerárquicas: una para el módulo RS485, otra para el módulo Ethernet W5100, otra para el circuito PWM, otra para la fuente de alimentación (power supply), otra para los LEDs y una más para el circuito que mide la tensión en el variador del túnel. Además, se diseñaron los símbolos para los módulos W5100, RS485-TTL y el convertidor DC-DC usando el editor de símbolos de KiCad, ya que estos no vienen precargados en el software. También se diseñaron sus respectivos footprints con el editor de huellas, tomando las dimensiones y la distribución de pines de cada módulo para que se puedan agregar correctamente al PCB.
+Por cada módulo, se agregó una hoja jerárquica que contiene el circuito esquemático como se indica en la Figura \ref{fig:esquematicoPonchoDatalogger}. En total, se dividió en seis hojas jerárquicas: una para el módulo RS485, otra para el módulo Ethernet W5100, otra para el circuito PWM, otra para la fuente de alimentación (\textit{power supply}), otra para los LEDs y una más para el circuito que mide la tensión en el variador del túnel. Además, se diseñaron los símbolos para los módulos W5100, RS485-TTL y el convertidor DC-DC usando el editor de símbolos de KiCad, ya que estos no vienen precargados en el software. También se diseñaron sus respectivos footprints con el editor de huellas, tomando las dimensiones y la distribución de pines de cada módulo para que se puedan agregar correctamente al PCB.
 
 \begin{figure}[H]
     \centering
@@ -619,7 +619,7 @@ En la figura \ref{fig:pcb3dBottom} se muestra la vista 3D de capa \textit{Bottom
     \label{fig:pcb3dBottom}
 \end{figure}
 
-Por otro lado, en la capa superior (TOP) se han añadido los tres LEDs con montaje THT y se han dispuesto dos tiras de pines 3x1 para la conexión física de los dos potenciómetros variables (presets). Además, debido a la falta de disponibilidad del diodo Zener SMD de \SI{3.3}{\volt} para proteger el ADC-CH1 de la placa EDU-CIAA, se adquirió el mismo componente pero con montaje THT. También se han incorporado los footprints de los módulos previamente diseñados del módulo Ethernet, módulo RS485-UART (que incluye su propia bornera para la conexión del anemómetro bajo calibración), y módulo DC-DC step-dowm. Además, se han agregado una bornera de 2x1 para alimentar el circuito con \SI{12}{\volt}, y otra bornera 3x1 para la conexión con el variador del túnel de viento.
+Por otro lado, en la capa \textit{Top} se han añadido los tres LEDs con montaje THT y se han dispuesto dos tiras de pines 3x1 para la conexión física de los dos potenciómetros variables (\textit{presets}). Además, debido a la falta de disponibilidad del diodo Zener SMD de \SI{3.3}{\volt} para proteger el ADC-CH1 de la placa EDU-CIAA, se adquirió el mismo componente pero con montaje THT. También se han incorporado los footprints de los módulos previamente diseñados: el módulo Ethernet, el módulo RS485-UART que incluye su propia bornera para la conexión del anemómetro bajo calibración y el módulo DC-DC \textit{step-down}. Además, se agregó una bornera de 2x1 para alimentar el \textit{datalogger} con \SI{12}{\volt}, y otra bornera 3x1 para la conexión con el variador del túnel de viento.
 
 
 \begin{figure}[H]
@@ -629,7 +629,7 @@ Por otro lado, en la capa superior (TOP) se han añadido los tres LEDs con monta
     \label{fig:pcb3dTop}
 \end{figure}
 
-Para la construcción del \textit{shield}, se seleccionó una placa simple faz por su disponibilidad en el Servicio Meteorológico Nacional (SMN). Debido a restricciones de tiempo, se optó por ensamblar la placa en el laboratorio del SMN, siguiendo estos pasos:
+Para la construcción del \textit{shield}, se seleccionó una placa simple faz por su disponibilidad en el SMN. Debido a restricciones de tiempo, se optó por ensamblar la placa en el laboratorio del SMN, siguiendo estos pasos:
 
 Inicialmente, se empleó una insoladora de tubos UV y papel fotosensible para transferir el diseño a la placa. Los negativos del diseño se imprimieron en papel transparente.
 
@@ -721,7 +721,7 @@ Se crearon doce regiones donde cada una contiene una maquina de estados. A parti
     \label{fig:ordenRegiones}
 \end{figure}
 
-Se utilizó una licencia educativa, gratuita de Yakindu, integrándola con el IDE de Eclipse para editar y generar el código a partir de los \textit{statecharts}. En particular, se configuró el proyecto en Yakindu C/C++ para poder agregar código en C a las máquinas de estado, incluyendo la importación de archivos \texttt{.h}, declaración de variables, punteros globales y constantes. Para mas detalle del código se puede acceder al código de repositorio del proyecto \cite{FirmwareSCA2024}.
+Se utilizó una licencia educativa, gratuita de Yakindu, integrándola con el IDE de Eclipse para editar y generar el código a partir de los \textit{statecharts}. En particular, se configuró el proyecto en Yakindu C/C++ para poder agregar código en C a las máquinas de estado, incluyendo la importación de archivos \texttt{.h}, declaración de variables, punteros globales y constantes. Para mas detalle del código se puede acceder al repositorio del proyecto \cite{FirmwareSCA2024}.
 
 La máquina de estado principal (\textit{main}) se muestra en la figura \ref{fig:sc_main} e inicializa y configura la placa, el SPI, las UARTs, un contador de ticks y el resto de las máquinas de estado. Luego, pasa a un estado inactivo, esperando alguna interrupción. Cuando ocurre una interrupción, se verifica el estado de un \textit{flag} del temporizador principal del sistema. Si el \textit{flag} está activo, se actualizan todos los \textit{ticks} de los temporizadores. Posteriormente, el sistema escanea todos los \textit{ticks} de los temporizadores para verificar eventos pendientes. Si hay eventos pendientes, estos se levantan en su respectiva máquina de estados. Finalmente, la máquina de estados ejecuta un ciclo para manejar los eventos levantados (\textit{raiseEvent}). Luego, el sistema regresa al estado inactivo, esperando la próxima interrupción.
 
@@ -775,8 +775,8 @@ La máquina de estado principal (\textit{main}) se muestra en la figura \ref{fig
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Configuración y conexión con los servidores}\label{sec:confServers}
-Como se detalló en la sección \ref{sec:moduloEthernet}, se utilizó el módulo W5100 para transferir datos desde el datalogger hacia los servidores y recibir datos de los mismos. El módulo cuenta con cuatro socket independientes que permiten configurar un sistema embebido como servidor o cliente.
-%  como se muestra en la Figura \ref{fig:socketModoDeTrabajoW5100}.
+Como se detalló en la sección \ref{sec:moduloEthernet}, se utilizó el módulo W5100 para transferir datos desde el \textit{datalogger} hacia los servidores y recibir datos de los mismos. El módulo cuenta con cuatro \textit{sockets} independientes que permiten configurar un sistema embebido como servidor o cliente.
+como se muestra en la Figura \ref{fig:socketModoDeTrabajoW5100}.
 
 \begin{figure}[H]
     \centering
@@ -785,7 +785,7 @@ Como se detalló en la sección \ref{sec:moduloEthernet}, se utilizó el módulo
     \label{fig:socketModoDeTrabajoW5100}
 \end{figure}
 
-El datalogger se comunica con los servidores en modo cliente (apertura activa), enviando una solicitud de conexión a un servidor, estableciendo la comunicación e intercambiando datos. Luego, realiza una solicitud de desconexión y se cierra el enlace. Utiliza, en la capa de transporte, el protocolo TCP y, en la capa de red, el protocolo IP. En la capa de aplicación, se utilizó el protocolo WebSocket para intercambio de datos y el protocolo NTP para configurar el RTC del datalogger. Dado que estos protocolos no están incluidos en la biblioteca del chip W5100, se implementó la conexión, el intercambio de datos y la desconexión de los servidores mediante sockets.
+El \textit{datalogger} se comunica con los servidores en modo cliente, enviando una solicitud de conexión a un servidor, estableciendo la comunicación e intercambiando datos. Luego, realiza una solicitud de desconexión y se cierra el enlace. Utiliza, en la capa de transporte, el protocolo TCP y en la capa de red, el protocolo IP. En la capa de aplicación, se utilizó el protocolo \textit{WebSocket} para intercambio de datos y el protocolo NTP para configurar el RTC del \textit{datalogger}. Dado que estos protocolos no están incluidos en la biblioteca del chip W5100, se implementó la conexión, el intercambio de datos y la desconexión de los servidores mediante las funciones de \textit{sockets} que trae la biblioteca.
 % , como se indica en el diagrama de flujo de la figura \ref{fig:socketDiagramClientW5100}.
 
 % Un socket es una interfaz que permite la comunicación entre dispositivos a través de redes. En términos simples, un socket es un punto final para enviar y recibir datos en una red, y está compuesto por una dirección IP y un número de puerto.
@@ -798,7 +798,7 @@ El datalogger se comunica con los servidores en modo cliente (apertura activa), 
 
 \subsubsection{Servidor NTP}\label{sec:serverNTP}
 % poner diagrama de Config RTC, para que esta
-Para la configuración del RTC del datalogger, se estableció una conexión con los servidores NTP del Instituto Nacional de Estándares y Tecnología (\textit{NIST}). Se seleccionó una de las múltiples IPs disponibles, específicamente la dirección 128.138.141.172 a través del puerto 13. El servidor retorna una cadena de caracteres, \texttt{59992 23-02-17 17:47:01 00 0 0 831.5 UTC(NIST)*}, que se procesa y se guarda en una estructura que contiene las variables de hora y fecha del RTC. Para gestionar y validar esta comunicación con el servidor NTP, se configuró una maquina de estados específica dentro del sistem ilustrada en la Figura \ref{fig:sc_configRTC}.
+Para la configuración del RTC del \textit{datalogger}, se estableció una conexión con los servidores NTP del Instituto Nacional de Estándares y Tecnología (\textit{NIST}). Se seleccionó una de las múltiples IPs disponibles, específicamente la dirección 128.138.141.172 a través del puerto 13. El servidor retorna una cadena de caracteres, \texttt{59992 23-02-17 17:47:01 00 0 0 831.5 UTC(NIST)*}, que se procesa y se guarda en una estructura que contiene las variables de hora y fecha del RTC. Para gestionar y validar esta comunicación con el servidor NTP, se configuró una maquina de estados específica dentro del sistem ilustrada en la Figura \ref{fig:sc_configRTC}.
 
 
 % \\textsc{begin{lstlisting}[style=yakindustyle, caption={Declaración de variables booleanas para validar la conexion con el servidor NTP.}, label=cdg:serRTC,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
@@ -809,7 +809,7 @@ Para la configuración del RTC del datalogger, se estableció una conexión con 
 % \end{lstlisting}}
 
 
-La máquina comienza en el estado \textbf{Inicio} y, luego de un tiempo predefinido, transiciona al estado \textbf{Configurar socket}, el cual se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP locales. Posteriormente, estos parámetros se cargan en uno de los cuatro sockets del módulo W5100, se configura el protocolo de transporte (TCP en este caso), se asigna un puerto y se abre la conexión para establecer comunicación con el servidor. Si la apertura y configuración son correctas, la máquina de estados transiciona al estado \textbf{Configurar servidor NTP}, donde se configura la dirección IP y el puerto, y con estos datos se solicita una conexión al servidor NTP. En caso de que la conexión esté lista, el servidor devuelve la fecha y la hora actual en formato UTC. La máquina de estados transiciona al estado \textbf{Establecer fecha y hora}, donde se procesa la información recibida y se actualiza el RTC (reloj de tiempo real) del datalogger. Finalmente, se cierra la conexión con el servidor NTP, pasando al estado \textbf{Inactividad}. Cuando se realiza esta última transición, se eleva un evento a través de la señal \texttt{s\_Iniciar configuración}, la cual será un disparador para transicionar entre estados de otra máquina de estados que gestiona la conexión con el servidor \textit{WebSocket}. En caso de fallo en cualquiera de los estados previos, se transiciona al estado \textbf{Establecer Fecha y hora por defecto}, donde se establece por valores predeterminados.
+La máquina comienza en el estado \textbf{Inicio} y luego de un tiempo predefinido, transiciona al estado \textbf{Configurar socket}, el cual se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP locales. Posteriormente, estos parámetros se cargan en uno de los cuatro \textit{sockets} del módulo W5100, se configura el protocolo de transporte (TCP en este caso), se asigna un puerto y se abre la conexión para establecer comunicación con el servidor. Si la apertura y configuración son correctas, la máquina de estados transiciona al estado \textbf{Configurar servidor NTP}, donde se configura la dirección IP y el puerto, y con estos datos se solicita una conexión al servidor NTP. En caso de que la conexión esté lista, el servidor devuelve la fecha y la hora actual en formato UTC. La máquina de estados transiciona al estado \textbf{Establecer fecha y hora}, donde se procesa la información recibida y se actualiza el RTC (reloj de tiempo real) del \textit{datalogger}. Finalmente, se cierra la conexión con el servidor NTP, pasando al estado \textbf{Inactividad}. Cuando se realiza esta última transición, se eleva un evento a través de la señal \texttt{s\_Iniciar configuración}, la cual será un disparador para transicionar entre estados de otra máquina de estados que gestiona la conexión con el servidor \textit{WebSocket}. En caso de fallo en cualquiera de los estados previos, se transiciona al estado \textbf{Establecer Fecha y hora por defecto}, donde se establece por valores predeterminados.
 
 % La máquina comienza en el estado \textbf{INIT} y luego de un período de \texttt{DelatInit} segundos, pasa al estado \textbf{CONFIG\_SOCKET}. En este estado, se llama a la función \texttt{opConfigNtpSocketViaTCP()}, que se encarga de configurar los parámetros de red del cliente: gateway, dirección MAC, máscara de subred e IP. 
 
@@ -826,7 +826,7 @@ La máquina comienza en el estado \textbf{Inicio} y, luego de un tiempo predefin
 
 \subsubsection{Servidor WebSocket}\label{sec:serverWebSocket}
  
-El protocolo WebSocket es una tecnología de comunicación que permite interacciones bidireccionales (\textit{full-duplex}) entre un cliente y un servidor a través de un solo canal de conexión TCP. Es especialmente útil para aplicaciones web que requieren comunicación en tiempo real, como juegos en línea, chat en vivo y servicios de trading. Para establecer una conexión WebSocket, el cliente envía una solicitud de  \textit{handshake} (aprenton de manos) al servidor. Esta solicitud sigue el protocolo HTTP con un \textit{upgrade} para solicitar el cambio de protocolo a WebSocket. Aquí se muestra un ejemplo de cómo se ve una solicitud de \textit{handshake} de WebSocket:
+El protocolo \textit{WebSocket} es una tecnología de comunicación que permite interacciones bidireccionales (\textit{full-duplex}) entre un cliente y un servidor a través de un solo canal de conexión TCP. Es especialmente útil para aplicaciones Web que requieren comunicación en tiempo real, como juegos en línea, chat en vivo y servicios de trading. Para establecer una conexión \textit{WebSocket}, el cliente envía una solicitud de  \textit{handshake} (aprenton de manos) al servidor. Esta solicitud sigue el protocolo HTTP con un \textit{upgrade} para solicitar el cambio de protocolo a \textit{WebSocket}. Aquí se muestra un ejemplo de cómo se ve una solicitud de \textit{handshake} de \textit{WebSocket}:
 
 \begin{verbatim}
 GET /mychat HTTP/1.1
@@ -849,7 +849,7 @@ Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
 Sec-WebSocket-Protocol: chat
 \end{verbatim}
 
-La clave \texttt{Sec-WebSocket-Accept} es generada por el servidor a partir de la clave \texttt{Sec-WebSocket-Key} enviada por el cliente, lo que confirma que el servidor entiende y acepta la solicitud de WebSocket. Una vez establecido el \textit{handshake}, el cliente y el servidor pueden enviar datos en forma de \textit{frames} de WebSocket, que pueden ser datos de texto o binarios.
+La clave \texttt{Sec-WebSocket-Accept} es generada por el servidor a partir de la clave \texttt{Sec-WebSocket-Key} enviada por el cliente, lo que confirma que el servidor entiende y acepta la solicitud de \textit{WebSocket}. Una vez establecido el \textit{handshake}, el cliente y el servidor pueden enviar datos en forma de \textit{frames} de \textit{WebSocket}, que pueden ser datos de texto o binarios.
 
 % A continuación se pasa a explicar como se implementó la comunicación. Para ello se declaran las variables de estado que se muestran en el Código \ref{cdg:setWebSocket} y permiten la transición de estados de la región \texttt{ConexionWebSocket} que se muestra en la figura \ref{fig:connectWebSocket}
 
@@ -861,25 +861,17 @@ La clave \texttt{Sec-WebSocket-Accept} es generada por el servidor a partir de l
 % var txKeep:uint8_t=FALSE
 % \end{lstlisting}
 
-La máquina de estados que gestiona la conexión con el servidor \textit{WebSocket} se muestra en la figura \ref{fig:sc_connectionWebSocket}. Comienza en el estado \textbf{Inicio}, la transición al estado \textbf{Configurar socket} se desencadena por el evento de la señal \texttt{s\_Iniciar configuración}, generado por la máquina de estados que configura el RTC. Esto asegura que no se inicie la configuración del servidor \textit{WebSocket} hasta que la hora esté correctamente sincronizada. En el estado \textbf{Configurar socket}, nuevamente se configura  los parámetros de red del módulo W5100 y también se establece el protocolo TCP, asignando un número de puerto al cliente. Tras abrir el socket con exito, la máquina de estados avanza al estado \textbf{Iniciar Cliente} donde se prepara los datos necesarios para la conexión con el servidor WebSocket, como la dirección IP del servidor, el puerto y el mensaje de \textit{handshake}. Luego de preparar el cliente, se transiciona al estado \textbf{Conectar al servidor}. Aquí se gestiona el envío de la solicitud de \textit{handshake} al servidor y se procesa su respuesta. Si la conexión es exitosa, se establece un \textit{flag} en true, lo que servira como condicion de guarda para la transicion de otras maquinas de estado concurrentes. Finalmente la conexión está lista para el intercambio de datos en modo full-duplex. Si se presenta un fallo en cualquiera de los estados previos, la máquina de estados regresa al estado \textbf{Configurar socket} para intentar una nueva conexión con el servidor.
+La máquina de estados que gestiona la conexión con el servidor \textit{WebSocket} se muestra en la figura \ref{fig:sc_connectionWebSocket}. Comienza en el estado \textbf{Inicio}, la transición al estado \textbf{Configurar socket} se desencadena por el evento de la señal \texttt{s\_Iniciar configuración}, generado por la máquina de estados que configura el RTC. Esto asegura que no se inicie la configuración del servidor \textit{WebSocket} hasta que la hora esté correctamente sincronizada. En el estado \textbf{Configurar socket}, nuevamente se configura  los parámetros de red del módulo W5100 y también se establece el protocolo TCP, asignando un número de puerto al cliente. Tras abrir el \textit{socket} con exito, la máquina de estados avanza al estado \textbf{Iniciar Cliente} donde se prepara los datos necesarios para la conexión con el servidor \textit{WebSocket}, que son: la dirección IP del servidor, el puerto y el mensaje de \textit{handshake}. Luego de preparar el cliente, se transiciona al estado \textbf{Conectar al servidor}. Aquí se gestiona el envío de la solicitud de \textit{handshake} al servidor y se procesa su respuesta. Si la conexión es exitosa, se establece un \textit{flag} en true, lo que servira como condicion de guarda para la transicion de otras maquinas de estado concurrentes. Finalmente la conexión está lista para el intercambio de datos en modo full-duplex. Si se presenta un fallo en cualquiera de los estados previos, la máquina de estados regresa al estado \textbf{Configurar socket} para intentar una nueva conexión con el servidor.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Firmware/sc_connectionWebSocket.png}
-    \caption{Máquina de estados para establecer una conexión bidireccional con un servidor WebSocket.}
+    \caption{Máquina de estados para establecer una conexión bidireccional con un servidor \textit{WebSocket}.}
     \label{fig:sc_connectionWebSocket}
 \end{figure}
 % Luego hablar del keep alive 
 
-Para prevenir la desconexión automática del con el servidor en ausencia de intercambio de datos, se implementó una maquina de estados de la Figura \ref{fig:sc_keepAlive}, que tiene un doble propósito: primero, mantener activa la comunicación con el servidor incluso cuando no hay tráfico de datos; y segundo, realizar una consulta periódica (\textit{polling}) con un retardo no bloqueante para verificar si se ha recibido algún mensaje del servidor.
-
-El estado final \textbf{Conectar al servidor} de la máquina de estados de la Figura \ref{fig:sc_connectionWebSocket}, al completar su secuencia de operaciones, genera un evento con la señal \texttt{s\_KeepAlive}. Esta señal, en conjunción con la condición de que lac conexion con el serviodor esta establecida permite la transición desde el estado \textbf{Inactividad} hacia el estado \textbf{Tx KeepAlive y Rx mensajes}. En este último estado, se transmiten los mensajes de \textit{keepAlive} hacia el servidor para mantener la conexion con el mismo cada \SI{500}{\milli\second} y ademas se escanea si el servidor ha enviado un mensaje al datalooger. Además se activa otro evento a traves de la señal \texttt{s\_ProccesMsjServer} que permitira transicionar la siguiente maquina de estados.
-
-
-
-Para prevenir la desconexión automática del con el servidor en ausencia de intercambio de datos, se implementó una máquina de estados, como se muestra en la Figura \ref{fig:sc_keepAlive}. Esta máquina tiene un doble propósito: primero, mantener activa la comunicación con el servidor incluso cuando no hay tráfico de datos; y segundo, realizar una consulta periódica (\textit{polling}) con un retardo no bloqueante para verificar si se ha recibido algún mensaje del servidor.
-
-El estado final \textbf{Conectar al servidor} de la máquina de estados de la Figura \ref{fig:sc_connectionWebSocket}, al completar su secuencia de operaciones, genera un evento con la señal \texttt{s\_KeepAlive}. Esta señal, en conjunción con la condición de que la conexión con el servidor está establecida, permite la transición desde el estado \textbf{Inactividad} hacia el estado \textbf{Tx KeepAlive y Rx mensajes}. En este último estado, se transmiten los mensajes de \textit{keepAlive} hacia el servidor para mantener la conexión con el mismo cada \SI{500}{\milli\second} y, además, se verifica si el servidor ha enviado algún mensaje al datalogger. Además, en ese estado, se activa otro evento a través de la señal \texttt{s\_ProccesMsjServer} que permitirá una transición de la siguiente máquina de estados.
+Para prevenir la desconexión automática con el servidor en ausencia de intercambio de datos, se implementó una maquina de estados de la Figura \ref{fig:sc_keepAlive}, que tiene un doble propósito: primero, mantener activa la comunicación con el servidor incluso cuando no hay tráfico de datos; y segundo, realizar una consulta periódica (\textit{polling}) con un retardo no bloqueante para verificar si se ha recibido algún mensaje del servidor. El estado final \textbf{Conectar al servidor} de la máquina de estados de la Figura \ref{fig:sc_connectionWebSocket}, al completar su secuencia de operaciones, genera un evento con la señal \texttt{s\_KeepAlive}. Esta señal, en conjunción con la condición de que la conexión con el servidor esta establecida permite la transición desde el estado \textbf{Inactividad} hacia el estado \textbf{Tx KeepAlive y Rx mensajes}. En este último estado, se transmiten los mensajes de \textit{keepAlive} hacia el servidor para mantener la conexion con el mismo cada \SI{500}{\milli\second} y además se escanea si el servidor ha enviado un mensaje al \textit{datalooger}. Por otro lado, se activa un evento a través de la señal \texttt{s\_ProccesMsjServer} que permitira transicionar de estados a la siguiente maquina de estados.
 
 
 % En este estado se invoca a la función \texttt{KeepAlive(ptrSizeBuff)} que se encarga de enviar un mensaje vacío al servidor para mantener la comunicación y revisar si hay algún mensaje del servidor guardándolo en un buffer. En caso de 
@@ -905,16 +897,16 @@ El estado final \textbf{Conectar al servidor} de la máquina de estados de la Fi
 % var ptrConfigCommand:ptrConfig_t=configCommand.pointer
 % \end{lstlisting}
 
-La máquina de estados de la figura \ref{fig:sc_processComand} se encarga de procesar los datos recibidos por el servidor \textit{WebSocket}. Se inicia en el estado de \textbf{Inactividad} y, cuando se activa la señal \texttt{s\_ProccesMsjServer} y el tamaño de los datos recibidos es mayor a cero, se transiciona al estado \textbf{Procesar mensaje}, donde se procesan los mensajes provenientes del servidor. Estos mensajes pueden incluir comandos de configuración para el datalogger o valores de referencia para el control del túnel, detallados la tabla \ref{tab:comandoDataloggerWeb}.
+La máquina de estados de la figura \ref{fig:sc_processComand} se encarga de procesar los datos recibidos por el servidor \textit{WebSocket}. Se inicia en el estado de \textbf{Inactividad} y cuando se activa la señal \texttt{s\_ProccesMsjServer} y el tamaño de los datos recibidos es mayor a cero, se transiciona al estado \textbf{Procesar mensaje}, donde se procesan los mensajes provenientes del servidor. Estos mensajes pueden incluir comandos de configuración para el \textit{datalogger} o valores de referencia para el control del túnel, detallados la tabla \ref{tab:comandoDataloggerWeb}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Firmware/sc_processComand.png}
-    \caption{Máquina de estados para procesar los mensajes recibidos del servidor WebSocket.}
+    \caption{Máquina de estados para procesar los mensajes recibidos del servidor \textit{WebSocket}.}
     \label{fig:sc_processComand}
 \end{figure}
 
-Para gestionar eficientemente los comandos destinados a configurar diversas partes del datalogger con la información proporcionada por el software, se establece un diccionario de punteros a función detallado en el repositorio del proyecto \cite{FirmwareSCA2024}.
+Para gestionar eficientemente los comandos destinados a configurar diversas partes del \textit{datalogger} con la información proporcionada por el software, se establece un diccionario de punteros a función detallado en el repositorio del proyecto \cite{FirmwareSCA2024}.
 
 % Este diccionario, ilustrado en el código~\ref{cdg:diccCommand}, permite ejecutar una función específica en respuesta a cada comando o petición contenida en el mensaje recibido.
 
@@ -942,7 +934,7 @@ Para gestionar eficientemente los comandos destinados a configurar diversas part
 \subsection{Muestreo, adquisición y procesamiento}\label{sec:muestreo_adquisicion_procesamiento}
 
 % Para almacenar las muestras de los sensores de viento, patrón y bajo calibración, así como los niveles de tensión de la fuente y la tensión que ingresa al variador de velocidad, se han declarado las variables y constantes que van a interactuar con las maquinas de estado.
-Los sensores de viento estan configurados en modo rafaga y envian los datos con una cadencia de un segundo. Para configurar cada anemómetro, se requiere la información especificada en la tabla \ref{tab:sensorDataStruct}. Los primeros cuatro datos son ingresados por el operador a través de la aplicación web descrita en el capítulo \ref{cap:aplicacionweb}. A continuación, se dispone de dos buffers: el primero, de 100 caracteres, se utiliza para almacenar temporalmente cada mensaje recibido por el sensor. Posteriormente, los datos procesados se almacenan en el segundo buffer y quedan listos para ser enviados al servidor websocket.
+Los sensores de viento estan configurados en modo rafaga y envian los datos con una cadencia de un segundo. Para configurar cada anemómetro, se requiere la información especificada en la tabla \ref{tab:sensorDataStruct}. Los primeros cuatro datos son ingresados por el operador a través de la aplicación Web descrita en el capítulo \ref{cap:aplicacionweb}. A continuación, se dispone de dos buffers: el primero, de 100 caracteres, se utiliza para almacenar temporalmente cada mensaje recibido por el sensor. Posteriormente, los datos procesados se almacenan en el segundo buffer y quedan listos para ser enviados al servidor \textit{WebSocket}.
 
 \begin{table}[H]
     \centering
@@ -967,7 +959,7 @@ Los sensores de viento estan configurados en modo rafaga y envian los datos con 
 \end{table}
 
 
-En la figura \ref{fig:sc_sampleSensorWind}, se muestra la máquina de estados encargada de adquirir los datos de los sensores de viento. La máquina de estados comienza en el estado \textbf{Inactividad}. Luego, cuando se recibe el comando de iniciar mediciones desde el servidor, se transiciona al estado \textbf{Activar interrupción Uart\_n}. En este estado, primero se configuran los datos según la tabla \ref{tab:sensorDataStruct} y luego se activa la interrupción de la correspondiente UART, quedando el datalogger listo para recibir datos de los sensores de viento. Cada vez que se activa la interrupción, se ejecuta un callback que llama a una función encargada de procesar y separar los datos recibidos. Si se recibe del servidor el comando de detener mediciones, la máquina de estados transiciona al estado \textbf{Desactivar interrupción Uart\_n}, donde se desactiva la interrupción y el microcontrolador deja de tomar muestras de los anemómetros.
+En la figura \ref{fig:sc_sampleSensorWind}, se muestra la máquina de estados encargada de adquirir los datos de los sensores de viento. La máquina de estados comienza en el estado \textbf{Inactividad}. Luego, cuando se recibe el comando de iniciar mediciones desde el servidor, se transiciona al estado \textbf{Activar interrupción Uart\_n}. En este estado, primero se configuran los datos según la tabla \ref{tab:sensorDataStruct} y luego se activa la interrupción de la correspondiente UART, quedando el \textit{datalogger} listo para recibir datos de los sensores de viento. Cada vez que se activa la interrupción, se ejecuta un callback que llama a una función encargada de procesar y separar los datos recibidos. Si se recibe del servidor el comando de detener mediciones, la máquina de estados transiciona al estado \textbf{Desactivar interrupción Uart\_n}, donde se desactiva la interrupción y el microcontrolador deja de tomar muestras de los anemómetros.
 
 \begin{figure}[H]
     \centering
@@ -976,18 +968,18 @@ En la figura \ref{fig:sc_sampleSensorWind}, se muestra la máquina de estados en
     \label{fig:sc_sampleSensorWind}
 \end{figure}
 
-El string del patrón VAISALA, modelo WMT700 tiene el formato \texttt{\$--MWV,021,R,003.34,N,A*14}, mientras que el del instrumento bajo calibración DELTAOHM, modelo HD51.3 tiene el formato \texttt{28.30 359.3 998.3<CR><LF>}. Para procesar y separar estos datos, se utiliza un diccionario de punteros a funciones. Desde el software, el operador preconfigura el modelo del anemómetro y, por lo tanto, a la máquina de estados, asegurándose de llamar a la función correspondiente para procesar los datos de cada anemómetro.
+El string del patrón VAISALA, modelo WMT700 tiene el formato \texttt{\$--MWV,021,R,003.34,N,A*14}, mientras que el del instrumento bajo calibración DELTAOHM, modelo HD51.3 tiene el formato \texttt{28.30 359.3 998.3<CR><LF>}. Para procesar y separar estos datos, se utiliza un diccionario de punteros a funciones. Desde el software, el operador preconfigura el modelo del anemómetro y esto hace que en la  máquina de estados se llame a la función correspondiente para procesar los datos de cada anemómetro.
 
-En la Figura \ref{fig:sc_sampleSensorVoltage} se muestra la máquina de estado que se utiliza para adquirir los niveles de tensión de la fuente de alimentación o los niveles de tensión del variador de velocidad. La máquina de estado comienza en el estado \textbf{Inicio} y automáticamente transiciona al estado \textbf{Inactividad}. Luego cuando se recibe el comando iniciar mediciones y se produce la transición al estado \textbf{Tomar Muestra}, donde se adquiere una muestra del nivel de tensión a traves de los circuitos diseñados en la seccion \ref{sec:desarrolloHardware}. Después de transcurrido el tiempo $t_{1}$ definido como el tiempo de muestreo, se pasa al estado \textbf{Guardar muestra}, donde se guarda la muestra  y se activa una señal \texttt{s\_Acumular muestra} que permite activar una transicion de la siguiente máquina de estado. Finalmente, se regresa al estado \textbf{Inactividad} para repetir el ciclo indefinidamente o hasta que se envie el comando de detener mediciones.
+En la Figura \ref{fig:sc_sampleSensorVoltage} se muestra la máquina de estado que se utiliza para adquirir los niveles de tensión de la fuente de alimentación o los niveles de tensión del variador de velocidad. La máquina de estado comienza en el estado \textbf{Inicio} y automáticamente transiciona al estado \textbf{Inactividad}. Luego cuando se recibe el comando iniciar mediciones y se produce la transición al estado \textbf{Tomar Muestra}, donde se adquiere una muestra del nivel de tensión a traves de los circuitos diseñados en la seccion \ref{sec:desarrolloHardware}. Después de transcurrido el tiempo $t_{1}$ definido como el tiempo de muestreo, se pasa al estado \textbf{Guardar muestra}, donde se guarda la muestra  y se activa una señal \texttt{s\_Acumular muestra} que permite activar una transición de la siguiente máquina de estado. Finalmente, se regresa al estado \textbf{Inactividad} para repetir el ciclo indefinidamente o hasta que se envie el comando de detener mediciones.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/sc_sampleSensorVoltage.png}
-    \caption{Máquina de estado para tomar muestras de la tensión del alimentacion y del variador.}
+    \caption{Máquina de estado para tomar muestras de la tensión del alimentación y del variador.}
     \label{fig:sc_sampleSensorVoltage}
 \end{figure}
 
-La máquina de estado de la figura \ref{fig:sc_processing} inicia en un estado de \textbf{Inactividad}. La transición al estado \textbf{Acumular muestras} se produce cuando se activa la señal \texttt{s\_Acumular muestra}  y se cumplen dos condiciones: primero, que el número de muestras sea menor al cociente entre el intervalo de tabla $t_{2}$ y el intervalo de muestra $t_{1}$; segundo, que el comando de iniciar mediciones esté activo. En este estado, se acumulan las muestras de todos los sensores, se incrementa el número de muestras en una unidad y luego se regresa al estado de \textbf{Inactividad}. Este ciclo se repite hasta que el número de muestras es igual al cociente entre el intervalo de tabla $t_{2}$ y el intervalo de muestra $t_{1}$, cuando se alcanza esta igualdad se pasa al estado \textbf{Procesar muestras}. Por ejemplo, si el operador define un intervalo de muestras $t_{1} = \SI{1}{\second}$ y un intervalo de tabla $t_{2} = \SI{10}{\second}$, el cociente da $\frac{t_{2}}{t_{1}}=10$ muestras. Los datos se acumulan hasta que el número de muestras llega a 10 y con esa condición se produce la transición al estado \textbf{Procesar muestras}. En este estado, se calcula el promedio, el valor mínimo y el valor máximo de las 10 muestras. Luego, se reinicia el número de muestras a cero y se activa la señal \texttt{s\_tx\_WebSocketServer}, que será utilizada para transmitir datos al servidor en la siguiente máquina de estados. Finalmente, se vuelve al estado \textbf{IDLE} para acumular las próximas mediciones.
+La máquina de estado de la figura \ref{fig:sc_processing} se utiliza para procesar las muestras acumuladas. Inicia en un estado de \textbf{Inactividad} y la transición al estado \textbf{Acumular muestras} se produce cuando se ha activado la señal \texttt{s\_Acumular muestra}  y al mismo tiempo se cumplen dos condiciones: primero, que el número de muestras sea menor al cociente entre el intervalo de tabla $t_{2}$ y el intervalo de muestra $t_{1}$; segundo, que el comando de iniciar mediciones esté activo. En este estado, se acumulan las muestras de todos los sensores, se incrementa el número de muestras en una unidad y luego se regresa al estado de \textbf{Inactividad}. Este ciclo se repite hasta que el número de muestras es igual al cociente entre el intervalo de tabla $t_{2}$ y el intervalo de muestra $t_{1}$, cuando se alcanza esta igualdad se pasa al estado \textbf{Procesar muestras}. Por ejemplo, si el operador define un intervalo de muestras $t_{1} = \SI{1}{\second}$ y un intervalo de tabla $t_{2} = \SI{10}{\second}$, el cociente da $\frac{t_{2}}{t_{1}}=10$ muestras. Los datos se acumulan hasta que el número de muestras llega a 10 y con esa condición se produce la transición al estado \textbf{Procesar muestras}. En este estado, se calcula el promedio, el valor mínimo y el valor máximo de las 10 muestras. Luego, se reinicia el número de muestras a cero y se activa la señal \texttt{s\_tx\_WebSocketServer}, que será utilizada para transmitir datos al servidor en la siguiente máquina de estados. Finalmente, se vuelve al estado \textbf{Inactividad} para acumular las próximas mediciones.
 
 
 \begin{figure}[H]
@@ -1000,7 +992,7 @@ La máquina de estado de la figura \ref{fig:sc_processing} inicia en un estado d
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Transmisión al servidor}
 
-El protocolo WebSocket establece una comunicación en tiempo real entre clientes y servidores, adaptando el encabezado del mensaje según su tamaño. Para mensajes hasta 125 bytes, se usa un encabezado de 2 bytes. Para mensajes mayores, se añade un encabezado extendido con 2 bytes adicionales para la longitud. Independientemente del tamaño, todos los mensajes se enmascaran con una clave de 32 bits aplicada mediante XOR a la carga útil, protegiendo la transmisión contra vulnerabilidades y garantizando la integridad de los datos. Este mecanismo asegura que todos los mensajes, independientemente de su tamaño, se transmitan de manera confiable y conforme a las normas del protocolo \cite{websockeWiki}. 
+El protocolo \textit{WebSocket} establece una comunicación en tiempo real entre clientes y servidores, adaptando el encabezado del mensaje según su tamaño. Para mensajes hasta 125 bytes, se usa un encabezado de 2 bytes. Para mensajes mayores, se añade un encabezado extendido con 2 bytes adicionales para la longitud. Independientemente del tamaño, todos los mensajes se enmascaran con una clave de 32 bits aplicada mediante XOR a la carga útil, protegiendo la transmisión contra vulnerabilidades y garantizando la integridad de los datos. Este mecanismo asegura que todos los mensajes, independientemente de su tamaño, se transmitan de manera confiable y conforme a las normas del protocolo \cite{websockeWiki}. 
 
 % Para una transmisión exitosa desde el datalogger hacia el servidor, se declara la variable de Código \ref{cdg:transmitionServer}, esta variable controla el estado de la transmisión en la máquina de estados de la región \texttt{TransmisionAlServer} de la figura \ref{fig:transmisionServer}.
 
@@ -1009,10 +1001,10 @@ El protocolo WebSocket establece una comunicación en tiempo real entre clientes
 % var TransmisionExitosa: uint8_t=FALSE
 % \end{lstlisting}
 
-La máquina de estados de la figura \ref{fig:sc_transmisionServer} inicia en el estado \textbf{Inactividad}. Cuando se detecta la señal \texttt{s\_tx\_WebSocketServer} y el comando de iniciar mediciones esté activo, se realiza una transición al estado \textbf{Transmisión de mensaje}. En este estado se codifica y envia el mensaje a través del socket del módulo Ethernet conectado al servidor web. La codificación del mensaje depende de su longitud, para ello se implementaron dos métodos internos:
+La máquina de estados de la figura \ref{fig:sc_transmisionServer} inicia en el estado \textbf{Inactividad}. Cuando se detecta la señal \texttt{s\_tx\_WebSocketServer} y el comando de iniciar mediciones esté activo, se realiza una transición al estado \textbf{Transmisión de mensaje}. En este estado se codifica y envia el mensaje a través del \textit{socket} del módulo Ethernet conectado al servidor Web. La codificación del mensaje depende de su longitud, para ello se implementaron dos métodos internos \cite{FirmwareSCA2024}:
 \begin{itemize}
-  \item Si la longitud es de hasta 125 bytes, se utiliza un método específico. El encabezado del mensaje codificado consta de 2 bytes.
-  \item Si la longitud supera los 125 bytes, se emplea otro método, que añade un campo adicional de 2 bytes para indicar la longitud extendida del mensaje.
+  \item Si la longitud del mensaje es de hasta 125 bytes, se utiliza un método específico. El encabezado del mensaje codificado consta de 2 bytes.
+  \item Si la longitud del mensaje supera los 125 bytes, se emplea otro método, que añade un campo adicional de 2 bytes para indicar la longitud extendida del mensaje.
 \end{itemize}
 
 Tras la codificación, se procede con el envío del mensaje. El servidor, al recibir el mensaje, responde con la longitud del mensaje recibido. Si la longitud coincide con la del mensaje enviado, se considera que la transmisión ha sido exitosa. De lo contrario, se asume que la transmisión ha fallado. En caso de fallo en la transmisión, la máquina de estados transiciona al estado \textbf{BackUp Mensaje}. Este estado se encarga de almacenar temporalmente los datos hasta que se restablezca la comunicación con el servidor. Si la transmisión es exitosa, se incrementa un contador y se retorna al estado \textbf{Inactividad}, quedando listo para una nueva transmisión.
@@ -1021,7 +1013,7 @@ Tras la codificación, se procede con el envío del mensaje. El servidor, al rec
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Firmware/sc_transmisionServer.png}
-    \caption{Máquina de estados para gestionar la transmisión de datos al servidor WebSocket.}
+    \caption{Máquina de estados para gestionar la transmisión de datos al servidor \textit{WebSocket}.}
     \label{fig:sc_transmisionServer}
 \end{figure}
 
@@ -1051,14 +1043,14 @@ El circuito PWM se utiliza para la implementación de un controlador \textbf{PID
 % var prtPid: ptrPidController_t = &viPid
 % \end{lstlisting}
 
-El controlador PID cuenta con los siguientes parámetros, las ganancias proporcional $k_{p}$, integral $k_{i}$ y derivativa $k_{d}$ y para el manejo del error $e_{i}$, el error anterior $e_{i-1}$, la suma acumulada del error $e_{int_{i}}$ y la derivada del error $e_{dev_{i}}$ y se incluye el tiempo de muestreo $T_{s}$, puesto que es un controlador en tiempo discreto. Con estos parametros se aplica el algoritmo de control \textbf{PID} sobre el error calculado para regular la salida del circuito PWM y, consecuentemente, la velocidad del viento en el túnel. Este proceso se realiza en la maquina de estados de la figura \ref{fig:sc_controlTunnel}, está comienza en el estado \textbf{Configurar PID}, donde se configura los parámetros del controlador PID, obtenidos heurísticamente, con $kp = 3$; $kd = 0,5$; $ki = 0.1$; y el tiempo de muestreo $Ts = \SI{1}{\second}$. Además, se configura el pin digital de la EDU-CIAA para habilitar la salida PWM con un valor inicial de cero. Cuando el comando iniciar mediciones esta activo se transiciona al estado \textbf{Medición}, en este estado, se lee  intensidad instantánea del viento del anemómetro patrón y la intensidad de referencia enviada por el servidor, almacenando estos valores en variables. Posteriormente, se avanza al estado \textbf{Contro motor tunel}. Aquí, se ejecuta las siguientes acciones:
+El controlador PID cuenta con los siguientes parámetros, la ganancia proporcional $k_{p}$, integral $k_{i}$ y derivativa $k_{d}$ y para el manejo del error $e_{j}$, el error anterior $e_{j-1}$, la suma acumulada del error $e_{int_{j}}$ y la derivada del error $e_{dev_{j}}$ y se incluye el tiempo de muestreo $T_{s}$, puesto que es un controlador en tiempo discreto. Con estos parametros se aplica el algoritmo de control \textbf{PID} sobre el error calculado para regular la salida del circuito PWM y, consecuentemente, la velocidad del viento en el túnel. Este proceso se realiza en la máquina de estados de la figura \ref{fig:sc_controlTunnel}, está comienza en el estado \textbf{Configurar PID}, donde se configura los parámetros del controlador PID, obtenidos heurísticamente, con $k_{p} = 3$; $k_{d} = 0,5$; $k_{i} = 0.1$; y el tiempo de muestreo $T_{s} = \SI{1}{\second}$. Además, se configura el pin digital de la EDU-CIAA para habilitar la salida PWM con un valor inicial de cero. Cuando el comando iniciar mediciones esta activo se transiciona al estado \textbf{Medición}, en este estado, se lee la intensidad instantánea del viento del anemómetro patrón y la intensidad de referencia enviada por el servidor, almacenando estos valores en variables. Posteriormente, se avanza al estado \textbf{Control motor túnel}. Aquí, se ejecuta las siguientes acciones:
 \begin{itemize}
-    \item Calcular el error proporcional $e_{i} = vel_{ref_{i}} - vel_{pat_{i}}$.
-    \item Calcular el término integral $e_{int_{i}} = e_{i} \cdot Ts$.
-    \item Calcular el término derivativo $e_{dev_{i}} = \frac{e_{i} - e_{i-1}}{Ts}$.
-    \item Actualiza el error y calcula la acción de control como $u_{c_{i}} = kp \cdot e_{i} + ki \cdot e_{int_{i}} + kd \cdot e_{dev_{i}}$.
+    \item Calcular el error proporcional $e_{j} = vel_{ref_{j}} - vel_{pat_{j}}$.
+    \item Calcular el término integral $e_{int_{j}} = e_{j} \cdot T_{s}$.
+    \item Calcular el término derivativo $e_{dev_{j}} = \frac{e_{j} - e_{j-1}}{T_{s}}$.
+    \item Actualiza el error y calcula la acción de control como $u_{c_{j}} = k_{p} \cdot e_{j} + k_{i} \cdot e_{int_{j}} + k_{d} \cdot e_{dev_{j}}$.
 \end{itemize}
-El valor de $u_{c}$ se somete a un saturador entre 0 y 255, y luego se aplica esa tensión al pin de salida PWM. Este ciclo se repite cada $\SI{1}{\second}$, correspondiente al tiempo de muestreo $Ts$. Si se activa el comando que detiene las mediciones a través del software, Se vuele al estado \textbf{Configurar PID} donde se reincia el controlador y permanece en espera hasta iniciar nuevas mediciones.
+El valor de $u_{c}$ se somete a un saturador entre 0 y 255, y luego se aplica esa tensión al pin de salida PWM. Este ciclo se repite cada $\SI{1}{\second}$, correspondiente al tiempo de muestreo $T_{s}$. Si se activa el comando que detiene las mediciones a través del software, se regresa al estado \textbf{Configurar PID} donde se reincia el controlador y permanece en espera hasta iniciar nuevas mediciones.
 
 \begin{figure}[H]
     \centering

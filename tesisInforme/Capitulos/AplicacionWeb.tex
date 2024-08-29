@@ -1,6 +1,6 @@
-En este capítulo, se introduce una aplicación web diseñada para interactuar con el datalogger descrito en el capitulo anterior, con el objetivo de optimizar la calibración de anemómetros. Esta herramienta de software simplifica la carga de metadatos esenciales, incluyendo la información de los sensores de referencia y los sensores bajo calibración, los certificados de calibración y las especificaciones de la zona de medición del túnel de viento.
+En este capítulo, se introduce una aplicación web diseñada para interactuar con el \textit{datalogger} descrito en el capitulo anterior, con el objetivo de optimizar la calibración de anemómetros. Esta herramienta de software simplifica la carga de metadatos esenciales, incluyendo la información de los sensores de referencia y los sensores bajo calibración, los certificados de calibración y las especificaciones de la zona de medición del túnel de viento.
 
-La aplicación ofrece la posibilidad de configurar el datalogger, definiendo la interfaz eléctrica de los anemómetros, los intervalos de muestreo y procesamiento de datos, y los puntos de medición de la velocidad del viento. Además, permite establecer los tiempos de encendido y el periodo de estabilidad en cada punto de medición. Una vez configurado el sistema, el software inicia el proceso de medición, enviando referencias de viento al hardware. Este último interactúa con el túnel de viento a través de su controlador PID para ajustar la velocidad del viento al valor deseado. Las mediciones obtenidas son verificadas por el operador y, si son correctas, se calcula automáticamente la incertidumbre expandida. Los resultados se presentan en el front end, en gráficos y tablas, se almacenan en una base de datos y pueden descargarse para emitir el certificado de calibración correspondiente.
+La aplicación ofrece la posibilidad de configurar el \textit{datalogger}, definiendo la interfaz eléctrica de los anemómetros, los intervalos de muestreo y procesamiento de datos, y los puntos de medición de la velocidad del viento. Además, permite establecer los tiempos de encendido y el periodo de estabilidad en cada punto de medición. Una vez configurado el sistema, el software inicia el proceso de medición, enviando referencias de viento al hardware. Este último interactúa con el túnel de viento a través de su controlador PID para ajustar la velocidad del viento al valor deseado. Las mediciones obtenidas son verificadas por el operador y, si son correctas, se calcula automáticamente la incertidumbre expandida. Los resultados se presentan en el front end, en gráficos y tablas, se almacenan en una base de datos y pueden descargarse para emitir el certificado de calibración correspondiente.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,7 +25,7 @@ La cuarta capa está constituida por el sistema de gestión de bases de datos Po
 
 
 
-Finalmente, la quinta capa consiste en un servidor WebSocket que se conecta con un sistema embebido. Este servidor permite la comunicación bidireccional en tiempo real entre la aplicación y dispositivos embebidos, facilitando el control y monitoreo remoto. Esta capa es esencial para aplicaciones que requieren actualizaciones en tiempo real y una interacción continua con dispositivos de hardware.
+Finalmente, la quinta capa consiste en un servidor \textit{WebSocket} que se conecta con un sistema embebido. Este servidor permite la comunicación bidireccional en tiempo real entre la aplicación y dispositivos embebidos, facilitando el control y monitoreo remoto. Esta capa es esencial para aplicaciones que requieren actualizaciones en tiempo real y una interacción continua con dispositivos de hardware.
 
 \begin{figure}[H]
     \centering
@@ -53,20 +53,20 @@ Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la F
 El back end se encarga de:
 \begin{itemize}
     \item Administrar la base de datos, incluyendo la ejecución de consultas, la realización de actualizaciones y la aplicación de validaciones para garantizar la integridad y consistencia de la información.
-    \item Recibir o gestionar solicitudes HTTP y conexiones al servidor WebSocket.
-    \item Enviar comandos de configuración hacia el datalogger y gestionar la recepción de mediciones de los sensor.
-    \item Generar un perfil de referencias de velocidad de viento almacenadas en la base de datos, que se van a transmitir al datalogger para controlar el motor del túnel.
+    \item Recibir o gestionar solicitudes HTTP y conexiones al servidor \textit{WebSocket}.
+    \item Enviar comandos de configuración hacia el \textit{datalogger} y gestionar la recepción de mediciones de los sensor.
+    \item Generar un perfil de referencias de velocidad de viento almacenadas en la base de datos, que se van a transmitir al \textit{datalogger} para controlar el motor del túnel.
     \item A partir de las mediciones crudas de velocidades de viento, calcular el presupuesto de incertidumbre de la corrección.
 \end{itemize}
 
 \subsubsection{Base de datos}
 
-Dado que la aplicación está diseñada para manejar una gran cantidad de datos que requieren almacenamiento y recuperación eficientes, se ha implementado una base de datos relacional. El diagrama entidad-relación, presentado en la figura \ref{fig:DiagramaEntidadRelacion}, ilustra la estructura de la base de datos. Esta estructura incluye diversas tablas que almacenan información crucial para la aplicación. Entre estas tablas se encuentran las que registran los datos del sensor patrón y el sensor bajo calibración, así como los detalles relacionados con el certificado de calibración del patrón. Además, se documentan los registros del certificado de caracterización del túnel de viento. También se incluye información sobre la configuración del datalogger y del túnel de viento.
+Dado que la aplicación está diseñada para manejar una gran cantidad de datos que requieren almacenamiento y recuperación eficientes, se ha implementado una base de datos relacional. El diagrama entidad-relación, presentado en la figura \ref{fig:DiagramaEntidadRelacion}, ilustra la estructura de la base de datos. Esta estructura incluye diversas tablas que almacenan información crucial para la aplicación. Entre estas tablas se encuentran las que registran los datos del sensor patrón y el sensor bajo calibración, así como los detalles relacionados con el certificado de calibración del patrón. Además, se documentan los registros del certificado de caracterización del túnel de viento. También se incluye información sobre la configuración del \textit{datalogger} y del túnel de viento.
 
 
 Cuando se inicia una calibración y se empiezan a recibir datos de los sensores, toda esta información se almacena en una tabla \texttt{DatosMedidos2023} de la base de datos. Asimismo, se guardan los resultados generados antes y después del procesamiento de los datos, como gráficos y tablas.
 
-Todas estas tablas están relacionadas mediante claves foráneas (relación de uno a muchos) con la tabla de \texttt{Calibración}. Esto se debe a que una calibración está asociada a un único datalogger o a un único sensor IBC, y se puede recuperar la información de esa calibración a través clave primaria.
+Todas estas tablas están relacionadas mediante claves foráneas (relación de uno a muchos) con la tabla de \texttt{Calibración}. Esto se debe a que una calibración está asociada a un único \textit{datalogger} o a un único sensor IBC, y se puede recuperar la información de esa calibración a través clave primaria.
 
 
 \begin{figure}[H]
@@ -80,13 +80,13 @@ Todas estas tablas están relacionadas mediante claves foráneas (relación de u
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Servidor WebSocket}
 
-Se utilizó la biblioteca Django-channels para implementar un servidor WebSocket que opera de forma concurrente con el servidor web HTTP. Este servidor permite la conexión simultánea de múltiples clientes, en este caso, un datalogger que envía datos y un usuario que recibe dicha información a través de WebSockets. Los datos recibidos por el servidor, son graficados y actualizados en tiempo real en la aplicación web.
+Se utilizó la biblioteca Django-channels para implementar un servidor \textit{WebSocket} que opera de forma concurrente con el servidor web HTTP. Este servidor permite la conexión simultánea de múltiples clientes, en este caso, un \textit{datalogger} que envía datos y un usuario que recibe dicha información a través de \textit{WebSockets}. Los datos recibidos por el servidor, son graficados y actualizados en tiempo real en la aplicación web.
 
-Para configurar el servidor, se creó el archivo \texttt{routing.py}, el cual define las rutas de los canales, es decir, los puntos de acceso a los consumidores (consumers) que gestionan las conexiones WebSocket. La configuración del archivo \texttt{routing.py} se presenta en el Código \ref{cdg:routing}. Cada ruta mapea una URL de WebSocket a un consumidor específico. En este caso, \texttt{ChatConsumer} es una clase que maneja las conexiones a la URL \texttt{ws/socket-server/}.
+Para configurar el servidor, se creó el archivo \texttt{routing.py}, el cual define las rutas de los canales, es decir, los puntos de acceso a los consumidores (consumers) que gestionan las conexiones \textit{WebSocket}. La configuración del archivo \texttt{routing.py} se presenta en el Código \ref{cdg:routing}. Cada ruta mapea una URL de \textit{WebSocket} a un consumidor específico. En este caso, \texttt{ChatConsumer} es una clase que maneja las conexiones a la URL \texttt{ws/socket-server/}.
 
 
 
-\begin{lstlisting}[style=pythonstyle, caption={Configuracion del routing para gestionar las conexiones de clientes al servidor WebSocket.}, label=cdg:routing,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+\begin{lstlisting}[style=pythonstyle, caption={Configuracion del routing para gestionar las conexiones de clientes al servidor \textit{WebSocket}.}, label=cdg:routing,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
 from django.urls import re_path
 from . import consumers
 
@@ -95,9 +95,9 @@ websocket_urlpatterns = [
 ]
 \end{lstlisting}
 
-También se creo el archivo \texttt{consumers.py} define las clases de consumidores que manejan las conexiones WebSocket. Un consumidor en Django-channels es una clase que gestiona la conexión con el cliente, incluyendo el manejo de eventos como la recepción y el envío de mensajes. En el codigo \ref{cdg:consumer} se muestra el consumidor implementado
+También se creo el archivo \texttt{consumers.py} define las clases de consumidores que manejan las conexiones \textit{WebSocket}. Un consumidor en Django-channels es una clase que gestiona la conexión con el cliente, incluyendo el manejo de eventos como la recepción y el envío de mensajes. En el codigo \ref{cdg:consumer} se muestra el consumidor implementado
 
-\begin{lstlisting}[style=pythonstyle, caption={Declaracion de las funciones que utiliza cada consumidor para interactuar con el servidor WebSocket.}, label=cdg:consumer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+\begin{lstlisting}[style=pythonstyle, caption={Declaracion de las funciones que utiliza cada consumidor para interactuar con el servidor \textit{WebSocket}.}, label=cdg:consumer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.room_group_name = 'test'
@@ -137,14 +137,14 @@ class ChatConsumer(WebsocketConsumer):
             }))
 \end{lstlisting}
 
-En particular, se implementa la clase \texttt{ChatConsumer}, que hereda de \texttt{WebsocketConsumer}, para gestionar las conexiones WebSocket. Esta clase define varios métodos, incluyendo \texttt{connect}, \texttt{disconnect}, \texttt{receive} y \texttt{chat\_message}.
+En particular, se implementa la clase \texttt{ChatConsumer}, que hereda de \texttt{WebsocketConsumer}, para gestionar las conexiones \textit{WebSocket}. Esta clase define varios métodos, incluyendo \texttt{connect}, \texttt{disconnect}, \texttt{receive} y \texttt{chat\_message}.
 
-El método \texttt{connect} se ejecuta cuando un cliente se conecta al servidor WebSocket. Dentro de este método, se asigna el nombre del grupo de la sala a \texttt{self.room\_group\_name} y se añade el canal del cliente al grupo utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_add)}. Finalmente, se acepta la conexión mediante \texttt{self.accept()}. Por otro lado, el método \texttt{disconnect} se ejecuta cuando un cliente se desconecta del servidor WebSocket.
+El método \texttt{connect} se ejecuta cuando un cliente se conecta al servidor \textit{WebSocket}. Dentro de este método, se asigna el nombre del grupo de la sala a \texttt{self.room\_group\_name} y se añade el canal del cliente al grupo utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_add)}. Finalmente, se acepta la conexión mediante \texttt{self.accept()}. Por otro lado, el método \texttt{disconnect} se ejecuta cuando un cliente se desconecta del servidor \textit{WebSocket}.
 
-El método \texttt{receive} recibe y decodifica los mensajes desde JSON para luego enviarlos a un grupo de la sala utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_send)}. Los mensajes que envía el datalogger tiene la forma del arreglo declarado en código \ref{cdg:estructuraMensaje}, que contiene toda la información que ha recolectado el datalogger en un ciclo de iteración.
+El método \texttt{receive} recibe y decodifica los mensajes desde JSON para luego enviarlos a un grupo de la sala utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_send)}. Los mensajes que envía el \textit{datalogger} tiene la forma del arreglo declarado en código \ref{cdg:estructuraMensaje}, que contiene toda la información que ha recolectado el \textit{datalogger} en un ciclo de iteración.
 
 
-\begin{lstlisting}[style=cstyle, caption={Estructura del mensaje enviado por el datalogger}, label=cdg:estructuraMensaje, basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+\begin{lstlisting}[style=cstyle, caption={Estructura del mensaje enviado por el \textit{datalogger}}, label=cdg:estructuraMensaje, basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
 real32_t Tabla_Mediciones[25] = {
     velocidadInst, velocidadMin, velocidadMax, velocidadPromedio,
     velocidadInstIBC, velocidadMinIBC, velocidadMaxIBC, velocidadPromedioIBC,
@@ -172,7 +172,7 @@ El mensaje decodificado tiene la siguiente forma:
 
 De esta forma, si el mensaje recibido comienza con la letra "M", se guarda en la base de datos mediante la función \texttt{saveMeasureDataBase(message)}. Esta función conoce el orden en que se creó el string y separa los datos para guardarlos en su respectivo campo de la base de datos.
 
-Finalmente, el método \texttt{chat\_message} se utiliza para enviar mensajes a los clientes. Si el mensaje recibido no se origina del mismo canal que el receptor, se envía el mensaje de vuelta al cliente utilizando \texttt{self.send()}. Por ejemplo, cuando un cliente está conectado al WebSocket desde el navegador web, puede ver cómo se grafican los datos en tiempo real a medida que estos llegan desde el datalogger hacia servidor.
+Finalmente, el método \texttt{chat\_message} se utiliza para enviar mensajes a los clientes. Si el mensaje recibido no se origina del mismo canal que el receptor, se envía el mensaje de vuelta al cliente utilizando \texttt{self.send()}. Por ejemplo, cuando un cliente está conectado al \textit{WebSocket} desde el navegador web, puede ver cómo se grafican los datos en tiempo real a medida que estos llegan desde el \textit{datalogger} hacia servidor.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -262,7 +262,7 @@ Finalmente, todos los resultados se presentan por pantalla y se dispone de boton
 El front end se encarga de:
 \begin{itemize}
     \item Interacción del usuario a través de formularios, botones y eventos.
-    \item Comunicación con el backend a través de Django y WebSockets.
+    \item Comunicación con el backend a través de Django y \textit{WebSockets}.
     \item Presentación de tablas y gráficos al usuario (UI/UX).
 \end{itemize}
 La aplicación web presenta una plantilla de inicio, como se muestra en la figura \ref{fig:index}. En la cabecera se visualiza, el logotipo correspondiente al SMN, el nombre del sistema y el nombre y tipo de perfil de usuario. En el lado izquierdo, se encuentran cuatro botones: \texttt{Temperatura y humedad}, \texttt{Temperatura}, \texttt{Presión} y \texttt{Viento}, cada uno con su respectiva descripción. Este diseño permitirá escalar el software para incluir otras magnitudes con las que trabaja el laboratorio del SMN. En el pie de página, se presentan los enlaces a las herramientas utilizadas para desarrollar el proyecto.
@@ -302,7 +302,7 @@ El contenido principal (\textit{main}) de la primera vista, llamada \texttt{Carg
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Configuración del sistema}\label{sec:configSistema}
 
-El contenido principal (\textit{main}) de la segunda vista, denominada \texttt{Configuración}, se muestra en la Figura \ref{fig:configEquipos}. En esta vista, a la izquierda, se configura el datalogger diseñado en el capítulo \ref{cap:datalogger}. Se pueden seleccionar la marca, el modelo y el número de serie del datalogger. Posteriormente, se especifica el tiempo de muestreo y el tiempo de tabla, se configuran los puertos de comunicación serie del datalogger, los LEDs de recepción y la velocidad en baudios para cada anemómetro.
+El contenido principal (\textit{main}) de la segunda vista, denominada \texttt{Configuración}, se muestra en la Figura \ref{fig:configEquipos}. En esta vista, a la izquierda, se configura el \textit{datalogger} diseñado en el capítulo \ref{cap:datalogger}. Se pueden seleccionar la marca, el modelo y el número de serie del \textit{datalogger}. Posteriormente, se especifica el tiempo de muestreo y el tiempo de tabla, se configuran los puertos de comunicación serie del \textit{datalogger}, los LEDs de recepción y la velocidad en baudios para cada anemómetro.
 
 \begin{figure}[H]
     \centering
@@ -326,9 +326,9 @@ Una vez que los datos de configuración están cargados, el usuario puede hacer 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Adquisición de datos}\label{sec:adquisicionDatos}
 
-Una vez cargados todos los datos, el software muestra la vista de la Figura \ref{fig:adquisicionDatos}. Al hacer clic en el botón \texttt{Iniciar Medición}, se envían todas las configuraciones al datalogger a través del servidor WebSocket mediante comandos detallados en la Tabla \ref{tab:comandoDataloggerWeb}. Luego, se activa un temporizador que multiplica el tiempo de un escalón, como el de la Figura \ref{fig:curvaEscalon}, por la cantidad de puntos ingresados e indica el tiempo restante para que termine todas las mediciones. 
+Una vez cargados todos los datos, el software muestra la vista de la Figura \ref{fig:adquisicionDatos}. Al hacer clic en el botón \texttt{Iniciar Medición}, se envían todas las configuraciones al \textit{datalogger} a través del servidor \textit{WebSocket} mediante comandos detallados en la Tabla \ref{tab:comandoDataloggerWeb}. Luego, se activa un temporizador que multiplica el tiempo de un escalón, como el de la Figura \ref{fig:curvaEscalon}, por la cantidad de puntos ingresados e indica el tiempo restante para que termine todas las mediciones. 
 
-El software también envía, a intervalos de un segundo, un valor de referencia del generador de trayectoria al datalogger para que éste genere un nivel de PWM y lo envíe al variador de velocidad del motor. Al mismo tiempo, se reciben las mediciones del sensor patrón e IBC, y se va construyendo el perfil de mediciones, con la dirección del viento a la izquierda y la intensidad a la derecha.
+El software también envía, a intervalos de un segundo, un valor de referencia del generador de trayectoria al \textit{datalogger} para que éste genere un nivel de PWM y lo envíe al variador de velocidad del motor. Al mismo tiempo, se reciben las mediciones del sensor patrón e IBC, y se va construyendo el perfil de mediciones, con la dirección del viento a la izquierda y la intensidad a la derecha.
 
 \begin{figure}[H]
     \centering
@@ -417,11 +417,11 @@ Los pasos para realizar el proceso de calibración incluyendo el diagrama de la 
     \item Se debe armar el banco de medición, montando los sensores en un soporte dentro del túnel de viento, asegurando que queden fijos y alineados.
     \item Se deben tomar las medidas de posición de los instrumentos respecto a un sistema de referencia.
     \item Se debe calcular el área de bloqueo de cada instrumento, incluyendo su soporte.
-    \item Se deben conectar los anemómetros al datalogger y alimentar todo el sistema con una fuente de 12 voltios. Además, se debe conectar el datalogger a la red LAN local del laboratorio.
+    \item Se deben conectar los anemómetros al \textit{datalogger} y alimentar todo el sistema con una fuente de 12 voltios. Además, se debe conectar el {datalogger} a la red LAN local del laboratorio.
     \item Se debe acceder a la interfaz web y configurar los parámetros de calibración.
     \item Se debe iniciar la adquisición de mediciones mediante la interfaz web.
-    \item La aplicación Django procesa las solicitudes y envía comandos al datalogger a través de WebSocket.
-    \item El datalogger controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
+    \item La aplicación Django procesa las solicitudes y envía comandos al \textit{datalogger} a través de \textit{WebSocket}.
+    \item El \textit{datalogger} controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
     \item Los datos de los anemómetros y otros sensores se registran y envían a la aplicación Django.
     \item Terminada las mediciones, el operador debe revisar las mediciones y si son correctas activar el procesamiento.
     \item La aplicación procesa los datos. Primero, calcula el promedio y el desvío estándar de las mediciones para cada punto del escalón. Luego, con esos datos e información ingresada por el usuario, calcula las correcciones e incertidumbres. Finalmente, almacena los resultados en la base de datos.
