@@ -6,6 +6,7 @@ La aplicación ofrece la posibilidad de configurar el \textit{datalogger}, defin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Desarrollo aplicación WEB}
 % hablar de las herramientas utilizadas para todo el desarrollo, contar todo, los entornos, lenguajes y frameworks etc
+(Hacer referencia a la imagen de objetivos donde queda claro donde se ejecuta la aplicacion web , en el servidor)
 Durante el desarrollo de la aplicación web, se emplearon diversas herramientas para llevar a cabo el proyecto de manera eficiente. Se utilizó Django en su versión 4.2 como framework principal, junto con Python 3.10, proporcionando una base sólida y flexible para el desarrollo back end. Para la gestión de la base de datos, se optó por PostgreSQL en su versión 15 y se utilizó PGAdmin 4 para gestionar dicha base de datos. La conexión entre Django y PostgreSQL se realizó utilizando PSYCOPG2 en su versión 2.9.5.
 
 En el frontend, se emplearon JavaScript y jQuery para hacer la página web dinámica y permitir la visualización de datos actualizados en tiempo real. También se utilizaron HTML y CSS para estructurar y estilizar el contenido de la aplicación web. Además, se emplearon herramientas como NumPy 1.24.2, SciPy  1.11.2 para el procesamiento de datos y Plotly 5.15 para generar gráficos dinámicos, así como Pandas 2.2 para la manipulación de datos.
@@ -26,14 +27,18 @@ La cuarta capa está constituida por el sistema de gestión de bases de datos Po
 
 
 Finalmente, la quinta capa consiste en un servidor \textit{WebSocket} que se conecta con un sistema embebido. Este servidor permite la comunicación bidireccional en tiempo real entre la aplicación y dispositivos embebidos, facilitando el control y monitoreo remoto. Esta capa es esencial para aplicaciones que requieren actualizaciones en tiempo real y una interacción continua con dispositivos de hardware.
-
+(Mencionar que websocket del lado del server protocolo de comunicacion a nivel de aplicacion basado en http, como se detallo en el capitulo 4)
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{Figuras/AplicacionWeb/arquitecturaSoft.png}
     \caption{Arquitectura del software implementada.}
     \label{fig:arquitecturaSoft}
 \end{figure}
-Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la Figura \ref{fig:patronMVT}. Este patrón es ampliamente utilizado en el desarrollo web con el \textit{framework} de trabajo Django. El patrón MVT permite una distinción explícita de las responsabilidades, lo que facilita tanto el desarrollo como el mantenimiento del código.
+
+(Agregar una seccion nueva)
+
+
+Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la Figura \ref{fig:patronMVT}. Este patrón es ampliamente utilizado en el desarrollo web con el \textit{framework} de trabajo Django. El patrón MVT permite una distinción explícita de las responsabilidades, lo que facilita tanto el desarrollo como el mantenimiento del código. (aclarar que esto sirve para tener una forma mas eficiente de modularizar el problema)
 
 \begin{itemize}
     \item \textbf{Modelo (M)}: Representa la capa de acceso a la base de datos (ORM). Contiene toda la información sobre los datos, cómo acceder a ellos, validarlos, su comportamiento y las relaciones entre ellos.
@@ -50,6 +55,7 @@ Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la F
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Back End}\label{sec:back_end}
+(POnerlo como parrafo, en terminos generales el Back End se encarga de .... (seccion \ref{poner la que corresponda en funcion de como lo menciona}))
 El back end se encarga de:
 \begin{itemize}
     \item Administrar la base de datos, incluyendo la ejecución de consultas, la realización de actualizaciones y la aplicación de validaciones para garantizar la integridad y consistencia de la información.
@@ -68,7 +74,8 @@ Cuando se inicia una calibración y se empiezan a recibir datos de los sensores,
 
 Todas estas tablas están relacionadas mediante claves foráneas (relación de uno a muchos) con la tabla de \texttt{Calibración}. Esto se debe a que una calibración está asociada a un único \textit{datalogger} o a un único sensor IBC, y se puede recuperar la información de esa calibración a través clave primaria.
 
-
+PAsar esta imagen al apendice y poner una diagrama de bloques,
+se ve como se relacionan las tablas de la base de datos, que se detallan en el apendice tanto, se ve el bloque tanto que guarda tales datos. pongo lo que guarda esa tabla a grandes rasgos
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.1\linewidth]{Figuras/AplicacionWeb/backend/DiagramaEntidadrelacion.png}
@@ -156,10 +163,18 @@ real32_t Tabla_Mediciones[25] = {
 };
 \end{lstlisting}
 
+--- ) Marcar la muestra que estoy mandando, y especificar cada campo, 
+
+poner numeros de la base de datos
+
+M;[NumMed];[fecha];[hora]
+
+luego poner ejemplo
+
 El mensaje decodificado tiene la siguiente forma:
 \begin{verbatim}
     
-    poner numeros de la base de datos
+    
     M;634;14-06-2024;16:42:41;
     10.08;10.08;10.08;10.08;
     9.53;9.53;9.53;9.53;
@@ -408,7 +423,7 @@ En las Figuras \ref{fig:curvaCalib} y \ref{fig:tablaCalib} se muestran los espac
 % mostrar los resultados que muestra el soft como ejemplo usar los del segundo DeltaOHM
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Integración con el hardware}\label{sec:integracionHardware}
-
+(Sacarlo y poner detalles en el banco de medición y configuración del soft del capitulo siguiente)
 
 El software desarrollado interactúa con el hardware, permitiendo al operador configurar de manera sencilla e intuitiva la interfaz eléctrica de los anemómetros, la cadencia de toma de muestras y los puntos de velocidad del viento en el túnel. Se realiza automáticamente el cálculo de incertidumbre y se genera un reporte con los resultados, para el instrumento bajo estudio. Este trabajo estandariza un procedimiento automático para la calibración de sensores de viento ultrasónicos, reduciendo los tiempos operativos, el cálculo manual y los errores sistemáticos, mejorando la calidad en la calibración. Además, el sistema de adquisición, en conjunto con el software y otro sistema de posicionamiento (no incluido en esta tesis), permitirá estudiar en mejor detalle el comportamiento del flujo de aire en la zona de medición.
 
