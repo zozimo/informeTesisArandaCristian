@@ -1,95 +1,90 @@
-\definecolor{Sail}{rgb}{0.643,0.819,0.976}
-\section{Algoritmo del generador de trayectoria}
-\begin{lstlisting}[style=pythonstyle, caption={Algoritmo generador de referencias para el controlador PID.}, label=cdg:genTrayectoria, basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-def trajectoryGenerator(numCalib):
-    # Por ahora asumimos que el sistema empieza con una velocidad inicial del viento de
-    # 1 m/s que es lo que sucede generalmente al encender el tunel
-    vel_init = 1
-    vel_end = [1,1,1]
-    calibracion_instance = get_object_or_404(Calibracion, numeroDeCalibracion=numCalib)
-    datos_config_tunnel = ConfigTunel.objects.filter(calibracion=calibracion_instance)
-    puntosCalibrar = list(datos_config_tunnel)[0].puntosCalibrar
-    tipoDeMedicion = list(datos_config_tunnel)[0].tipoDeMedicion
-    if tipoDeMedicion == "Solo Ascendente":
-        velRef = puntosCalibrar.split(",")
-    if tipoDeMedicion == "Solo Descendente":        
-        velRef = puntosCalibrar.split(",")
-        velRef = velRef[::-1]
-    if tipoDeMedicion == "Asc - Des":        
-        velRefA = puntosCalibrar.split(",")
-        velRefB = velRefA[::-1]
-        velRef = velRefA + velRefB
-        pass
+% \definecolor{Sail}{rgb}{0.643,0.819,0.976}
+% \section{Algoritmo del generador de trayectoria}
+% \begin{lstlisting}[style=pythonstyle, caption={Algoritmo generador de referencias para el controlador PID.}, label=cdg:genTrayectoria, basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% def trajectoryGenerator(numCalib):
+%     # Por ahora asumimos que el sistema empieza con una velocidad inicial del viento de
+%     # 1 m/s que es lo que sucede generalmente al encender el tunel
+%     vel_init = 1
+%     vel_end = [1,1,1]
+%     calibracion_instance = get_object_or_404(Calibracion, numeroDeCalibracion=numCalib)
+%     datos_config_tunnel = ConfigTunel.objects.filter(calibracion=calibracion_instance)
+%     puntosCalibrar = list(datos_config_tunnel)[0].puntosCalibrar
+%     tipoDeMedicion = list(datos_config_tunnel)[0].tipoDeMedicion
+%     if tipoDeMedicion == "Solo Ascendente":
+%         velRef = puntosCalibrar.split(",")
+%     if tipoDeMedicion == "Solo Descendente":        
+%         velRef = puntosCalibrar.split(",")
+%         velRef = velRef[::-1]
+%     if tipoDeMedicion == "Asc - Des":        
+%         velRefA = puntosCalibrar.split(",")
+%         velRefB = velRefA[::-1]
+%         velRef = velRefA + velRefB
+%         pass
         
-    velRef = [int(x) for x in velRef]
-    aux = []
-    for i in range(len(velRef)):
-        aux.append( [velRef[i]] * 3) # se multiplica por 3 ya que quiero que llegue, estabilice y mida
+%     velRef = [int(x) for x in velRef]
+%     aux = []
+%     for i in range(len(velRef)):
+%         aux.append( [velRef[i]] * 3) # se multiplica por 3 ya que quiero que llegue, estabilice y mida
     
-    velRef = sum(aux, []) # convertimos a un vector la matriz auxiliar
-    velRef = [vel_init] + velRef + vel_end
-    # Tiempos en minutos, ingresados por el usuario, en principio es el mismo para todos los puntos
-    tiempoTransitorio = list(datos_config_tunnel)[0].tiempoTransitorio*60
-    tiempoEstabilidad = list(datos_config_tunnel)[0].tiempoEstabilidad*60
-    tiempoMedicion = list(datos_config_tunnel)[0].tiempoMedicion*60
-    cantidadPuntos = list(datos_config_tunnel)[0].cantidadPuntos
-    if tipoDeMedicion == "Solo Ascendente" or tipoDeMedicion == "Solo Descendente" :
-        t_des = [tiempoTransitorio,tiempoEstabilidad, tiempoMedicion] * (cantidadPuntos + 1)
-    else:
-        aux = [tiempoTransitorio,tiempoEstabilidad, tiempoMedicion]
-        t_des = (aux * (cantidadPuntos)*2 ) + aux
+%     velRef = sum(aux, []) # convertimos a un vector la matriz auxiliar
+%     velRef = [vel_init] + velRef + vel_end
+%     # Tiempos en minutos, ingresados por el usuario, en principio es el mismo para todos los puntos
+%     tiempoTransitorio = list(datos_config_tunnel)[0].tiempoTransitorio*60
+%     tiempoEstabilidad = list(datos_config_tunnel)[0].tiempoEstabilidad*60
+%     tiempoMedicion = list(datos_config_tunnel)[0].tiempoMedicion*60
+%     cantidadPuntos = list(datos_config_tunnel)[0].cantidadPuntos
+%     if tipoDeMedicion == "Solo Ascendente" or tipoDeMedicion == "Solo Descendente" :
+%         t_des = [tiempoTransitorio,tiempoEstabilidad, tiempoMedicion] * (cantidadPuntos + 1)
+%     else:
+%         aux = [tiempoTransitorio,tiempoEstabilidad, tiempoMedicion]
+%         t_des = (aux * (cantidadPuntos)*2 ) + aux
         
     
-    # Armamos la trayectoria / perfil de viento de referencia para el controlador
-    # trajectoryVector = [0]*1000
-    trajectoryVector = []
-    idx = 0
-    t_s = 1 # tiempo de muestreo en seg
-    t_acc = 10 # tiempo de aceleracion en seg
-    rapidez_max = 20 # pendiente maxima puede soportar el tunel, quiza tenga que ver con el saturador,255
-    qA = velRef[0] # punto de partida
-    for i in range(0,len(velRef)-1):
-        qB = velRef[i] # donde iba
-        qC = velRef[i+1] # donde voy
-        dA = qA-qB # de la zona 1
-        dC = qC-qB # de la zona 2
-        # Tj = max([dC/rapidez_max,t_des[i]])
-        Tj = t_des[i]
+%     # Armamos la trayectoria / perfil de viento de referencia para el controlador
+%     # trajectoryVector = [0]*1000
+%     trajectoryVector = []
+%     idx = 0
+%     t_s = 1 # tiempo de muestreo en seg
+%     t_acc = 10 # tiempo de aceleracion en seg
+%     rapidez_max = 20 # pendiente maxima puede soportar el tunel, quiza tenga que ver con el saturador,255
+%     qA = velRef[0] # punto de partida
+%     for i in range(0,len(velRef)-1):
+%         qB = velRef[i] # donde iba
+%         qC = velRef[i+1] # donde voy
+%         dA = qA-qB # de la zona 1
+%         dC = qC-qB # de la zona 2
+%         # Tj = max([dC/rapidez_max,t_des[i]])
+%         Tj = t_des[i]
     
-        for t_segm in range(-t_acc+t_s,t_acc,t_s): # zona 1  
-            trajectoryVector.append((dC/Tj)*(((t_segm+t_acc)**2) /( 4*t_acc) ) + (dA/t_acc)*(((t_segm-t_acc)**2) / (4*t_acc)) + qB)  
+%         for t_segm in range(-t_acc+t_s,t_acc,t_s): # zona 1  
+%             trajectoryVector.append((dC/Tj)*(((t_segm+t_acc)**2) /( 4*t_acc) ) + (dA/t_acc)*(((t_segm-t_acc)**2) / (4*t_acc)) + qB)  
             
-        for t_segm in range(t_acc+t_s,Tj-t_acc+2,t_s): # zona 2
-            trajectoryVector.append( (dC/Tj)*t_segm + qB)
-            qA = trajectoryVector[idx-1]
-    # Redondeamos a 3 decimales los elementos de referencia
-    trajectoryVector = [round(numero, 3) for numero in trajectoryVector]
-    # Crear un arreglo de 1 a idx
-    t = np.arange(1, idx+1)
-    # Multiplicar cada elemento por t_samplig
-    t = t * t_s
-    # Graficamos la trayectoria armada
-    plt.plot(t/60,trajectoryVector )
-    plt.xlabel('t')
-    plt.ylabel('Vel Viento')
-    plt.title('Grafico de t vs Vel Viento')
-    plt.grid(True)
-    plt.show()
-    return trajectoryVector
-\end{lstlisting}
+%         for t_segm in range(t_acc+t_s,Tj-t_acc+2,t_s): # zona 2
+%             trajectoryVector.append( (dC/Tj)*t_segm + qB)
+%             qA = trajectoryVector[idx-1]
+%     # Redondeamos a 3 decimales los elementos de referencia
+%     trajectoryVector = [round(numero, 3) for numero in trajectoryVector]
+%     # Crear un arreglo de 1 a idx
+%     t = np.arange(1, idx+1)
+%     # Multiplicar cada elemento por t_samplig
+%     t = t * t_s
+%     # Graficamos la trayectoria armada
+%     plt.plot(t/60,trajectoryVector )
+%     plt.xlabel('t')
+%     plt.ylabel('Vel Viento')
+%     plt.title('Grafico de t vs Vel Viento')
+%     plt.grid(True)
+%     plt.show()
+%     return trajectoryVector
+% \end{lstlisting}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-\section{Diagrama entidad relación}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{Figuras/apendiceB/DiagramaEntidadrelacion.png}
-    \caption{Diagrama entidad relación de la base de datos, diseñada para la aplicación Web.}
-    \label{fig:DiagramaEntidadrelacion}
-\end{figure}
-\newpage
+
 \section{Comandos entre el servidor WebSocket y el datalogger}
 
-aclarar que es cada dato, con un tiepo una estructura |comando|parametros|
+Los comandos definidos en la Tabla \ref{tab:comandoDataloggerWeb} tiene la siguiente estructura:
+\begin{verbatim}
+    [Nombre de Comando];[Parámetro 1];[Parámetro 2]; ...[Parámetro n]
+\end{verbatim}
 \begin{table}[H]
 \centering
 \fontsize{9}{9}\selectfont
@@ -111,3 +106,14 @@ aclarar que es cada dato, con un tiepo una estructura |comando|parametros|
 \caption{Listado de comandos transmitidos por el servidor \textit{WebSocket} al datalogger para configurar los parámetros seleccionados por el usuario.}
 \label{tab:comandoDataloggerWeb}
 \end{table}
+
+
+\newpage
+\section{Diagrama entidad relación}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Figuras/apendiceB/DiagramaEntidadrelacion.png}
+    \caption{Diagrama entidad relación de la base de datos, diseñada para la aplicación Web.}
+    \label{fig:DiagramaEntidadrelacion}
+\end{figure}
+

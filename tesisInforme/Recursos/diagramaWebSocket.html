@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</head>
+<body>
+    <div class="mermaid">
+        sequenceDiagram
+            participant DataLogger as Datalogger
+            participant Server as Servidor WebSocket
+            participant WebApp as Aplicación Web
+            
+            note left of DataLogger: timeline
+            DataLogger->>Server: Solicitud de conexión (Handshake)
+            Server-->>DataLogger: Respuesta de conexión (Handshake)
+            WebApp->>Server: Solicitud de conexión (Handshake)
+            Server-->>WebApp: Respuesta de conexión (Handshake)
+
+            loop Keep Alive
+                DataLogger->>Server: Keep Alive
+                Server-->>DataLogger: Keep Alive ACK
+            end
+
+            DataLogger->>Server: Enviar datos
+            Server-->>WebApp: Reenviar datos
+
+            WebApp-->>Server: Confirmación de recepción
+            Server-->>DataLogger: Confirmación de recepción
+
+            DataLogger->>Server: Enviar más datos
+            Server-->>WebApp: Reenviar más datos
+
+            WebApp-->>Server: Confirmación de recepción
+            Server-->>DataLogger: Confirmación de recepción
+
+            WebApp->>Server: Solicitud de desconexión
+            Server-->>WebApp: Confirmación de desconexión
+            DataLogger->>Server: Solicitud de desconexión
+            Server-->>DataLogger: Confirmación de desconexión
+            note left of DataLogger: timeline
+
+    </div>
+</body>
+</html>

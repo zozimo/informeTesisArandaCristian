@@ -63,94 +63,93 @@ Cuando se inicia una calibración y se empiezan a recibir datos de los sensores,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Servidor WebSocket}
 
-Se utilizó la biblioteca Django-channels para implementar un servidor \textit{WebSocket} que opera de forma concurrente con el servidor web HTTP. Este servidor permite la conexión simultánea de múltiples clientes, en este caso, un \textit{datalogger} que envía datos y un usuario que recibe dicha información a través de \textit{WebSockets}. Los datos recibidos por el servidor, son graficados y actualizados en tiempo real en la aplicación web.
+Se utilizó la biblioteca Django-Channels para implementar un servidor \textit{WebSocket} que opera de forma concurrente con el servidor web HTTP. Este servidor permite la conexión simultánea de múltiples clientes, en este caso, un \textit{datalogger} que envía datos y un usuario desde el navegador, que recibe dicha información a través de \textit{WebSockets}. Los datos recibidos por el servidor, se gráfican en tiempo real en una vista del \textit{front end}. 
 
-Para configurar el servidor, se creó el archivo \texttt{routing.py}, el cual define las rutas de los canales, es decir, los puntos de acceso a los consumidores (consumers) que gestionan las conexiones \textit{WebSocket}. La configuración del archivo \texttt{routing.py} se presenta en el Código \ref{cdg:routing}. Cada ruta mapea una URL de \textit{WebSocket} a un consumidor específico. En este caso, \texttt{ChatConsumer} es una clase que maneja las conexiones a la URL \texttt{ws/socket-server/}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/backend/TimeLineWebSocket.jpg}
+    \caption{Diagrama de comunicación entre el servidor \textit{WebSocket}, el cliente de la aplicación web y el \textit{datalogger}.}
+    \label{fig:TimeLineWebSocket}
+\end{figure}
 
+En la Figura \ref{fig:TimeLineWebSocket} se ilustra la secuencia de interacción entre el \textit{datalogger}, un servidor \textit{WebSocket} y un cliente que utiliza la  aplicación web. Inicialmente, tanto el \textit{datalogger} como la aplicación web realizan una solicitud de conexión al servidor, (\textit{handshake}), la cual es respondida con una confirmación de conexión, estableciendo así el canal de comunicación. El \textit{datalogger} envía periódicamente mensajes de \textit{keep alive} para mantener la conexión activa, a los cuales el servidor responde con una confirmación. Durante la fase de intercambio de datos, el datalogger publica datos al servidor, que posteriormente son reenviados a la aplicación web y se guardan en la base de datos. La aplicación web confirma la recepción de los datos al servidor, y este a su vez confirma dicha recepción al datalogger. Finalmente, cuando se ha terminado de medir todos los valores de velocidad de viento configurados por el operador, ambos clientes envían una solicitud de desconexión al servidor, que responde con una confirmación de desconexión, cerrando así la comunicación. El \textit{datalogger} envía las mediciones de los sensores y la información del controlador en el formato de cadena de caracteres descrito a continuación:
 
-
-\begin{lstlisting}[style=pythonstyle, caption={Configuracion del routing para gestionar las conexiones de clientes al servidor \textit{WebSocket}.}, label=cdg:routing,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-from django.urls import re_path
-from . import consumers
-
-websocket_urlpatterns = [
-    re_path(r'ws/socket-server/',consumers.ChatConsumer.as_asgi())
-]
-\end{lstlisting}
-
-También se creo el archivo \texttt{consumers.py} define las clases de consumidores que manejan las conexiones \textit{WebSocket}. Un consumidor en Django-channels es una clase que gestiona la conexión con el cliente, incluyendo el manejo de eventos como la recepción y el envío de mensajes. En el codigo \ref{cdg:consumer} se muestra el consumidor implementado
-
-\begin{lstlisting}[style=pythonstyle, caption={Declaracion de las funciones que utiliza cada consumidor para interactuar con el servidor \textit{WebSocket}.}, label=cdg:consumer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-class ChatConsumer(WebsocketConsumer):
-    def connect(self):
-        self.room_group_name = 'test'
-        async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name           
-        )
-        self.accept()
-
-    def disconnect(self, close_code):
-        pass
-        
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        # message = text_data
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': message,
-                'sender_channel_name': self.channel_name,
-            }
-        )
-        if(len(message)>0):
-            if(message[0] == "M"):
-                saveMesuareDataBase(message)
-        print('Message:', message)
-
-    def chat_message(self, event):
-        message = event['message']
-        sender_channel_name = event['sender_channel_name']
-        if sender_channel_name != self.channel_name:
-            self.send(text_data=json.dumps({
-                'type': 'chat',
-                'message': message
-            }))
-\end{lstlisting}
-
-En particular, se implementa la clase \texttt{ChatConsumer}, que hereda de \texttt{WebsocketConsumer}, para gestionar las conexiones \textit{WebSocket}. Esta clase define varios métodos, incluyendo \texttt{connect}, \texttt{disconnect}, \texttt{receive} y \texttt{chat\_message}.
-
-El método \texttt{connect} se ejecuta cuando un cliente se conecta al servidor \textit{WebSocket}. Dentro de este método, se asigna el nombre del grupo de la sala a \texttt{self.room\_group\_name} y se añade el canal del cliente al grupo utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_add)}. Finalmente, se acepta la conexión mediante \texttt{self.accept()}. Por otro lado, el método \texttt{disconnect} se ejecuta cuando un cliente se desconecta del servidor \textit{WebSocket}.
-
-El método \texttt{receive} recibe y decodifica los mensajes desde JSON para luego enviarlos a un grupo de la sala utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_send)}. Los mensajes que envía el \textit{datalogger} tiene la forma del arreglo declarado en código \ref{cdg:estructuraMensaje}, que contiene toda la información que ha recolectado el \textit{datalogger} en un ciclo de iteración.
-
-
-\begin{lstlisting}[style=cstyle, caption={Estructura del mensaje enviado por el \textit{datalogger}}, label=cdg:estructuraMensaje, basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
-real32_t Tabla_Mediciones[25] = {
-    velocidadInst, velocidadMin, velocidadMax, velocidadPromedio,
-    velocidadInstIBC, velocidadMinIBC, velocidadMaxIBC, velocidadPromedioIBC,
-    direccionInst, direccionMin, direccionMax, direccionPromedio,
-    direccionInstIBC, direccionMinIBC, direccionMaxIBC, direccionPromedioIBC,
-    nv_bateriaInst, nv_bateriaMin, nv_bateriaMax, nv_bateriaPromedio,
-    nv_adcTunelInst, nv_adcTunelMin, nv_adcTunelMax, nv_adcTunelPromedio,
-    nv_pwmControlTunelInst
-};
-\end{lstlisting}
-
---- ) Marcar la muestra que estoy mandando, y especificar cada campo, 
-
-poner numeros de la base de datos
-
-M;[NumMed];[fecha];[hora]
-
-luego poner ejemplo
-
-El mensaje decodificado tiene la siguiente forma:
 \begin{verbatim}
-    
-    
+M;[nro Medición];[fecha];[hora];
+[VelPatInst];[VelPatMin];[VelPatMax];[VelPatProm];
+[VelIbcInst];[VelIbcMin];[VelIbcMax];[VelIbcProm];
+[DirPatInst];[DirPatMin];[DirPatMax];[DirPatProm];
+[DirIbcInst];[DirIbcMin];[DirIbcMax];[DirIbcProm];
+[BatLevelInst];[BatLevelMin];[BatLevelMax];[BatLevelProm];
+[AdcTunelInst];[AdcTunelMin];[AdcTunelMax];[AdcTunelProm];
+[PWMLevelInst]
+\end{verbatim}
+
+% Para configurar el servidor, se creó el archivo \texttt{routing.py}, el cual define las rutas de los canales, es decir, los puntos de acceso a los consumidores (consumers) que gestionan las conexiones \textit{WebSocket}. La configuración del archivo \texttt{routing.py} se presenta en el Código \ref{cdg:routing}. Cada ruta mapea una URL de \textit{WebSocket} a un consumidor específico. En este caso, \texttt{ChatConsumer} es una clase que maneja las conexiones a la URL \texttt{ws/socket-server/}.
+
+
+
+% \begin{lstlisting}[style=pythonstyle, caption={Configuracion del routing para gestionar las conexiones de clientes al servidor \textit{WebSocket}.}, label=cdg:routing,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% from django.urls import re_path
+% from . import consumers
+
+% websocket_urlpatterns = [
+%     re_path(r'ws/socket-server/',consumers.ChatConsumer.as_asgi())
+% ]
+% \end{lstlisting}
+
+% También se creo el archivo \texttt{consumers.py} define las clases de consumidores que manejan las conexiones \textit{WebSocket}. Un consumidor en Django-channels es una clase que gestiona la conexión con el cliente, incluyendo el manejo de eventos como la recepción y el envío de mensajes. En el codigo \ref{cdg:consumer} se muestra el consumidor implementado
+
+% \begin{lstlisting}[style=pythonstyle, caption={Declaracion de las funciones que utiliza cada consumidor para interactuar con el servidor \textit{WebSocket}.}, label=cdg:consumer,basicstyle=\ttfamily\fontsize{8}{8}\selectfont]
+% class ChatConsumer(WebsocketConsumer):
+%     def connect(self):
+%         self.room_group_name = 'test'
+%         async_to_sync(self.channel_layer.group_add)(
+%             self.room_group_name,
+%             self.channel_name           
+%         )
+%         self.accept()
+
+%     def disconnect(self, close_code):
+%         pass
+        
+%     def receive(self, text_data):
+%         text_data_json = json.loads(text_data)
+%         message = text_data_json['message']
+%         # message = text_data
+%         async_to_sync(self.channel_layer.group_send)(
+%             self.room_group_name,
+%             {
+%                 'type': 'chat_message',
+%                 'message': message,
+%                 'sender_channel_name': self.channel_name,
+%             }
+%         )
+%         if(len(message)>0):
+%             if(message[0] == "M"):
+%                 saveMesuareDataBase(message)
+%         print('Message:', message)
+
+%     def chat_message(self, event):
+%         message = event['message']
+%         sender_channel_name = event['sender_channel_name']
+%         if sender_channel_name != self.channel_name:
+%             self.send(text_data=json.dumps({
+%                 'type': 'chat',
+%                 'message': message
+%             }))
+% \end{lstlisting}
+
+% En particular, se implementa la clase \texttt{ChatConsumer}, que hereda de \texttt{WebsocketConsumer}, para gestionar las conexiones \textit{WebSocket}. Esta clase define varios métodos, incluyendo \texttt{connect}, \texttt{disconnect}, \texttt{receive} y \texttt{chat\_message}.
+
+% El método \texttt{connect} se ejecuta cuando un cliente se conecta al servidor \textit{WebSocket}. Dentro de este método, se asigna el nombre del grupo de la sala a \texttt{self.room\_group\_name} y se añade el canal del cliente al grupo utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_add)}. Finalmente, se acepta la conexión mediante \texttt{self.accept()}. Por otro lado, el método \texttt{disconnect} se ejecuta cuando un cliente se desconecta del servidor \textit{WebSocket}.
+
+% (hablar del tipo de string recibido, mejorarlo)
+% El método \texttt{receive} recibe y decodifica los mensajes desde JSON para luego enviarlos a un grupo de la sala utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_send)}. Los mensajes que envía el \textit{datalogger} tiene la forma del arreglo declarado en código \ref{cdg:estructuraMensaje}, que contiene toda la información que ha recolectado el \textit{datalogger} en un ciclo de iteración.
+
+El mensaje utiliza el carácter \texttt{;} como separador. La primera letra \texttt{M} es un carácter que el servidor \textit{WebSocket} valida para interpretar que se trata de un mensaje que contiene mediciones y debe ser guardado en la base de datos. A continuación, se incluye el número de medición, la fecha y la hora. Posteriormente, se envían las mediciones de velocidad y dirección de los sensores patrón y bajo calibración. Luego, se envía el nivel de batería de la fuente de alimentación seguido del nivel de tensión del variador del túnel. Todas estas variables se envían en paquetes de cuatro mediciones: el valor instantáneo, el valor mínimo, el valor máximo y el valor promedio. Finalmente, se envía el nivel de PWM que se envía al controlador PID. A continuación, se presenta un ejemplo de mensaje en el que se utiliza una precisión de dos decimales para las mediciones, excepto para el nivel de PWM, que es un valor entero entre 0 y 255.
+
+\begin{verbatim}
     M;634;14-06-2024;16:42:41;
     10.08;10.08;10.08;10.08;
     9.53;9.53;9.53;9.53;
@@ -161,62 +160,49 @@ El mensaje decodificado tiene la siguiente forma:
     90;
 \end{verbatim}
 
-De esta forma, si el mensaje recibido comienza con la letra "M", se guarda en la base de datos mediante la función \texttt{saveMeasureDataBase(message)}. Esta función conoce el orden en que se creó el string y separa los datos para guardarlos en su respectivo campo de la base de datos.
-
-Finalmente, el método \texttt{chat\_message} se utiliza para enviar mensajes a los clientes. Si el mensaje recibido no se origina del mismo canal que el receptor, se envía el mensaje de vuelta al cliente utilizando \texttt{self.send()}. Por ejemplo, cuando un cliente está conectado al \textit{WebSocket} desde el navegador web, puede ver cómo se grafican los datos en tiempo real a medida que estos llegan desde el \textit{datalogger} hacia servidor.
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Generación de trayectoria y control del túnel}\label{sec:genTrayec}
 
-En la sección \ref{sec:sistemaDeControlPid} se ha detallado el funcionamiento del controlador PID del túnel de viento. Para que este funcione, necesita valores de referencias que se construyen a partir de un generador de trayectoria utilizando el método de Paul \cite{RoboFIUBAGenTrayec}. El generador toma los valores de velocidad de viento deseados y los tiempos deseados desde la configuración realizada por el operador en el \textit{front end}, y con estos valores se genera una curva de referencia de velocidades de viento en función del tiempo. El método de Paul consiste en definir, para cada punto, dos zonas: una de aceleración constante y otra de velocidad constante. Cada segmento tiene una duración $T_{j}$ y un tiempo de aceleración $t_{acc}$, como se muestra en la figura \ref{fig:segmentosZona1yZona2}, de forma tal que no se realicen cambios abruptos en el controlador, permitiendo que los cambios de velocidad del viento sean suaves.
+En la sección \ref{sec:sistemaDeControlPid} se explica cómo funciona el controlador PID del túnel de viento. Este controlador necesita valores de referencia, que se obtienen de un generador de trayectoria diseñado con el método de Paul \cite{RoboFIUBAGenTrayec}. El generador toma de la base de datos los valores de velocidad de viento y tiempos deseados, configurados por el operador en el \textit{front end}, y con estos datos crea una curva de referencia de velocidades de viento en función del tiempo.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/backend/segmentoTrayect.png}
-    \caption{Segmento para pasar de un punto de velocidad $v^B$ a otro $v^C$ viniendo desde $v^A$.}
+    \caption{Construcción de un segmento para pasar de un valor de velocidad $v^B$ a otro $v^C$ viniendo desde $v^A$.}
     \label{fig:segmentosZona1yZona2}
 \end{figure}
 
-Estos cambios suaves se traducen, a través del controlador PID, en cambios suaves en los valores de PWM para el motor.
-
-Para la zona 2 del segmento $T_{j}$, donde se define $\Delta C = v^C - v^B$, el método de Paul aplica la ecuación \ref{eq:zona2MetodoPaul}:
+El método de Paul consiste en definir, para cada valor de velocidad configurado, dos zonas: una de aceleración constante (zona 1) y otra de velocidad constante (zona 2), como se muestra en la figura \ref{fig:segmentosZona1yZona2}. Cada segmento tiene una duración $T_{j}$ y un tiempo de aceleración $t_{acc}$, de forma tal que no se realicen cambios abruptos en el controlador, permitiendo que los cambios de velocidad del viento sean suaves. Estos cambios suaves se traducen, a través del controlador PID, en cambios suaves en los valores de PWM para el motor. Para construir la zona 2 del segmento $T_{j}$, donde se define $\Delta C = v^C - v^B$, el método de Paul aplica la ecuación \ref{eq:zona2MetodoPaul}:
 \begin{equation}
-    v(t_{seg}) = \frac{\Delta C}{T_j} + v^B
+    v(t) = \frac{\Delta C}{T_j} + v^B
     \label{eq:zona2MetodoPaul}
 \end{equation}
-
 Para la zona 1 del mismo segmento, donde se define $\Delta A = v^A - v^B$, se aplica la ecuación \ref{eq:zona1MetodoPaul}:
 \begin{equation}
-    v(t_{seg}) = \frac{\Delta C}{T_j} \frac{(t_{seg} + t_{acc})^2}{4t_{acc}} + \frac{\Delta A}{t_{acc}} \frac{(t_{seg} - t_{acc})^2}{4t_{acc}} + v^B 
+    v(t) = \frac{\Delta C}{T_j} \frac{(t + t_{acc})^2}{4t_{acc}} + \frac{\Delta A}{t_{acc}} \frac{(t - t_{acc})^2}{4t_{acc}} + v^B 
     \label{eq:zona1MetodoPaul}
 \end{equation}
-
-Esto garantiza que en la zona 1, donde se realiza el enganche de segmento, la aceleración del cambio sea constante, y que en la zona 2, donde se realiza la transición de un segmento a otro, la velocidad de cambio sea constante.
-
-El algoritmo generador de trayectoria se muestra en el código \ref{cdg:genTrayectoria}. Este se ejecuta en el \textit{back end} y calcula la trayectoria en función de cada punto de viento (segmento), donde se elige un $t_{acc} = \SI{10}{\second}$ y el tiempo de segmento $T_{j}$ se arma en función de los tiempos de crecimiento, estabilización y medición configurados por el operador. Luego, realiza el encadenamiento de todas las velocidades para obtener un perfil como el de la Figura \ref{fig:trayectoriaGenerada}, donde se muestra una trayectoria de ciclo ascendente y descendente para los puntos 5, 10, 15, 20 y 25 \unit{\meter\per\second}, con un tiempo de crecimiento de 2 \unit{\minute}, un tiempo de estabilización de 5 \unit{\minute} y un tiempo de medición de 2 \unit{\minute}.
+Combinado estas ecuaciones para todo tiempo $t$ se obtiene un segmento que representa el cambio de velocidad desde $v^A$ hasta $v^c$. Esto garantiza que en la zona 1, donde se realice el enganche de segmento, la aceleración del cambio sea constante, y que en la zona 2, donde se realice la transición de un segmento a otro, la velocidad de cambio sea constante. Se puede revisar en el repositorio \cite{AppGenTrayect} el algoritmo generador de trayectoria. Este se ejecuta en el \textit{back end} y calcula la trayectoria en función de cada segmento, donde se ha configurado un $t_{acc} = \SI{10}{\second}$ y el tiempo de segmento $T_{j}$ se arma en función de los tiempos de crecimiento, estabilización y medición configurados por el operador. Luego, realiza el encadenamiento de todos esos segmentos dando como resultado un perfil de velocidad de viento como el de la Figura \ref{fig:trayectoriaGenerada}, donde se muestra una trayectoria de ciclo ascendente y descendente para los puntos 5, 10, 15, 20 y 25 \unit{\meter\per\second}, con un tiempo de crecimiento de 2 \unit{\minute}, un tiempo de estabilización de 5 \unit{\minute} y un tiempo de medición de 2 \unit{\minute}. La curva está compuesta en total por diez segmentos, cada uno construido como el de la figura \ref{fig:segmentosZona1yZona2}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{Figuras/AplicacionWeb/backend/trayectoriaGenerada.jpg}
-    \caption{Trayectoria generada utilizando el método de Paul para un ciclo ascendente y descendente de velocidades.}
+    \includegraphics[width=0.8\linewidth]{Figuras/AplicacionWeb/backend/trayectoriaGenerada.jpg}
+    \caption{Trayectoria de referencias de velocidad de viento creada con el método de Paul.}
     \label{fig:trayectoriaGenerada}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Cálculo de incertidumbre}\label{sec:calculoIncertidumbre}
 
-El proceso de calcular la incertidumbre expandida para todos los puntos medidos se realiza según el algoritmo del diagrama de flujo de la figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}.
+El proceso de calcular la incertidumbre expandida para todos los puntos de viento medidos se realiza (basado en la norma \cite{GUM}) según el algoritmo del diagrama de flujo de la figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/backend/DiagramaFlujoCalculoIncertidumbre.png}
+    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/backend/DiagramaFlujoCalculoIncertidumbre.png}
     \caption{Diagrama de flujo del para el calculo de incertidumbre expandida.}
     \label{fig:DiagramaFlujoCalculoIncertidumbre}
 \end{figure}
 
-Después de completar los ciclos ascendente y descendente de medición, se dispone de un banco de datos crudos de velocidad y dirección. El algoritmo lee estos datos y extrae las mediciones de la parte plana estable para cada punto de forma iterativa. Este proceso se denomina \textit{parsear datos}. Luego, se muestran los datos crudos procesados en pantalla, donde el operador, desde el \textit{front end}, debe hacer clic en el botón ``Calcular Incertidumbre'', siempre que esté de acuerdo con los datos. Si no, puede reiniciar las mediciones con un nuevo perfil.
-
-Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar $\sigma_{v}$ de las mediciones de velocidad del viento para cada punto. A continuación, se elabora el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los valores promedio. Se procede a la lectura de los datos ingresados por el operador, específicamente la resolución de los instrumentos y el área de bloqueo de los anemómetros para el cálculo del factor de bloqueo, ecuación \ref{eq:FactorDeBloqueo}, donde $S_{T}$ corresponde al área transversal de la zona de medición del túnel de viento y $S_{A}$ se corresponde al área efectiva de bloqueo del sensor y su soporte. Este valor se utiliza para corregir las mediciones del IBC y del patrón, y se incorpora su respectiva incertidumbre según la ecuación \ref{eq:incertiFactorBloqueo}.
+Después de completar los ciclos ascendente y descendente de medición, se dispone de un conjunto de datos crudos de velocidad y dirección del viento. El algoritmo lee estos datos y extrae las mediciones de la parte plana estable (como se ilustra en la Figura \ref{fig:curvaEscalon} de la sección siguiente) aplicando el mismo procedimiento a cada segmento. Este proceso se denomina \texttt{Parsear los datos}. Posteriormente, se muestran los datos crudos procesados en pantalla, donde el operador, desde el \textit{front end}, puede iniciar el cálculo de incertidumbre, siempre que considere que las muestras son útiles. En caso contrario, puede reiniciar las mediciones y obtener un nuevo perfil. Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar $\sigma_{v}$ de las mediciones de velocidad del viento para cada valor configurado. A continuación, se elabora el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los valores promedio. Se procede con la lectura de los metadatos ingresados por el operador, específicamente la resolución de los instrumentos y el área de bloqueo de los anemómetros para el cálculo del factor de bloqueo, ecuación \ref{eq:FactorDeBloqueo}, donde $S_{T}$ corresponde al área transversal de la zona de medición del túnel de viento y $S_{A}$ se corresponde al área efectiva de bloqueo del sensor y su soporte. Este valor se utiliza para corregir las mediciones del IBC y del patrón, y se agrega al presupuesto su respectiva incertidumbre según la ecuación \ref{eq:incertiFactorBloqueo}.
 
 \begin{equation}
     \centering
@@ -229,19 +215,21 @@ Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}
     \Delta F_{bk} =  \sqrt{\left\lvert \frac{\partial F}{\partial S_T} \right\rvert^2 \left\lvert\Delta S_T\right\rvert^2 + \left\lvert \frac{\partial F}{\partial S_A} \right\rvert^2 \left\lvert\Delta S_A\right\rvert^2} = \left( \frac{-S_{A}}{S_{T}^{2}} \right)^2 (\Delta S_T)^2 + \left( \frac{1}{S_{T}} \right)^2 (\Delta S_A)^2
     \label{eq:incertiFactorBloqueo}
 \end{equation}
-Luego, se obtienen los datos de calibración del sensor patrón a partir de un ajuste lineal de los puntos discretos del certificado y evaluando los puntos configurados por el operador. Esto se hace así porque no siempre el patrón está calibrado en los mismos puntos en los que se lo va a utilizar. Lo mismo se realiza con el certificado del túnel, extrayendo los valores de estabilidad, homogeneidad y el factor de calibración del túnel para los puntos configurados por el operador.
+Luego, se obtienen los datos de calibración del sensor patrón a partir de un ajuste lineal de los puntos discretos del certificado. En esa curva de ajuste obtenida, se evalúa los valores promedio medidos de patron $\bar{v}_{Pat}$. Esto se hace así porque no siempre el patrón está calibrado en los mismos puntos en los que se lo va a utilizar. Lo mismo se realiza con el certificado del túnel, se extrae los valores de estabilidad, homogeneidad y el factor de calibración del túnel para los los valores promedio medidos del IBC $\bar{v}_{IBC}$. Con todas estas incertidumbres normalizadas y multiplicadas por su coeficiente de sensibilidad $c_{i}$, se obtiene la incertidumbre estándar. Luego, se realiza la suma de los cuadrados, ecuación \ref{eq:incertCombinadaSoft}, de cada incertidumbre estándar y se calcula la raíz cuadrada para obtener la incertidumbre combinada para cada punto configurado por el operador.
+\begin{equation}
+    \centering
+    u_c = \sqrt{\sum_{i=1}^{n} (u_{i} \cdot c_{i})^2}.
+\label{eq:incertCombinadaSoft}
+\end{equation}
 
-Con todas estas incertidumbres normalizadas y multiplicadas por su coeficiente de sensibilidad $c_{i}$, se obtiene la incertidumbre estándar para cada punto. Luego, se realiza la suma de los cuadrados de cada incertidumbre y se calcula la raíz cuadrada para obtener la incertidumbre combinada para cada punto
-\[
-u_c = \sqrt{\sum_{i=1}^{n} (u_{i} \cdot c_{i})^2}.
-\]
+En base al número de mediciones, se calculan los grados de libertad efectivos y con este número, solicitando un intervalo de confianza del 95\%, se evalúa la distribución $t$ de Student para obtener el factor de cobertura $k$. Luego, se multiplica este número por cada incertidumbre combinada correspondiente para obtener la incertidumbre expandida 
+\begin{equation}
+    \centering
+    U = k \cdot u_c.
+\label{eq:incertExpandidaSoft}
+\end{equation}
 
-En base al número de mediciones, se calculan los grados de libertad efectivos para cada punto y con este número, solicitando un intervalo de confianza del 95\%, se evalúa la distribución $t$ de Student para obtener el factor de cobertura ($k$). Luego, se multiplica este número por cada incertidumbre combinada correspondiente para obtener la incertidumbre expandida 
-\[
-U = k \cdot u_c.
-\]
-
-Finalmente, todos los resultados se presentan por pantalla y se dispone de botones para descargar los gráficos y tablas correspondientes a los datos crudos, la histéresis y los resultados de calibración.
+Finalmente, se presentan en pantalla un resumen de todos los resultados, además de disponer de botones para descargar los gráficos y tablas correspondientes a los datos crudos, la histéresis y los resultados de calibración.
 
 % Luego, se grafica la curva de histéresis, como se muestra en la figura \ref{fig:CurvaHisteresis}, junto con una tabla para analizar la alinealidad del IBC (figura \ref{fig:TablaAlinealidad}). Además, se presenta la curva de calibración con sus correspondientes incertidumbres expandidas tanto para los datos del ciclo ascendente como del descendente (figura \ref{fig:CurvaCalibracion}). Finalmente, se incluye una tabla (figura \ref{fig:TablaIncertidumbres}) donde se especifican la incertidumbre combinada, la incertidumbre expandida, la corrección y los grados de libertad para cada punto donde se realizó la calibración del anemómetro.
 
