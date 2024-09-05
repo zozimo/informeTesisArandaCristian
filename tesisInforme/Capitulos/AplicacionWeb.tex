@@ -56,7 +56,7 @@ Dado que la aplicación está diseñada para manejar una gran cantidad de datos 
     \label{fig:DiagramaSimplificadoBd}
 \end{figure}
 
-Cuando se inicia una calibración y se empiezan a recibir datos de los sensores, toda esta información se almacena en una tabla definida como \texttt{DatosMedidos} de la base de datos. Asimismo, se guardan los resultados generados antes y después del procesamiento de los datos. Todas estas tablas están relacionadas mediante claves foráneas (relación de uno a muchos) con la tabla \texttt{Calibración}. Esto se debe a que una calibración está asociada a un único \textit{datalogger} o a un único sensor IBC, y se puede recuperar la información de esa  calibración a través de un numero identificador definido como su clave primaria. En la Figura \ref{fig:DiagramaEntidadrelacion} se ve el diagrama de entidad relación donde se describe con mas detalle las tablas, los atributos de tabla con su tipo de dato, las claves primarias y las claves foráneas.
+Cuando se inicia una calibración y se empiezan a recibir datos de los sensores, toda esta información se almacena en una tabla definida como \texttt{DatosMedidos} de la base de datos. Asimismo, se guardan los resultados generados antes y después del procesamiento de los datos. Todas estas tablas están relacionadas mediante claves foráneas (relación de uno a muchos) con la tabla \texttt{Calibración}. Esto se debe a que una calibración está asociada a un único \textit{datalogger} o a un único sensor IBC, y se puede recuperar la información de esa  calibración a través de un numero identificador definido como su clave primaria. En la Figura \ref{fig:DiagramaEntidadrelacion} se ve el diagrama de entidad relación donde se describe con más detalle las tablas, los atributos de tabla con su tipo de dato, las claves primarias y las claves foráneas.
 
 
 % Todo las definiciones de estas tablas se realizaron a traves de clases usando el Conector de ORM de django con la base de datos Postggre SQL, a traves de la definir una clase que hereda de models.Model, como se ve en el codigo \ref{}, donde se define la clase,  ConfigTunel
@@ -182,14 +182,16 @@ Para la zona 1 del mismo segmento, donde se define $\Delta A = v^A - v^B$, se ap
     v(t) = \frac{\Delta C}{T_j} \frac{(t + t_{acc})^2}{4t_{acc}} + \frac{\Delta A}{t_{acc}} \frac{(t - t_{acc})^2}{4t_{acc}} + v^B 
     \label{eq:zona1MetodoPaul}
 \end{equation}
-Combinado estas ecuaciones para todo tiempo $t$ se obtiene un segmento que representa el cambio de velocidad desde $v^A$ hasta $v^c$. Esto garantiza que en la zona 1, donde se realice el enganche de segmento, la aceleración del cambio sea constante, y que en la zona 2, donde se realice la transición de un segmento a otro, la velocidad de cambio sea constante. Se puede revisar en el repositorio \cite{AppGenTrayect} el algoritmo generador de trayectoria. Este se ejecuta en el \textit{back end} y calcula la trayectoria en función de cada segmento, donde se ha configurado un $t_{acc} = \SI{10}{\second}$ y el tiempo de segmento $T_{j}$ se arma en función de los tiempos de crecimiento, estabilización y medición configurados por el operador. Luego, realiza el encadenamiento de todos esos segmentos dando como resultado un perfil de velocidad de viento como el de la Figura \ref{fig:trayectoriaGenerada}, donde se muestra una trayectoria de ciclo ascendente y descendente para los puntos 5, 10, 15, 20 y 25 \unit{\meter\per\second}, con un tiempo de crecimiento de 2 \unit{\minute}, un tiempo de estabilización de 5 \unit{\minute} y un tiempo de medición de 2 \unit{\minute}. La curva está compuesta en total por diez segmentos, cada uno construido como el de la figura \ref{fig:segmentosZona1yZona2}.
+Combinado estas ecuaciones para todo tiempo $t$ se obtiene un segmento que representa el cambio de velocidad desde $v^A$ hasta $v^c$. Esto garantiza que en la zona 1, donde se realice el enganche de segmento, la aceleración del cambio sea constante, y que en la zona 2, donde se realice la transición de un segmento a otro, la velocidad de cambio sea constante. Se puede revisar en el repositorio \cite{AppGenTrayect} el algoritmo generador de trayectoria. Este se ejecuta en el \textit{back end} y calcula la trayectoria en función de cada segmento, donde se ha configurado un $t_{acc} = \SI{10}{\second}$ y el tiempo de segmento $T_{j}$ se arma en función de los tiempos de crecimiento, estabilización y medición configurados por el operador. 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Figuras/AplicacionWeb/backend/trayectoriaGenerada.jpg}
+    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/backend/trayectoriaGenerada.jpg}
     \caption{Trayectoria de referencias de velocidad de viento creada con el método de Paul.}
     \label{fig:trayectoriaGenerada}
 \end{figure}
+
+Luego, realiza el encadenamiento de todos esos segmentos dando como resultado un perfil de velocidad de viento como el de la Figura \ref{fig:trayectoriaGenerada}, donde se muestra una trayectoria de ciclo ascendente y descendente para los puntos 5, 10, 15, 20 y 25 \unit{\meter\per\second}, con un tiempo de crecimiento de 2 \unit{\minute}, un tiempo de estabilización de 5 \unit{\minute} y un tiempo de medición de 2 \unit{\minute}. La curva está compuesta en total por diez segmentos, cada uno construido como el de la figura \ref{fig:segmentosZona1yZona2}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Cálculo de incertidumbre}\label{sec:calculoIncertidumbre}
 
@@ -202,7 +204,8 @@ El proceso de calcular la incertidumbre expandida para todos los puntos de vient
     \label{fig:DiagramaFlujoCalculoIncertidumbre}
 \end{figure}
 
-Después de completar los ciclos ascendente y descendente de medición, se dispone de un conjunto de datos crudos de velocidad y dirección del viento. El algoritmo lee estos datos y extrae las mediciones de la parte plana estable (como se ilustra en la Figura \ref{fig:curvaEscalon} de la sección siguiente) aplicando el mismo procedimiento a cada segmento. Este proceso se denomina \texttt{Parsear los datos}. Posteriormente, se muestran los datos crudos procesados en pantalla, donde el operador, desde el \textit{front end}, puede iniciar el cálculo de incertidumbre, siempre que considere que las muestras son útiles. En caso contrario, puede reiniciar las mediciones y obtener un nuevo perfil. Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar $\sigma_{v}$ de las mediciones de velocidad del viento para cada valor configurado. A continuación, se elabora el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los valores promedio. Se procede con la lectura de los metadatos ingresados por el operador, específicamente la resolución de los instrumentos y el área de bloqueo de los anemómetros para el cálculo del factor de bloqueo, ecuación \ref{eq:FactorDeBloqueo}, donde $S_{T}$ corresponde al área transversal de la zona de medición del túnel de viento y $S_{A}$ se corresponde al área efectiva de bloqueo del sensor y su soporte. Este valor se utiliza para corregir las mediciones del IBC y del patrón, y se agrega al presupuesto su respectiva incertidumbre según la ecuación \ref{eq:incertiFactorBloqueo}.
+Después de completar los ciclos de medición ascendente y descendente, se dispone de un conjunto de muestras de velocidad y dirección del viento. El algoritmo lee estos datos y extrae la parte plana y estable de las mediciones (como se ilustra en la Figura \ref{fig:curvaEscalon} de la sección siguiente). Este procedimiento se aplica a cada segmento y se denomina \texttt{parseo de datos}. Posteriormente, se muestran los datos crudos extraídos en pantalla, donde el operador, desde el \textit{front end}, puede iniciar el cálculo de incertidumbre, siempre que considere que las muestras son útiles. En caso contrario, puede reiniciar las mediciones y obtener un nuevo perfil. Si los datos son correctos para la calibración, se calcula el promedio $\bar{v}$ y el desvío estándar $\sigma_{v}$ de las mediciones extraídas. A continuación, para cada valor de viento promedio obtenido, se elabora el presupuesto de incertidumbre, obteniendo los datos de histéresis del patrón y del IBC a partir de la diferencia de los valores promedio del ciclo ascendente menos el ciclo descendente. Luego, se procede con la lectura de los metadatos ingresados por el operador, específicamente la resolución de los instrumentos y el área de bloqueo de los anemómetros, donde este último se utiliza para el cálculo del factor de bloqueo, según la ecuación \ref{eq:FactorDeBloqueo}, donde $S_{T}$ corresponde al área transversal de la zona de medición del túnel de viento y $S_{A}$ se corresponde al área efectiva de bloqueo del sensor y su soporte. Este valor se utiliza para corregir las mediciones del IBC y del patrón, y se agrega al presupuesto su respectiva incertidumbre según la ecuación \ref{eq:incertiFactorBloqueo}.
+
 
 \begin{equation}
     \centering
@@ -215,7 +218,7 @@ Después de completar los ciclos ascendente y descendente de medición, se dispo
     \Delta F_{bk} =  \sqrt{\left\lvert \frac{\partial F}{\partial S_T} \right\rvert^2 \left\lvert\Delta S_T\right\rvert^2 + \left\lvert \frac{\partial F}{\partial S_A} \right\rvert^2 \left\lvert\Delta S_A\right\rvert^2} = \left( \frac{-S_{A}}{S_{T}^{2}} \right)^2 (\Delta S_T)^2 + \left( \frac{1}{S_{T}} \right)^2 (\Delta S_A)^2
     \label{eq:incertiFactorBloqueo}
 \end{equation}
-Luego, se obtienen los datos de calibración del sensor patrón a partir de un ajuste lineal de los puntos discretos del certificado. En esa curva de ajuste obtenida, se evalúa los valores promedio medidos de patron $\bar{v}_{Pat}$. Esto se hace así porque no siempre el patrón está calibrado en los mismos puntos en los que se lo va a utilizar. Lo mismo se realiza con el certificado del túnel, se extrae los valores de estabilidad, homogeneidad y el factor de calibración del túnel para los los valores promedio medidos del IBC $\bar{v}_{IBC}$. Con todas estas incertidumbres normalizadas y multiplicadas por su coeficiente de sensibilidad $c_{i}$, se obtiene la incertidumbre estándar. Luego, se realiza la suma de los cuadrados, ecuación \ref{eq:incertCombinadaSoft}, de cada incertidumbre estándar y se calcula la raíz cuadrada para obtener la incertidumbre combinada para cada punto configurado por el operador.
+A continuación, el algoritmo obtiene los datos de calibración del sensor patrón a partir de una regresión lineal de los puntos discretos del certificado. En esa curva obtenida, se evalúa los valores promedio del patrón $\bar{v}_{Pat}$. Esto se hace así porque no siempre el patrón está calibrado en los mismos puntos en los que se lo va a utilizar. Lo mismo se realiza con el certificado del túnel, se extrae los valores de estabilidad, homogeneidad y el factor de calibración del túnel para los valores promedio del IBC $\bar{v}_{IBC}$. Con todas estas incertidumbres normalizadas y multiplicadas por su coeficiente de sensibilidad $c_{i}$, se obtiene la incertidumbre estándar. Luego, se realiza la suma de los cuadrados, ecuación \ref{eq:incertCombinadaSoft}, de cada incertidumbre estándar y se aplica la raíz cuadrada para obtener la incertidumbre combinada para cada punto configurado por el operador.
 \begin{equation}
     \centering
     u_c = \sqrt{\sum_{i=1}^{n} (u_{i} \cdot c_{i})^2}.
@@ -236,27 +239,21 @@ Finalmente, se presentan en pantalla un resumen de todos los resultados, además
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Front End}\label{sec:frontEnd}
 
-El \textit{front end} se encarga de:
-\begin{itemize}
-    \item Interacción del usuario a través de formularios, botones y eventos.
-    \item Comunicación con el \textit{back end} a través de Django y \textit{WebSockets}.
-    \item Presentación de tablas y gráficos al usuario (UI/UX).
-\end{itemize}
-La aplicación web presenta una plantilla de inicio, como se muestra en la figura \ref{fig:index}. En la cabecera se visualiza, el logotipo correspondiente al SMN, el nombre del sistema y el nombre y tipo de perfil de usuario. En el lado izquierdo, se encuentran cuatro botones: \texttt{Temperatura y humedad}, \texttt{Temperatura}, \texttt{Presión} y \texttt{Viento}, cada uno con su respectiva descripción. Este diseño permitirá escalar el software para incluir otras magnitudes con las que trabaja el laboratorio del SMN. En el pie de página, se presentan los enlaces a las herramientas utilizadas para desarrollar el proyecto.
+El front end se encarga de gestionar la interacción del usuario mediante formularios, botones y eventos. Además, facilita la comunicación con el \textit{back end} utilizando Django y \textit{WebSockets}. Por último, se encarga de la presentación de tablas y gráficos al usuario, optimizando la experiencia de usuario (UI/UX). La aplicación web presenta una plantilla de inicio, como se muestra en la figura \ref{fig:index}. En la cabecera se visualiza, el logotipo correspondiente al SMN, el nombre del sistema definido como \textbf{Eclipse 1.0}, y el nombre y tipo de perfil de usuario. En el lado izquierdo, se encuentran cuatro botones: \textbf{Temperatura y humedad}, \textbf{Temperatura}, \textbf{Presión} y \textbf{Viento}, cada uno con su respectiva descripción. Se ha realizado este diseño ya que a futuro se va a escalar el software para incluir las otras magnitudes con las que trabaja el laboratorio del SMN. En el pie de página, se presentan los enlaces a las herramientas utilizadas en el desarrollo del proyecto.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/AplicacionWeb/frontend/index.jpg}
+    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frontend/index.png}
     \caption{Pantalla de inicio de la aplicación web.}
     \label{fig:index}
 \end{figure}
-El usuario hace click en el botón \texttt{Viento} y se activa la vista de la Figura \ref{fig:iniciarCalibViento}, donde le consulta al usuario, si desea iniciar o no una calibración de anemómetros.
+El usuario hace click en el botón \textbf{Viento} y se activa la vista de la Figura \ref{fig:iniciarCalibViento}, donde le consulta al usuario, si desea iniciar o no una calibración de anemómetros.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{Figuras/AplicacionWeb/frontend/iniciarCalibViento.png}
     \caption{Vista para confirmar si se desea realizar o no una calibración.}
     \label{fig:iniciarCalibViento}
 \end{figure}
-Si el usuario responde afirmativamente, se abre a izquierda una barra de navegación, como se muestra en la figura \ref{fig:barraNavegIzq}, que permite navegar por la aplicación web. En el cuerpo de la aplicación se presenta una serie de formularios y botones para cargar los metadatos, configurar los equipos, iniciar las mediciones y, finalmente, procesar y presentar los resultados. Además, el usuario puede utilizar el botón \texttt{Salir}, que lo redirige a la pestaña de inicio.
+Si el usuario responde afirmativamente, se abre a izquierda una barra de navegación, como se muestra en la figura \ref{fig:barraNavegIzq}, que permite navegar por la aplicación web. En el cuerpo de la aplicación se presenta una serie de formularios y botones para cargar los metadatos, configurar los equipos, iniciar las mediciones y, finalmente, procesar y presentar los resultados. Además, el usuario puede utilizar el botón \textbf{Salir}, que lo redirige a la pestaña de inicio.
 
 \begin{figure}[H]
     \centering
@@ -267,7 +264,7 @@ Si el usuario responde afirmativamente, se abre a izquierda una barra de navegac
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Carga de metadatos}\label{sec:cargaMetadatos}
 
-El contenido principal (\textit{main}) de la primera vista, llamada \texttt{Carga de Metadatos}, se muestra en la Figura \ref{fig:cargaMetadata}. En esta vista, se deben ingresar la marca, el modelo, el número de serie, el número de patrimonio (identificador de instrumentos del SMN), la resolución y el área de bloqueo del instrumento medido previamente con una cinta métrica, tanto del sensor patrón como del sensor bajo calibración. Luego, se debe cargar la información del certificado de calibración del instrumento patrón utilizado, incluyendo la fecha de generación, los puntos en los que fue calibrado, los valores obtenidos por cada punto, las correcciones obtenidas y su respectiva incertidumbre. Por último, se deben ingresar los datos del certificado de caracterización del túnel de viento, especificando la fecha de emisión, los puntos medidos en el ensayo, los valores de estabilidad y de homogeneidad del flujo de aire en la zona de medición. Además, se debe agregar el factor de calibración definido en la tabla \ref{tab:fuenteIncert}. Una vez cargada toda la información, el operador debe presionar el botón \texttt{Cargar}, o si desea borrar toda la información del formulario, debe presionar \texttt{Limpiar campos}. Parte de esta información luego será utilizada para el cálculo de la incertidumbre expandida del sensor bajo calibración y toda los datos ingresados se guardan en la base de datos.
+El contenido principal de la primera vista, llamada \textbf{Carga de Metadatos}, se muestra en la Figura \ref{fig:cargaMetadata}. En esta vista, se deben ingresar la marca, el modelo, el número de serie, el número de patrimonio (identificador de instrumentos del SMN), la resolución y el área de bloqueo del instrumento medido previamente con una cinta métrica, tanto del sensor patrón como del sensor bajo calibración. Luego, se debe cargar la información del certificado de calibración del instrumento patrón utilizado, incluyendo la fecha de generación, los puntos en los que fue calibrado, los valores obtenidos por cada punto, las correcciones obtenidas y su respectiva incertidumbre. Por último, se deben ingresar los datos del certificado de caracterización del túnel de viento, especificando la fecha de emisión, los puntos medidos en el ensayo, los valores de estabilidad y de homogeneidad del flujo de aire en la zona de medición. Además, se debe agregar el factor de calibración definido en la tabla \ref{tab:fuenteIncert}. Una vez cargada toda la información, el operador debe presionar el botón \textbf{Cargar}, o si desea borrar toda la información del formulario, debe presionar \textbf{Limpiar campos}. Parte de esta información luego será utilizada para el cálculo de la incertidumbre expandida del sensor bajo calibración y toda esta información ingresada por el usuario se guardan en la base de datos.
 
 \begin{figure}[H]
     \centering
@@ -277,9 +274,9 @@ El contenido principal (\textit{main}) de la primera vista, llamada \texttt{Carg
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Configuración del sistema}\label{sec:configSistema}
+\subsubsection{Configuración}\label{sec:configSistema}
 
-El contenido principal (\textit{main}) de la segunda vista, denominada \texttt{Configuración}, se muestra en la Figura \ref{fig:configEquipos}. En esta vista, a la izquierda, se configura el \textit{datalogger} diseñado en el capítulo \ref{cap:datalogger}. Se pueden seleccionar la marca, el modelo y el número de serie del \textit{datalogger}. Posteriormente, se especifica el tiempo de muestreo y el tiempo de tabla, se configuran los puertos de comunicación serie del \textit{datalogger}, los LEDs de recepción y la velocidad en baudios para cada anemómetro.
+El contenido principal de la segunda vista, denominada \textbf{Configuración}, se muestra en la Figura \ref{fig:configEquipos}. En esta vista, a la izquierda, se configura el \textit{datalogger} diseñado en el capítulo \ref{cap:datalogger}. Se pueden seleccionar la marca, el modelo y el número de serie del \textit{datalogger}. Posteriormente, se especifica el tiempo de muestreo y el tiempo de tabla, se configuran los puertos de comunicación serie del \textit{datalogger}, los LEDs de recepción y la velocidad en baudios para cada anemómetro.
 
 \begin{figure}[H]
     \centering
@@ -288,7 +285,7 @@ El contenido principal (\textit{main}) de la segunda vista, denominada \texttt{C
     \label{fig:configEquipos}
 \end{figure}
 
-A la derecha, se configura el túnel de viento. Aquí se establecen los puntos mínimo y máximo de velocidad, la cantidad de puntos donde se desea medir, los valores de velocidad en metros por segundo, y el tipo de perfil de medición, que puede ser ascendente, descendente o ambos. También se configuran los tiempos de transitorio, de estabilidad y de medición para cada punto, necesarios para generar el perfil de trayectoria explicado en la sección \ref{sec:genTrayec}. Estos tiempos se ilustran sobre el escalón de la Figura \ref{fig:curvaEscalon}.
+A la derecha, se configura el túnel de viento. Aquí se establecen los puntos mínimo y máximo de velocidad, la cantidad de puntos donde se desea medir, los valores de velocidad en metros por segundo, y el tipo de perfil de medición, que puede ser ascendente, descendente o ambos. También se configuran los tiempos de transición, de estabilidad y de medición para cada punto, necesarios para generar el perfil de trayectoria explicado en la sección \ref{sec:genTrayec}. Estos tiempos se ilustran sobre el escalón de la Figura \ref{fig:curvaEscalon}.
 
 \begin{figure}[H]
     \centering
@@ -297,15 +294,13 @@ A la derecha, se configura el túnel de viento. Aquí se establecen los puntos m
     \label{fig:curvaEscalon}
 \end{figure}
 
-Una vez que los datos de configuración están cargados, el usuario puede hacer clic en el botón \texttt{Cargar} para subirlos a la base de datos o en \texttt{Limpiar campos} para borrar los campos de esta vista.
+Una vez que los datos de configuración están cargados, el usuario puede hacer clic en el botón \textbf{Cargar} para subirlos a la base de datos o en \textbf{Limpiar campos} para borrar los campos de esta vista.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Adquisición de datos}\label{sec:adquisicionDatos}
 
-Una vez cargados todos los datos, el software muestra la vista de la Figura \ref{fig:adquisicionDatos}. Al hacer clic en el botón \texttt{Iniciar Medición}, se envían todas las configuraciones al \textit{datalogger} a través del servidor \textit{WebSocket} mediante comandos detallados en la Tabla \ref{tab:comandoDataloggerWeb}. Luego, se activa un temporizador que multiplica el tiempo de un escalón, como el de la Figura \ref{fig:curvaEscalon}, por la cantidad de puntos ingresados e indica el tiempo restante para que termine todas las mediciones. 
-
-El software también envía, a intervalos de un segundo, un valor de referencia del generador de trayectoria al \textit{datalogger} para que éste genere un nivel de PWM y lo envíe al variador de velocidad del motor. Al mismo tiempo, se reciben las mediciones del sensor patrón e IBC, y se va construyendo el perfil de mediciones, con la dirección del viento a la izquierda y la intensidad a la derecha.
+Una vez cargados todos los datos, el software muestra la vista de la Figura \ref{fig:adquisicionDatos}. Al hacer clic en el botón \textbf{Iniciar Medición}, se envían todas las configuraciones al \textit{datalogger} a través del servidor \textit{WebSocket} mediante comandos detallados en la Tabla \ref{tab:comandoDataloggerWeb}. Luego, se activa un temporizador que multiplica el tiempo de un escalón, como el de la Figura \ref{fig:curvaEscalon}, por la cantidad de puntos ingresados e indica el tiempo restante para que termine todas las mediciones. El software también envía, a intervalos de un segundo, un valor de referencia del generador de trayectoria al \textit{datalogger} para que éste genere un nivel de PWM y lo envíe al variador de velocidad del motor. Al mismo tiempo, se reciben las mediciones del sensor patrón e IBC, y se va construyendo el perfil de mediciones, con la dirección del viento a la izquierda y la intensidad a la derecha.
 
 \begin{figure}[H]
     \centering
@@ -314,7 +309,7 @@ El software también envía, a intervalos de un segundo, un valor de referencia 
     \label{fig:adquisicionDatos}
 \end{figure}
 
-En caso de que el operador precise detener o reiniciar las mediciones puede activar el botón \texttt{Reiniciar Medición}, el cual genera la vista de la figura \ref{fig:borrarMediciones}, que informa que si reinicia se borraran las mediciones ya adquiridas.
+En caso de que el operador precise reiniciar las mediciones puede activar el botón \textbf{Reiniciar Medición}, el cual genera la vista de la figura \ref{fig:borrarMediciones}, que informa que si reinicia se borraran las mediciones ya adquiridas.
 
 \begin{figure}[H]
     \centering
@@ -326,17 +321,17 @@ En caso de que el operador precise detener o reiniciar las mediciones puede acti
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Procesamiento de datos}\label{sec:ProcesamientoDatos}
-Luego de que se acabe el tiempo del temporizador, el software redirige a la vista \texttt{Procesamiento} que se muestra en la Figura \ref{fig:procesarDatos1}. En esta vista, se grafican las curvas ascendente y descendente de las velocidades de viento del sensor patron y bajo calibración. En el título del gráfico se indica la magnitud, el número de serie y patrimonio del sensor bajo calibración. Toda la información y datos se leen desde la base de datos, ya que se fueron almacenando en la misma a medida que ingresaron. Además, cada gráfico cuenta con un botón para ser descargado.
+\subsubsection{Procesamiento}\label{sec:ProcesamientoDatos}
+Luego de que se acabe el tiempo del temporizador, el software redirige a la vista \textbf{Procesamiento} que se muestra en la Figura \ref{fig:procesarDatos1}. En esta vista, se grafican las curvas ascendente y descendente de las velocidades de viento del sensor patron y bajo calibración. En el título del gráfico se indica la magnitud, el número de serie y patrimonio del sensor bajo calibración. Toda la información y datos se leen desde la base de datos, ya que se fueron almacenando en la misma a medida que ingresaron. Además, cada gráfico cuenta con un botón para ser descargado.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{Figuras/AplicacionWeb/frontend/procesarDatos1.png}
+    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frontend/procesarDatos1.png}
     \caption{Vista para el procesamiento de datos y visualización de gráficos.}
     \label{fig:procesarDatos1}
 \end{figure}
 
-En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos2} se muestran tablas con los datos parseados, que corresponden a la extracción de los datos de la parte plana, equivalente al tiempo de medición, como por ejemplo en el gráfico de la Figura \ref{fig:curvaEscalon} es de alrededor de 120 muestras alredor de $\SI{5}{\meter\per\second}$. El operador revisa estos datos y, si están dentro del entorno del punto de medición configurado, debe presionar el botón \texttt{Calcular Incertidumbre}. En caso contrario, puede reiniciar las mediciones, lo que lo devolverá a la vista de adquisición de datos. De igual forma cada tabla cuenta con un boton para ser descargado en formato $.csv$
+En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos2} se muestran tablas con los datos parseados, que corresponden a la extracción de los datos de la parte plana, equivalente al tiempo de medición, como por ejemplo en el gráfico de la Figura \ref{fig:curvaEscalon} se tiene alrededor de 120 muestras en $\SI{5}{\meter\per\second}$. El operador revisa estos datos y, si están dentro del entorno del punto de medición configurado, debe presionar el botón \textbf{Calcular Incertidumbre}. En caso contrario, puede reiniciar las mediciones, lo que lo devolverá a la vista de adquisición de datos. De igual forma cada tabla cuenta con un botón para ser descargado en formato $.csv$
 
 \begin{figure}[H]
     \centering
@@ -348,29 +343,29 @@ En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Resultados}\label{sec:Resultados}
+\subsubsection{Resumen del presupuesto}\label{sec:Resultados}
 
-Cuando se hace clic en el botón calcular incertidumbre, se activa el programa del diagrama de flujo de la Figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}. En las Figuras \ref{fig:curvaHisteris} y \ref{fig:tablaHisteresis} se muestra el espacio donde se carga el primer resultado, que consiste en un gráfico con la curva de histéresis y en su leyenda se agregan las funciones obtenidas a partir de un ajuste lineal de los puntos. Además, se presenta una tabla con los valores promedio y su histéresis, calculada como la diferencia de los datos ascendentes y descendentes. Tanto el gráfico como la tabla cuentan con botones para descargar.
+Cuando se hace clic en el botón calcular incertidumbre, se activa el programa del diagrama de flujo de la Figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}. En las Figuras \ref{fig:curvaHisteris} y \ref{fig:tablaHisteresis} se muestra un ejemplo del espacio donde se carga el primer resultado, que consiste en un gráfico con la curva de histéresis y en su leyenda se agregan las funciones obtenidas a partir de un regresión lineal de los puntos. Además, se presenta una tabla con los valores promedio y su histéresis, calculada como la diferencia de los datos ascendentes y descendentes. Tanto el gráfico como la tabla cuentan con botones para descargar.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/frontend/curvaHisteris.png}
+    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frontend/curvaHisteris.png}
     \caption{Curva de histéresis.}
     \label{fig:curvaHisteris}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Figuras/AplicacionWeb/frontend/tablaHisteresis.png}
+    \includegraphics[width=0.55\linewidth]{Figuras/AplicacionWeb/frontend/tablaHisteresis.png}
     \caption{Tabla de valores promedio e histéresis.}
     \label{fig:tablaHisteresis}
 \end{figure}
 
-En las Figuras \ref{fig:curvaCalib} y \ref{fig:tablaCalib} se muestran los espacios donde se cargan los resultados de la calibración. Estos resultados comprenden las curvas de calibración ascendente y descendente con sus respectivas tablas, donde se presentan las correcciones, la incertidumbre combinada y expandida, y los grados de libertad para cada punto.
+En las Figuras \ref{fig:curvaCalib} y \ref{fig:tablaCalib} se muestran un ejemplo de los espacios donde se cargan los resultados de la calibración. Estos resultados comprenden las curvas de calibración ascendente y descendente con sus respectivas tablas, donde se presentan las correcciones, la incertidumbre combinada y expandida, y los grados de libertad para cada punto.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/frontend/curvaCalib.png}
+    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/frontend/curvaCalib.png}
     \caption{Curva de calibración.}
     \label{fig:curvaCalib}
 \end{figure}
