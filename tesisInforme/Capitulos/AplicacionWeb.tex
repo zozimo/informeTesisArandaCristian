@@ -2,11 +2,11 @@ En este capítulo, se introduce una aplicación web diseñada para interactuar c
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Desarrollo de la aplicación WEB}
+\section{Herramientas para el desarrollo}
 % hablar de las herramientas utilizadas para todo el desarrollo, contar todo, los entornos, lenguajes y frameworks etc
 Durante el desarrollo de la aplicación web, se emplearon diversas herramientas para llevar a cabo el proyecto de manera eficiente. Se utilizó Django en su versión 4.2 como \textit{framework} principal, junto con Python 3.10, proporcionando una base sólida y flexible para el desarrollo \textit{back end}. Para la gestión de la base de datos, se optó por PostgreSQL en su versión 15 y se utilizó PGAdmin 4 para gestionar dicha base de datos. La conexión entre Django y PostgreSQL se realizó utilizando PSYCOPG2 en su versión 2.9.5. En el desarrollo de \textit{front end}, se emplearon JavaScript y jQuery para hacer la página web dinámica y permitir la visualización de datos actualizados en tiempo real. También se utilizaron HTML y CSS para estructurar y estilizar el contenido de la aplicación web. Además, se emplearon herramientas como NumPy 1.24.2, SciPy  1.11.2 para el procesamiento de datos y Plotly 5.15 para generar gráficos dinámicos, así como Pandas 2.2 para la manipulación de datos. Toda la aplicación corre en un servidor local, de la Figura \ref{fig:sistemaDesarrollado}, dentro de un entorno virtual de Python para mantener las dependencias aisladas y facilitar la portabilidad del proyecto a otros entornos. Se gestionó el control de versiones con Git y GitHub, en un repositorio \cite{AppWebInstrumentalSMN2024}, subiendo el código y trabajando en distintas ramas para luego integrar los cambios en la rama principal, lo que permitió mantener un historial claro de los cambios realizados.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Arquitectura del software}
+\section{Arquitectura del software}
 Para desarrollar la aplicación, se utilizó una arquitectura de cinco capas, como se muestra en la Figura \ref{fig:arquitecturaSoft}. La primera capa está conformada por el servidor web Nginx, que actúa como un servidor \textit{proxy} inverso. Nginx se encarga de manejar las solicitudes HTTP entrantes, distribuyéndolas eficientemente y proporcionando un equilibrio de carga, además de brindar contenido estático como archivos HTML, CSS, JavaScript e imágenes. Esta capa permite mejorar el rendimiento y la seguridad de la aplicación al filtrar y dirigir el tráfico de manera óptima. La segunda capa está compuesta por Gunicorn, un servidor WSGI (\textit{Web Server Gateway Interface}) que sirve como intermediario entre Nginx y la aplicación web desarrollada en Django. Gunicorn se encarga de gestionar los procesos de la aplicación, proporcionando un entorno escalable y capaz de manejar múltiples solicitudes concurrentes. Esta capa es crucial para asegurar que la aplicación pueda responder de manera rápida y eficiente a las demandas de los usuarios. En la tercera capa se encuentra la aplicación web desarrollada en Django, un \textit{framework} de alto nivel que facilita el desarrollo rápido y eficiente de aplicaciones web seguras y mantenibles.  Esta capa es responsable de la lógica de negocio de la aplicación, la gestión de las bases de datos y la interacción con los usuarios a través de interfaces web dinámicas. La cuarta capa está constituida por el sistema de gestión de bases de datos PostgreSQL, encargado del almacenamiento y recuperación de datos de manera eficiente y segura. La integración con Django se realiza a través de su ORM (\textit{Object-Relational Mapping}), que permite interactuar con la base de datos utilizando objetos en Python. Esto permite crear registros, guardar información y realizar consultas de manera sencilla, traduciendo automáticamente las operaciones en Python a consultas SQL en la base de datos. Finalmente, la quinta capa consiste en un servidor \textit{WebSocket}, como se describió en la sección \ref{sec:serverWebSocket}. Este protocolo de comunicación basado en HTTP permite que tanto los clientes como el sistema embebido se conecten con la aplicación web, logrando una comunicación bidireccional en tiempo real. Esta capa es esencial para aplicaciones que requieren actualizaciones en tiempo real y una interacción continua con dispositivos de hardware.
 
 \begin{figure}[H]
@@ -16,7 +16,7 @@ Para desarrollar la aplicación, se utilizó una arquitectura de cinco capas, co
     \label{fig:arquitecturaSoft}
 \end{figure}
 
-\subsection{Patron de diseño de software}
+\section{Patron de diseño de software}
 Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la Figura \ref{fig:patronMVT}. Este patrón es ampliamente utilizado en el desarrollo web con el \textit{framework} de trabajo Django. El patrón MVT permite una distinción explícita de las responsabilidades, permitiendo dividir el problema en módulos , lo que facilita tanto el desarrollo como el mantenimiento del código. 
 
 \begin{itemize}
@@ -33,7 +33,7 @@ Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la F
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Back End}\label{sec:back_end}
+\section{Back End}\label{sec:back_end}
 % (POnerlo como parrafo, en terminos generales el Back End se encarga de .... (seccion \ref{poner la que corresponda en funcion de como lo menciona}))
 % El \textit{back end} se encarga de:
 % \begin{itemize}
@@ -46,7 +46,7 @@ Se empleó el patrón de diseño MVT (Modelo-Vista-Plantilla), ilustrado en la F
 
 El \textit{back end} se encarga de administrar la base de datos, incluyendo la ejecución de consultas, la realización de actualizaciones y la aplicación de validaciones para garantizar la integridad y consistencia de los datos. Además, gestiona las solicitudes HTTP y las conexiones con el servidor \textit{WebSocket}. También envía comandos de configuración hacia el \textit{datalogger} y se encarga de la  recepción de mediciones de los sensores. Por otro lado, genera un perfil de referencias de velocidad de viento que se transmiten al \textit{datalogger} para controlar el motor del túnel. Finalmente, a partir de las mediciones crudas de velocidades de viento, almacenadas en la base de datos, se calcula el presupuesto de incertidumbre para cada valor de viento configurado.
 
-\subsubsection{Base de datos}
+\subsection{Base de datos}
 
 Dado que la aplicación está diseñada para manejar una gran cantidad de datos que requieren almacenamiento y una recuperación eficiente, se ha implementado una base de datos relacional. El diagrama presentado en la figura \ref{fig:DiagramaSimplificadoBd}, ilustra la estructura de la base de datos. Esta estructura incluye diversas tablas que almacenan información crucial para la aplicación. Entre estas tablas se encuentran las que registran los datos del sensor patrón y el sensor bajo calibración, así como los detalles relacionados con el certificado de calibración del patrón. Además, se documentan los registros del certificado de caracterización del túnel de viento. También se incluye información sobre la configuración del \textit{datalogger} y del túnel de viento.
 \begin{figure}[H]
@@ -161,13 +161,13 @@ El mensaje utiliza el carácter \texttt{;} como separador. La primera letra \tex
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Generación de trayectoria y control del túnel}\label{sec:genTrayec}
+\subsection{Generación de trayectoria y control del túnel}\label{sec:genTrayec}
 
 En la sección \ref{sec:sistemaDeControlPid} se explica cómo funciona el controlador PID del túnel de viento. Este controlador necesita valores de referencia, que se obtienen de un generador de trayectoria diseñado con el método de Paul \cite{RoboFIUBAGenTrayec}. El generador toma de la base de datos los valores de velocidad de viento y tiempos deseados, configurados por el operador en el \textit{front end}, y con estos datos crea una curva de referencia de velocidades de viento en función del tiempo.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Figuras/AplicacionWeb/backend/segmentoTrayect.png}
+    \includegraphics[width=0.85\linewidth]{Figuras/AplicacionWeb/backend/segmentoTrayect.png}
     \caption{Construcción de un segmento para pasar de un valor de velocidad $v^B$ a otro $v^C$ viniendo desde $v^A$.}
     \label{fig:segmentosZona1yZona2}
 \end{figure}
@@ -237,7 +237,7 @@ Finalmente, se presentan en pantalla un resumen de todos los resultados, además
 % Luego, se grafica la curva de histéresis, como se muestra en la figura \ref{fig:CurvaHisteresis}, junto con una tabla para analizar la alinealidad del IBC (figura \ref{fig:TablaAlinealidad}). Además, se presenta la curva de calibración con sus correspondientes incertidumbres expandidas tanto para los datos del ciclo ascendente como del descendente (figura \ref{fig:CurvaCalibracion}). Finalmente, se incluye una tabla (figura \ref{fig:TablaIncertidumbres}) donde se especifican la incertidumbre combinada, la incertidumbre expandida, la corrección y los grados de libertad para cada punto donde se realizó la calibración del anemómetro.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Front End}\label{sec:frontEnd}
+\section{Front End}\label{sec:frontEnd}
 
 El front end se encarga de gestionar la interacción del usuario mediante formularios, botones y eventos. Además, facilita la comunicación con el \textit{back end} utilizando Django y \textit{WebSockets}. Por último, se encarga de la presentación de tablas y gráficos al usuario, optimizando la experiencia de usuario (UI/UX). La aplicación web presenta una plantilla de inicio, como se muestra en la figura \ref{fig:index}. En la cabecera se visualiza, el logotipo correspondiente al SMN, el nombre del sistema definido como \textbf{Eclipse 1.0}, y el nombre y tipo de perfil de usuario. En el lado izquierdo, se encuentran cuatro botones: \textbf{Temperatura y humedad}, \textbf{Temperatura}, \textbf{Presión} y \textbf{Viento}, cada uno con su respectiva descripción. Se ha realizado este diseño ya que a futuro se va a escalar el software para incluir las otras magnitudes con las que trabaja el laboratorio del SMN. En el pie de página, se presentan los enlaces a las herramientas utilizadas en el desarrollo del proyecto.
 \begin{figure}[H]
@@ -262,7 +262,7 @@ Si el usuario responde afirmativamente, se abre a izquierda una barra de navegac
     \label{fig:barraNavegIzq}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Carga de metadatos}\label{sec:cargaMetadatos}
+\subsection{Carga de metadatos}\label{sec:cargaMetadatos}
 
 El contenido principal de la primera vista, llamada \textbf{Carga de Metadatos}, se muestra en la Figura \ref{fig:cargaMetadata}. En esta vista, se deben ingresar la marca, el modelo, el número de serie, el número de patrimonio (identificador de instrumentos del SMN), la resolución y el área de bloqueo del instrumento medido previamente con una cinta métrica, tanto del sensor patrón como del sensor bajo calibración. Luego, se debe cargar la información del certificado de calibración del instrumento patrón utilizado, incluyendo la fecha de generación, los puntos en los que fue calibrado, los valores obtenidos por cada punto, las correcciones obtenidas y su respectiva incertidumbre. Por último, se deben ingresar los datos del certificado de caracterización del túnel de viento, especificando la fecha de emisión, los puntos medidos en el ensayo, los valores de estabilidad y de homogeneidad del flujo de aire en la zona de medición. Además, se debe agregar el factor de calibración definido en la tabla \ref{tab:fuenteIncert}. Una vez cargada toda la información, el operador debe presionar el botón \textbf{Cargar}, o si desea borrar toda la información del formulario, debe presionar \textbf{Limpiar campos}. Parte de esta información luego será utilizada para el cálculo de la incertidumbre expandida del sensor bajo calibración y toda esta información ingresada por el usuario se guardan en la base de datos.
 
@@ -274,7 +274,7 @@ El contenido principal de la primera vista, llamada \textbf{Carga de Metadatos},
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Configuración}\label{sec:configSistema}
+\subsection{Configuración}\label{sec:configSistema}
 
 El contenido principal de la segunda vista, denominada \textbf{Configuración}, se muestra en la Figura \ref{fig:configEquipos}. En esta vista, a la izquierda, se configura el \textit{datalogger} diseñado en el capítulo \ref{cap:datalogger}. Se pueden seleccionar la marca, el modelo y el número de serie del \textit{datalogger}. Posteriormente, se especifica el tiempo de muestreo y el tiempo de tabla, se configuran los puertos de comunicación serie del \textit{datalogger}, los LEDs de recepción y la velocidad en baudios para cada anemómetro.
 
@@ -298,7 +298,7 @@ Una vez que los datos de configuración están cargados, el usuario puede hacer 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Adquisición de datos}\label{sec:adquisicionDatos}
+\subsection{Adquisición de datos}\label{sec:adquisicionDatos}
 
 Una vez cargados todos los datos, el software muestra la vista de la Figura \ref{fig:adquisicionDatos}. Al hacer clic en el botón \textbf{Iniciar Medición}, se envían todas las configuraciones al \textit{datalogger} a través del servidor \textit{WebSocket} mediante comandos detallados en la Tabla \ref{tab:comandoDataloggerWeb}. Luego, se activa un temporizador que multiplica el tiempo de un escalón, como el de la Figura \ref{fig:curvaEscalon}, por la cantidad de puntos ingresados e indica el tiempo restante para que termine todas las mediciones. El software también envía, a intervalos de un segundo, un valor de referencia del generador de trayectoria al \textit{datalogger} para que éste genere un nivel de PWM y lo envíe al variador de velocidad del motor. Al mismo tiempo, se reciben las mediciones del sensor patrón e IBC, y se va construyendo el perfil de mediciones, con la dirección del viento a la izquierda y la intensidad a la derecha.
 
@@ -321,7 +321,7 @@ En caso de que el operador precise reiniciar las mediciones puede activar el bot
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Procesamiento}\label{sec:ProcesamientoDatos}
+\subsection{Procesamiento}\label{sec:ProcesamientoDatos}
 Luego de que se acabe el tiempo del temporizador, el software redirige a la vista \textbf{Procesamiento} que se muestra en la Figura \ref{fig:procesarDatos1}. En esta vista, se grafican las curvas ascendente y descendente de las velocidades de viento del sensor patron y bajo calibración. En el título del gráfico se indica la magnitud, el número de serie y patrimonio del sensor bajo calibración. Toda la información y datos se leen desde la base de datos, ya que se fueron almacenando en la misma a medida que ingresaron. Además, cada gráfico cuenta con un botón para ser descargado.
 
 \begin{figure}[H]
@@ -343,7 +343,7 @@ En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Resumen del presupuesto}\label{sec:Resultados}
+\subsection{Resumen del presupuesto}\label{sec:Resultados}
 
 Cuando se hace clic en el botón calcular incertidumbre, se activa el programa del diagrama de flujo de la Figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}. En las Figuras \ref{fig:curvaHisteris} y \ref{fig:tablaHisteresis} se muestra un ejemplo del espacio donde se carga el primer resultado, que consiste en un gráfico con la curva de histéresis y en su leyenda se agregan las funciones obtenidas a partir de un regresión lineal de los puntos. Además, se presenta una tabla con los valores promedio y su histéresis, calculada como la diferencia de los datos ascendentes y descendentes. Tanto el gráfico como la tabla cuentan con botones para descargar.
 
@@ -379,33 +379,33 @@ En las Figuras \ref{fig:curvaCalib} y \ref{fig:tablaCalib} se muestran un ejempl
 
 % mostrar los resultados que muestra el soft como ejemplo usar los del segundo DeltaOHM
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Integración con el hardware}\label{sec:integracionHardware}
-(Sacarlo y poner detalles en el banco de medición y configuración del soft del capitulo siguiente)
+% \section{Integración con el hardware}\label{sec:integracionHardware}
+% (Sacarlo y poner detalles en el banco de medición y configuración del soft del capitulo siguiente)
 
-El software desarrollado interactúa con el hardware, permitiendo al operador configurar de manera sencilla e intuitiva la interfaz eléctrica de los anemómetros, la cadencia de toma de muestras y los puntos de velocidad del viento en el túnel. Se realiza automáticamente el cálculo de incertidumbre y se genera un reporte con los resultados, para el instrumento bajo estudio. Este trabajo estandariza un procedimiento automático para la calibración de sensores de viento ultrasónicos, reduciendo los tiempos operativos, el cálculo manual y los errores sistemáticos, mejorando la calidad en la calibración. Además, el sistema de adquisición, en conjunto con el software y otro sistema de posicionamiento (no incluido en esta tesis), permitirá estudiar en mejor detalle el comportamiento del flujo de aire en la zona de medición.
+% El software desarrollado interactúa con el hardware, permitiendo al operador configurar de manera sencilla e intuitiva la interfaz eléctrica de los anemómetros, la cadencia de toma de muestras y los puntos de velocidad del viento en el túnel. Se realiza automáticamente el cálculo de incertidumbre y se genera un reporte con los resultados, para el instrumento bajo estudio. Este trabajo estandariza un procedimiento automático para la calibración de sensores de viento ultrasónicos, reduciendo los tiempos operativos, el cálculo manual y los errores sistemáticos, mejorando la calidad en la calibración. Además, el sistema de adquisición, en conjunto con el software y otro sistema de posicionamiento (no incluido en esta tesis), permitirá estudiar en mejor detalle el comportamiento del flujo de aire en la zona de medición.
 
-Los pasos para realizar el proceso de calibración incluyendo el diagrama de la figura \ref{fig:sistemaIntegral} se define a continuación:
-\begin{itemize}
-    \item Se debe armar el banco de medición, montando los sensores en un soporte dentro del túnel de viento, asegurando que queden fijos y alineados.
-    \item Se deben tomar las medidas de posición de los instrumentos respecto a un sistema de referencia.
-    \item Se debe calcular el área de bloqueo de cada instrumento, incluyendo su soporte.
-    \item Se deben conectar los anemómetros al \textit{datalogger} y alimentar todo el sistema con una fuente de 12 voltios. Además, se debe conectar el {datalogger} a la red LAN local del laboratorio.
-    \item Se debe acceder a la interfaz web y configurar los parámetros de calibración.
-    \item Se debe iniciar la adquisición de mediciones mediante la interfaz web.
-    \item La aplicación Django procesa las solicitudes y envía comandos al \textit{datalogger} a través de \textit{WebSocket}.
-    \item El \textit{datalogger} controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
-    \item Los datos de los anemómetros y otros sensores se registran y envían a la aplicación Django.
-    \item Terminada las mediciones, el operador debe revisar las mediciones y si son correctas activar el procesamiento.
-    \item La aplicación procesa los datos. Primero, calcula el promedio y el desvío estándar de las mediciones para cada punto del escalón. Luego, con esos datos e información ingresada por el usuario, calcula las correcciones e incertidumbres. Finalmente, almacena los resultados en la base de datos.
-    \item Los resultados pueden ser visualizados y descargados a través de la interfaz web.
-\end{itemize}
+% Los pasos para realizar el proceso de calibración incluyendo el diagrama de la figura \ref{fig:sistemaIntegral} se define a continuación:
+% \begin{itemize}
+%     \item Se debe armar el banco de medición, montando los sensores en un soporte dentro del túnel de viento, asegurando que queden fijos y alineados.
+%     \item Se deben tomar las medidas de posición de los instrumentos respecto a un sistema de referencia.
+%     \item Se debe calcular el área de bloqueo de cada instrumento, incluyendo su soporte.
+%     \item Se deben conectar los anemómetros al \textit{datalogger} y alimentar todo el sistema con una fuente de 12 voltios. Además, se debe conectar el {datalogger} a la red LAN local del laboratorio.
+%     \item Se debe acceder a la interfaz web y configurar los parámetros de calibración.
+%     \item Se debe iniciar la adquisición de mediciones mediante la interfaz web.
+%     \item La aplicación Django procesa las solicitudes y envía comandos al \textit{datalogger} a través de \textit{WebSocket}.
+%     \item El \textit{datalogger} controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
+%     \item Los datos de los anemómetros y otros sensores se registran y envían a la aplicación Django.
+%     \item Terminada las mediciones, el operador debe revisar las mediciones y si son correctas activar el procesamiento.
+%     \item La aplicación procesa los datos. Primero, calcula el promedio y el desvío estándar de las mediciones para cada punto del escalón. Luego, con esos datos e información ingresada por el usuario, calcula las correcciones e incertidumbres. Finalmente, almacena los resultados en la base de datos.
+%     \item Los resultados pueden ser visualizados y descargados a través de la interfaz web.
+% \end{itemize}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/integracionHardware/DiagramaSistemaDesarrollar.png}
-    \caption{Sistema integrado desarrollado en esta tesis.}
-    \label{fig:sistemaIntegral}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=1\linewidth]{Figuras/AplicacionWeb/integracionHardware/DiagramaSistemaDesarrollar.png}
+%     \caption{Sistema integrado desarrollado en esta tesis.}
+%     \label{fig:sistemaIntegral}
+% \end{figure}
 
 
 % mostrar un diagrama de flujo desde el inicio con el boton calcular incertidumbre hasta la salida de tablas con los reusltados, pasos del proceso de calibración
