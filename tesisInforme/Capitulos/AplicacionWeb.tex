@@ -61,7 +61,7 @@ Cuando se inicia una calibración y se empiezan a recibir datos de los sensores,
 
 % Todo las definiciones de estas tablas se realizaron a traves de clases usando el Conector de ORM de django con la base de datos Postggre SQL, a traves de la definir una clase que hereda de models.Model, como se ve en el codigo \ref{}, donde se define la clase,  ConfigTunel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Servidor WebSocket}
+\subsection{Servidor WebSocket}
 
 Se utilizó la biblioteca Django-Channels para implementar un servidor \textit{WebSocket} que opera de forma concurrente con el servidor web HTTP. Este servidor permite la conexión simultánea de múltiples clientes, en este caso, un \textit{datalogger} que envía datos y un usuario desde el navegador, que recibe dicha información a través de \textit{WebSockets}. Los datos recibidos por el servidor, se gráfican en tiempo real en una vista del \textit{front end}. 
 
@@ -193,7 +193,7 @@ Combinado estas ecuaciones para todo tiempo $t$ se obtiene un segmento que repre
 
 Luego, realiza el encadenamiento de todos esos segmentos dando como resultado un perfil de velocidad de viento como el de la Figura \ref{fig:trayectoriaGenerada}, donde se muestra una trayectoria de ciclo ascendente y descendente para los puntos 5, 10, 15, 20 y 25 \unit{\meter\per\second}, con un tiempo de crecimiento de 2 \unit{\minute}, un tiempo de estabilización de 5 \unit{\minute} y un tiempo de medición de 2 \unit{\minute}. La curva está compuesta en total por diez segmentos, cada uno construido como el de la figura \ref{fig:segmentosZona1yZona2}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Cálculo de incertidumbre}\label{sec:calculoIncertidumbre}
+\subsection{Cálculo de incertidumbre}\label{sec:calculoIncertidumbre}
 
 El proceso de calcular la incertidumbre expandida para todos los puntos de viento medidos se realiza (basado en la norma \cite{GUM}) según el algoritmo del diagrama de flujo de la figura \ref{fig:DiagramaFlujoCalculoIncertidumbre}.
 

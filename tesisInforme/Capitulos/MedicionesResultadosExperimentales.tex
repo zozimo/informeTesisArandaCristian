@@ -1,7 +1,10 @@
-En este capítulo, se ha utilizado el sistema de calibración, compuesto por la placa desarrollada en el Capítulo \ref{cap:datalogger} y el software descrito en el Capítulo \ref{cap:aplicacionweb}, para realizar dos ensayos. Inicialmente, se identificarán dos posiciones dentro del túnel de viento que presenten condiciones similares de flujo de aire para la medición de los anemómetros. Posteriormente, se detallarán dos ejemplos de calibración de anemómetros en el túnel de viento, utilizando el sistema mencionado.
+% En este capítulo, se ha utilizado el sistema de calibración, compuesto por la placa desarrollada en el Capítulo \ref{cap:datalogger} y el software descrito en el Capítulo \ref{cap:aplicacionweb}, para realizar dos ensayos. 
 
 
-Para todas las mediciones usaremos el siguiente sistema de referencia definido en la figura \ref{fig:sisReferenciaZmed}, donde el eje \textbf{z} se corresponde con el eje vertical, el eje \textbf{y} se corresponde con el eje longitudinal y el eje \textbf{x} se corresponde con el eje trasversal.
+
+% Inicialmente, se identificarán dos posiciones dentro del túnel de viento que presenten condiciones similares de flujo de aire para la medición de los anemómetros. Posteriormente, se detallarán dos ejemplos de calibración de anemómetros en el túnel de viento, utilizando el sistema mencionado.
+
+En este capítulo se presentan los resultados de dos mediciones. La primera medición permite identificar dos posiciones dentro del túnel de viento donde se presentan condiciones similares de flujo de aire para la medición de los anemómetros. La segunda medición consiste en la realización de un presupuesto de incertidumbre para obtener la calibración de un anemómetro bajo prueba. Ambos ensayos se llevaron a cabo utilizando el sistema desarrollado y el túnel de viento. Para todas las mediciones se utilizo el sistema de referencia definido en la figura \ref{fig:sisReferenciaZmed}, donde el eje \textbf{z} se corresponde con el eje vertical, el eje \textbf{y} se corresponde con el eje longitudinal y el eje \textbf{x} se corresponde con el eje trasversal.
 
 \begin{figure}[H]
     \centering
@@ -12,11 +15,7 @@ Para todas las mediciones usaremos el siguiente sistema de referencia definido e
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Caracterización de la zona de medición}\label{sec:caracterZonaMed}
 % terminar esta parte
-El flujo de aire a lo largo, alto y profundo en toda la zona de medición no es constante debido a los cambios de sección presentes al principio y al final de la zona de medición, lo cual provoca variaciones en la intensidad hasta alcanzar el régimen permanente del flujo. Para determinar dos posiciones donde el flujo de aire presenta la misma intensidad, una para el anemómetro patrón y otra para el anemómetro bajo calibración, se realizó un ensayo considerando las limitaciones de las dimensiones de los anemómetros dentro del volumen de medición. El objetivo del ensayo fue identificar dos posiciones en el espacio donde la potencia suministrada al motor resultara en la misma velocidad del viento en cada posición.
-
-Para este ensayo, se utilizó el sensor patrón Vaisala, modelo WMT700. Se simplificó el problema a una dimensión, manteniendo constante la altura del sensor en \SI{39.5}{\centi\meter} respecto la base de túnel y centrando el sensor en el medio. Solo se varió el eje longitudinal desde \SI{-20}{\centi\meter} hasta \SI{60}{\centi\meter} en incrementos de \SI{10}{\centi\meter}. En cada posición, se configuró la aplicación web para medir y controlar la velocidad del aire a \SI{5}{\meter\per\second}, \SI{10}{\meter\per\second}, \SI{15}{\meter\per\second}, \SI{20}{\meter\per\second} y \SI{25}{\meter\per\second}.
-
-En la Figura \ref{fig:caracterPuntos} se muestra el sensor en tres posiciones específicas: a \SI{-20}{\centi\meter}, a \SI{20}{\centi\meter} y a \SI{60}{\centi\meter} respecto del origen del sistema de referencia ilustrado en la Figura \ref{fig:sisReferenciaZmed}.
+El flujo de aire a lo largo, alto y profundo en toda la zona de medición no es constante debido a los cambios de sección presentes al principio y al final de dicha la zona, lo cual provoca variaciones en la dirección e  intensidad del viento. Para determinar dos posiciones donde el flujo de aire presenta la misma intensidad, una para el anemómetro patrón y otra para el anemómetro bajo calibración, se realizó un ensayo considerando las limitaciones de las dimensiones de los anemómetros dentro del volumen de medición. El objetivo del ensayo fue identificar dos posiciones en el espacio donde se mida la misma intensidad de viento. Para ello, se utilizó el sensor patrón Vaisala, modelo WMT700. Se simplificó el problema a una dimensión, manteniendo constante la altura del sensor en \SI{39.5}{\centi\meter} respecto a la base del túnel y centrando el sensor en el medio en la dirección trasversal, $x=0$. Solamente se varió el eje longitudinal desde \SI{-20}{\centi\meter} hasta \SI{60}{\centi\meter} en incrementos de \SI{10}{\centi\meter}. En cada posición, se configuró la aplicación web para medir y controlar la velocidad del aire en cinco valores: \SI{5}{\meter\per\second}, \SI{10}{\meter\per\second}, \SI{15}{\meter\per\second}, \SI{20}{\meter\per\second} y \SI{25}{\meter\per\second}. En la Figura \ref{fig:caracterPuntos} se muestra el sensor en tres posiciones específicas: a \SI{-20}{\centi\meter}, a \SI{20}{\centi\meter} y a \SI{60}{\centi\meter} respecto del origen del sistema de referencia ilustrado en la Figura \ref{fig:sisReferenciaZmed}.
 
 \begin{figure}[H]
     \centering
@@ -39,16 +38,23 @@ En la Figura \ref{fig:caracterPuntos} se muestra el sensor en tres posiciones es
     \label{fig:caracterPuntos}
 \end{figure}
 
-En la figura \ref{fig:velocidadViento} se observan las velocidades del viento para las distintas posiciones en los cinco puntos programados. El sistema de control PID se encarga de suministrar la potencia necesaria para que el viento dentro del túnel, en la posición del sensor patrón, alcance y se estabilice en el valor configurado.
+En la figura \ref{fig:velocidadViento} se observan las velocidades del viento para las distintas posiciones en los cinco puntos de viento programados. El sistema de control PID se encarga de suministrar la potencia necesaria para que el viento dentro del túnel, en la posición del sensor patrón, alcance y se estabilice en el valor configurado.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{Figuras/resultados/caracterizacion/velocidadViento.png}
-    \caption{Velocidad de viento en cinco puntos, para distintas posiciones.}
+    \caption{Velocidad de viento en cinco puntos para distintas posiciones del eje longitudinal.}
     \label{fig:velocidadViento}
 \end{figure}
 
-Los resultados de las mediciones del nivel de modulación por ancho de pulso (PWM) para cada posición, correspondientes a las cinco velocidades configuradas, se ilustran en la Figura \ref{fig:pwmCaracterizacion}. Se puede apreciar que, para una misma velocidad de viento, pero en diferentes posiciones a lo largo del eje longitudinal, el sensor requiere distintos niveles de PWM para generar la misma velocidad de viento.
+% Los resultados de las mediciones del nivel de modulación por ancho de pulso (PWM) para cada posición, correspondientes a las cinco velocidades configuradas, se ilustran en la Figura \ref{fig:pwmCaracterizacion}. Se puede apreciar que, para una misma velocidad de viento, pero en diferentes posiciones a lo largo del eje longitudinal, el sensor requiere distintos ciclos de trabajo que se denotan como valores enteros, entre 0 y 255, definido como el nivel de PWM, para generar la misma velocidad de viento.
+
+El nivel de modulación por ancho de pulso (nivel de PWM) utilizado para controlar el túnel de viento es generado por el \textit{datalogger}. Este valor varía entre 0 y 255, lo que corresponde a un rango de ciclo de trabajo del 0\% al 100\%. En la Figura \ref{fig:pwmCaracterizacion} se observa  los resultados de las mediciones del nivel de PWM para cada posición del sensor patrón correspondiente a las velocidades configuradas. Se observa que, para generar un mismo valor de velocidad del viento, pero en diferentes posiciones a lo largo del eje longitudinal, el sensor requiere distinto nivel de PWM.
+
+
+
+% para cada posición, correspondientes a las cinco velocidades configuradas, se ilustran en la Figura \ref{fig:pwmCaracterizacion}. Se observa que, para generar una misma velocidad del viento, pero en diferentes posiciones a lo largo del eje longitudinal, el sensor requiere distintos ciclos de trabajo.
+
 
 \begin{figure}[H]
     \centering
@@ -60,7 +66,7 @@ Los resultados de las mediciones del nivel de modulación por ancho de pulso (PW
 
 
 
-En la Figura \ref{fig:pwmCaract25}, se realiza un acercamiento a \SI{25}{\meter\per\second}, donde se pueden observar las variaciones de los niveles de PWM para la misma velocidad en función de la posición. Se destaca que para posiciones entre \SI{0}{\centi\meter} y \SI{40}{\centi\meter}, los niveles de PWM son más bajos, oscilando entre 229 y 235. Sin embargo, para posiciones alejadas a izquierda y posiciones más en el centro, como \SI{-10}{\centi\meter}, \SI{-20}{\centi\meter}, \SI{50}{\centi\meter} y \SI{60}{\centi\meter}, los niveles de PWM son más altos, aunque en promedio similares entre sí. Es importante que los sensores patrón e IBC estén suficientemente separados para minimizar el bloqueo cruzado \cite{IEC61400-12-1} \cite{ISO16622}, manteniendo al mismo tiempo condiciones de flujo de aire idénticas.
+En la Figura \ref{fig:pwmCaract25}, se realiza un acercamiento a las mediciones en \SI{25}{\meter\per\second}, donde se pueden observar las variaciones de los niveles de PWM para la misma velocidad en función de la posición. Se destaca que para posiciones entre \SI{0}{\centi\meter} y \SI{40}{\centi\meter}, los niveles de PWM son más bajos, oscilando entre 229 y 235. Sin embargo, para posiciones alejadas a izquierda y posiciones más en el centro del túnel, como \SI{-10}{\centi\meter}, \SI{-20}{\centi\meter}, \SI{50}{\centi\meter} y \SI{60}{\centi\meter}, los niveles de PWM son más altos, aunque en promedio similares entre sí. 
 
 \begin{figure}[H]
     \centering
@@ -68,8 +74,8 @@ En la Figura \ref{fig:pwmCaract25}, se realiza un acercamiento a \SI{25}{\meter\
     \caption{Niveles de PWM para distintas posiciones del anemómetro a \SI{25}{\meter\per\second}.}
     \label{fig:pwmCaract25}
 \end{figure}
-
-Considerando lo anterior y basándose en los resultados gráficos, se concluye que los valores de PWM necesarios para obtener una velocidad determinada son equivalentes en las posiciones de \SI{-20}{\centi\meter} y entre \SI{40}{\centi\meter} y \SI{50}{\centi\meter}. Esto asegura que los sensores estén separados entre \SI{60}{\centi\meter} y \SI{70}{\centi\meter}. En la Figura \ref{fig:pwmCaractOptima}, se muestran dos curvas correspondientes a \SI{-20}{\centi\meter}, dos a \SI{60}{\centi\meter} y una a \SI{50}{\centi\meter}. Aquí se puede apreciar que para una velocidad de viento determinada, el controlador entrega en promedio el mismo nivel de PWM, lo que indica que en estos puntos, el comportamiento del flujo de aire presenta características similares.
+% Considerando lo anterior y basándose en los resultados gráficos, se concluye que los valores de PWM necesarios para obtener una velocidad determinada son equivalentes en las posiciones de \SI{-20}{\centi\meter} y entre \SI{40}{\centi\meter} y \SI{50}{\centi\meter}. Esto asegura que los sensores estén separados entre \SI{60}{\centi\meter} y \SI{70}{\centi\meter}.
+Considerando lo anterior y basándose en los resultados gráficos, se concluye que posicionando un sensor en \SI{-20}{\centi\meter} o entre \SI{40}{\centi\meter} y \SI{50}{\centi\meter} los niveles de PWM son equivalentes para obtener condiciones de flujo de aire idénticas. Además si ponemos dos sensores en esas posiciones logramos que tengan una separación de entre \SI{60}{\centi\meter} y \SI{70}{\centi\meter} lo cual es importante para minimizar el bloqueo cruzado \cite{IEC61400-12-1} \cite{ISO16622}. En la Figura \ref{fig:pwmCaractOptima}, se muestran dos curvas correspondientes a \SI{-20}{\centi\meter}, dos a \SI{60}{\centi\meter} y una a \SI{50}{\centi\meter}. Aquí se puede apreciar que para una velocidad de viento determinada, el controlador entrega en promedio el mismo nivel de PWM, lo que indica que en estos puntos, el comportamiento del flujo de aire presenta características similares.
 
 \begin{figure}[H]
     \centering
@@ -78,7 +84,7 @@ Considerando lo anterior y basándose en los resultados gráficos, se concluye q
     \label{fig:pwmCaractOptima}
 \end{figure}
 
-Esta investigación proporciona una primera aproximación al comportamiento del flujo de aire dentro del túnel de viento. Sin embargo, esta aproximación está limitada por varios factores. Por ejemplo, el sensor utilizado para el análisis presenta una altura de soporte que limita la variable $z$. Debido al área de bloqueo, la medición debe ser corregida. Para este tipo de ensayo, se podría utilizar un sensor con menor área de bloqueo, como un tubo Pitot o un anemómetro de hilo caliente. A pesar de estas limitaciones, como primera aproximación, es suficiente para realizar las primeras calibraciones. Esto se debe a que se garantiza que el flujo de aire en las posiciones seleccionadas tiene un comportamiento similar, generando una velocidad de viento comparable para el mismo nivel de modulación por ancho de pulso (PWM).
+Esta investigación proporciona una primera aproximación al comportamiento del flujo de aire dentro del túnel de viento. Sin embargo, dicha aproximación está limitada por varios factores. Por ejemplo, el sensor junto con su soporte utilizado para el análisis presenta una altura constante, lo que limita el análisis del viento en posiciones a menor altura en el eje \textit{z}. Otro problema es el área de bloqueo del sensor utilizado, donde la medición debe ser corregida. Para mejorar este tipo de ensayo, se podría utilizar un sensor con menor área de bloqueo, como un tubo Pitot o un anemómetro de hilo caliente. A pesar de estas limitaciones, como primera aproximación, es suficiente para realizar las primeras calibraciones. Esto se debe a que se garantiza que el flujo de aire en las posiciones seleccionadas tiene un comportamiento similar, generando una velocidad de viento comparable para el mismo nivel de modulación por ancho de pulso.
 
 
 
@@ -97,26 +103,25 @@ Esta investigación proporciona una primera aproximación al comportamiento del 
 % \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Calibración DeltaOHM HD51.3}\label{sec:calibDeltaOhm}
-(describir con enumeracion los pasos para realicar la calibracion)
-Los pasos para realizar el proceso de calibración incluyendo el diagrama de la figura \ref{fig:sistemaIntegral} se define a continuación:
+
+Los pasos para realizar el proceso de calibración de un anemómetro se definen a continuación \cite{ISO16622} \cite{IEC61400-12-1}  \cite{procedimientoSMNLaboratorio2024}:
 \begin{itemize}
-    \item Se debe armar el banco de medición, montando los sensores en un soporte dentro del túnel de viento, asegurando que queden fijos y alineados.
-    \item Se deben tomar las medidas de posición de los instrumentos respecto a un sistema de referencia.
-    \item Se debe calcular el área de bloqueo de cada instrumento, incluyendo su soporte.
-    \item Se deben conectar los anemómetros al \textit{datalogger} y alimentar todo el sistema con una fuente de 12 voltios. Además, se debe conectar el {datalogger} a la red LAN local del laboratorio.
-    \item Se debe acceder a la interfaz web y configurar los parámetros de calibración.
-    \item Se debe iniciar la adquisición de mediciones mediante la interfaz web.
-    \item La aplicación Django procesa las solicitudes y envía comandos al \textit{datalogger} a través de \textit{WebSocket}.
-    \item El \textit{datalogger} controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
-    \item Los datos de los anemómetros y otros sensores se registran y envían a la aplicación Django.
-    \item Terminada las mediciones, el operador debe revisar las mediciones y si son correctas activar el procesamiento.
-    \item La aplicación procesa los datos. Primero, calcula el promedio y el desvío estándar de las mediciones para cada punto del escalón. Luego, con esos datos e información ingresada por el usuario, calcula las correcciones e incertidumbres. Finalmente, almacena los resultados en la base de datos.
-    \item Los resultados pueden ser visualizados y descargados a través de la interfaz web.
+    \item Ensamblar el banco de medición, montando los sensores en un soporte dentro del túnel de viento, asegurando que queden fijos y alineados correctamente.
+    \item Tomar las medidas de posición de los instrumentos respecto a un sistema de referencia establecido.
+    \item Medir el área de bloqueo de cada instrumento, incluyendo su soporte.
+    \item Conectar los anemómetros al \textit{datalogger} y alimentar todo el sistema con una fuente de \SI{12}{V}. Además, se debe conectar el \textit{datalogger} a la red LAN local del laboratorio.
+    \item Acceder a la interfaz web y configurar los parámetros de calibración, luego iniciar la adquisición de mediciones.
+    \item Monitorear las mediciones mediante la interfaz web.
+    \item Una vez finalizadas las mediciones, revisar si los datos obtenidos son correctos y luego activar el procesamiento y cálculo de incertidumbre.
+    \item Descargar los datos y elaborar el correspondiente certificado de calibración del instrumento bajo prueba.
 \end{itemize}
 
 
 
-Se realizó la calibración de un sensor ultrasónico de viento marca DeltaOhm, modelo HD51.3, mostrado en la figura \ref{fig:sensorDeltaOhm}, utilizando como sensor patrón el de la figura \ref{fig:sensorVaisala}, modelo WMT700 de la marca Vaisala. El procedimiento de calibración se basa en los pasos detallados en la sección \ref{sec:integracionHardware}.
+% \item La aplicación Django procesa las solicitudes y envía comandos al \textit{datalogger} a través de \textit{WebSocket}.
+%     \item El \textit{datalogger} controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
+%     \item Los datos de los anemómetros y otros sensores se registran y envían a la aplicación Django.
+En base a los pasos descritos, se realizó la calibración de un sensor ultrasónico de viento marca DeltaOhm, modelo HD51.3, mostrado en la figura \ref{fig:sensorDeltaOhm}, utilizando como sensor patrón el de la figura \ref{fig:sensorVaisala}, modelo WMT700 de la marca Vaisala.
 
 \subsection{Banco de medición y configuración del hardware}\label{sec:bancoMedicionDeltaOhm}
 En la Figura \ref{fig:deltaVistaFrontal} se muestra el montaje de los sensores sobre una barra de acero, donde se instalaron con una distancia $d$ de \SI{65}{\centi\meter} y a una altura $h$ respecto a la base del soporte de \SI{36.5}{\centi\meter}. Los sensores quedan alineados y nivelados en el eje longitudinal de la barra, como se muestra en las Figuras \ref{fig:deltaVistaSup2} y \ref{fig:deltaVistaPerfil}.
@@ -147,19 +152,18 @@ Luego de ensamblar y alinear los sensores, se debe instalar el brazo dentro del 
     \label{fig:deltaMontajeTunel}
 \end{figure}
 
-En la mesa de trabajo se instala el datalogger, al cual se conectan el sensor bajo calibración y el sensor patrón a través de sus puertos RS485. Tanto los sensores como el datalogger se alimentan con una fuente de \SI{12}{\volt}. El módulo Ethernet se conecta al switch, y el nivel de tensión continua generado por el PWM se conecta al variador de velocidad del túnel.
-
-(Mejorar esta foto)
+Como se observa en la Figura \ref{fig:datalogger3}, en la mesa de trabajo se instala el datalogger, al cual se conectan el sensor bajo calibración y el sensor patrón a través de sus puertos RS485. Tanto los sensores como el datalogger se alimentan con una fuente de \SI{12}{\volt}. El módulo Ethernet se conecta al switch, y el nivel de tensión continua generado por el PWM se conecta al variador de velocidad del túnel.
+(mejorar esta foto)
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{Figuras/resultados/calibracion/datalogger3.jpg}
-    \caption{Mesa de trabajo con el datalogger y los insmumos necesarios para su funcionamiento.}
+    \caption{Mesa de trabajo con el datalogger y los insumos necesarios para su funcionamiento.}
     \label{fig:datalogger3}
 \end{figure}
 
 \subsection{Configuración de la aplicación web}
 
-En las Figuras \ref{fig:configSensorIBC} y \ref{fig:configSensorPAT} se muestra la carga de metadatos de los sensores. En la Figura \ref{fig:configCertiCalibracion} se presenta la carga de datos del certificado de calibración del sensor patrón. Por otro lado, en la Figura \ref{fig:configCertiCaracTunel} se deben cargar los datos de certificado de caracterización del túnel de viento, los valores se cargan como nulos, ya que aún no se ha realizado el estudio de homogeneidad y estabilidad de la zona de medición. Estos valores nulos aportan una incertidumbre nula al presupuesto de incertidumbre. No obstante, una vez realizados estos estudios, se podrán agregar los valores obtenidos sin mayor dificultad, y el sistema incorporará su aporte de incertidumbre al presupuesto.
+En las Figuras \ref{fig:configSensorIBC} y \ref{fig:configSensorPAT} se muestra la carga de metadatos de los sensores. En la Figura \ref{fig:configCertiCalibracion} se presenta la carga de datos del certificado de calibración del sensor patrón. Por otro lado, en la Figura \ref{fig:configCertiCaracTunel} se muestra los datos de certificado de caracterización del túnel de viento, los valores se cargan como nulos, ya que aún no se ha realizado el estudio de homogeneidad y estabilidad de la zona de medición. Estos valores nulos aportan una incertidumbre nula al presupuesto de incertidumbre. No obstante, una vez realizados estos estudios, se podrán agregar los valores obtenidos sin mayor dificultad, y el sistema incorporará su aporte de incertidumbre al presupuesto.
 
 
 \begin{figure}[H]
@@ -187,9 +191,7 @@ En las Figuras \ref{fig:configSensorIBC} y \ref{fig:configSensorPAT} se muestra 
     \label{fig:configMetadatos}
 \end{figure} 
 
-En la figura \ref{fig:configDataloggerDelta} se muestra la configuración del datalogger. Se elige un tiempo de muestreo de \SI{1}{\second} y un tiempo de tabla también de \SI{1}{\second}, ya que nos interesa el dato instantáneo para realizar la calibración. Se selecciona el puerto COM2 (RS485 agregado con el módulo Maxrs485) para el IBC y el puerto COM1 (RS485 propio de la EDU-CIAA) para el sensor patrón. Ambos sensores tienen un baud rate de \SI{9600}{}.
-
-En la figura \ref{fig:configTunelDelta} se muestra la configuración del túnel de viento. Se establece un punto mínimo de \SI{1}{\meter\per\second} y un punto máximo de \SI{25}{\meter\per\second}. Se indican 5 puntos para calibrar en \SI{5}{\meter\per\second}, \SI{10}{\meter\per\second}, \SI{15}{\meter\per\second}, \SI{20}{\meter\per\second} y \SI{25}{\meter\per\second}. Se configura un ciclo ascendente-descendente de \SI{5}{\meter\per\second} a \SI{25}{\meter\per\second} y luego de \SI{25}{\meter\per\second} a \SI{5}{\meter\per\second}. Se establece un tiempo de transitorio para llegar de un punto a otro de \SI{3}{\minute}, un tiempo para estabilizar las mediciones de \SI{5}{\minute} y un tiempo de medición de \SI{2}{\minute}.
+En la figura \ref{fig:configDataloggerDelta} se muestra la configuración del datalogger. Se elige un tiempo de muestreo de \SI{1}{\second} y un tiempo de tabla también de \SI{1}{\second}, ya que nos interesa el dato instantáneo para realizar la calibración. Se selecciona el puerto COM2 (RS485 agregado con el módulo RS485-TTL) para el IBC y el puerto COM1 (RS485 propio de la EDU-CIAA) para el sensor patrón. Ambos sensores tienen un baud rate de \SI{9600}{}. En la Figura \ref{fig:configTunelDelta} se muestra la configuración del túnel de viento. Se establece un punto mínimo de \SI{1}{\meter\per\second} y un punto máximo de \SI{25}{\meter\per\second}. Se indican 5 puntos para calibrar en \SI{5}{\meter\per\second}, \SI{10}{\meter\per\second}, \SI{15}{\meter\per\second}, \SI{20}{\meter\per\second} y \SI{25}{\meter\per\second}. Se configura un ciclo ascendente-descendente de \SI{5}{\meter\per\second} a \SI{25}{\meter\per\second} y luego de \SI{25}{\meter\per\second} a \SI{5}{\meter\per\second}. Se establece un tiempo de transición para llegar de un punto a otro de \SI{3}{\minute}, un tiempo para estabilizar las mediciones de \SI{5}{\minute} y un tiempo de medición de \SI{2}{\minute}.
 
 \begin{figure}[H]
     \centering
@@ -209,7 +211,7 @@ En la figura \ref{fig:configTunelDelta} se muestra la configuración del túnel 
 
 \subsection{Resultados}
 
-Una vez finalizada la adquisición de datos, se observan en las Figuras \ref{fig:deltaVelocidadCrudo} y \ref{fig:deltaDireccionCrudo} los datos crudos de intensidad y dirección del viento, respectivamente. De estos datos se extrae la parte plana de cada punto, correspondiente al tiempo de medición. En este caso, se toman muestras cada 1 segundo, y el tiempo de medición es de 2 minutos, equivalente a 120 segundos. Por lo tanto, se tienen 120 muestras por punto. Estas muestras se presentan en tablas, donde el operador debe verificar que en cada punto las mediciones no se salgan del rango establecido.
+Una vez finalizada la adquisición de datos, se observan en las Figuras \ref{fig:deltaVelocidadCrudo} y \ref{fig:deltaDireccionCrudo} los datos crudos de intensidad y dirección del viento, respectivamente. De estos datos se extrae la parte plana de cada punto, correspondiente al tiempo de medición. En este caso, se toman muestras cada 1 segundo, y el tiempo de medición es de 2 minutos, equivalente a 120 segundos. Por lo tanto, se tienen 120 muestras por punto de viento configurado. Estas muestras se presentan en tablas, donde el operador debe verificar que en cada punto, las mediciones no se salgan del rango establecido.
 
 \begin{figure}[H]
     \centering
@@ -226,7 +228,7 @@ Una vez finalizada la adquisición de datos, se observan en las Figuras \ref{fig
     \label{fig:deltaDatosCrudos}
 \end{figure}
 
-A partir de la resta entre los valores promedio del ciclo ascendente y los valores promedio del ciclo descendente, se calcula la histéresis para cada punto. Tomando todos estos puntos, se puede construir una curva de histéresis como se muestra en la Figura \ref{fig:deltaGraficoHister}. En la misma se representan dos ajustes lineales: uno para el ciclo ascendente y otro para el ciclo descendente. Gráficamente, se puede observar que ambas curvas difieren sutilmente y presentan la misma pendiente, con una leve diferencia de 3 centésimos en la ordenada al origen. Además, presentan un factor de correlación cercano a 1, lo que indica que el instrumento presenta baja alinealidad, de tal manera que cuando cambia de un valor en ascenso o descenso, lo hace por la misma curva. En la tabla de la Figura \ref{fig:deltaTablaHister} se observa el resultado numérico de la histéresis para cada punto, tanto del patrón como del IBC.
+A partir de la resta entre los valores promedio del ciclo ascendente y los valores promedio del ciclo descendente, se calcula la histéresis para cada punto. Tomando todos estos puntos, se puede construir una curva de histéresis como se muestra en la Figura \ref{fig:deltaGraficoHister}. En la misma se representan dos regresiones lineales: uno para el ciclo ascendente y otro para el ciclo descendente. Gráficamente, se puede observar que ambas curvas difieren sutilmente y presentan la misma pendiente, con una leve diferencia de 3 centésimos en la ordenada al origen. Además, presentan un factor de correlación cercano a 1, lo que indica que el instrumento presenta muy poca alinealidad, de tal manera que cuando cambia de un valor en ascenso o descenso, lo hace por la misma curva. En la tabla de la Figura \ref{fig:deltaTablaHister} se observa el resultado numérico de la histéresis para cada punto, tanto del patrón como del IBC.
 
 \begin{figure}[H]
     \centering
@@ -261,7 +263,7 @@ En la Figura \ref{fig:deltaGraficoCalibAsc} se presenta la curva de calibración
     \label{fig:deltaResultCalibAsc}
 \end{figure} 
 
-Para las mediciones del ciclo descendente también se cuenta con una curva de calibración, la cual se puede utilizar para proporcionar información sobre la incertidumbre con la que se trabaja y aplicar las correcciones a las mediciones del instrumento. En la tabla de la Figura \ref{fig:deltaTablaCalibDes} también se muestran los resultados de esta calibración.
+Para las mediciones del ciclo descendente también se cuenta con una curva de calibración, Figura \ref{fig:deltaGraficoCalibDes}, la cual se puede utilizar para proporcionar información sobre la incertidumbre con la que se trabaja y aplicar las correcciones a las mediciones del instrumento. En la tabla de la Figura \ref{fig:deltaTablaCalibDes} también se muestran los resultados de esta calibración.
 
 \begin{figure}[H]
     \centering
@@ -278,7 +280,7 @@ Para las mediciones del ciclo descendente también se cuenta con una curva de ca
     \label{fig:deltaResultCalibDes}
 \end{figure} 
 
-La información que se incluye en el certificado de calibración puede contener las dos curvas de calibración, tanto ascendente como descendente, o solo una de ellas. También es posible proporcionar únicamente alguna de las tablas de calibración, permitiendo que el usuario final realice una regresión lineal de los puntos y determine su propia curva de calibración. No obstante, el laboratorio no realiza el ajuste del instrumento, y la decisión final recae en el usuario final. En particular, los instrumentos que maneja el SMN tienen tolerancias máximas para cada magnitud física \cite{wmo2020} establecidas por la WMO. En particular, para el viento se acepta una incertidumbre de velocidad de viento de $\pm \SI{1}{\meter\per\second}$ para ser considerado un instrumento de clase A, una incertidumbre de $\pm \SI{2}{\meter\per\second}$ para ser considerado de clase B, o una incertidumbre de $\pm \SI{5}{\meter\per\second}$ para ser considerado de clase C. Dependiendo de la categoría, el instrumento podrá ser utilizado para distintas aplicaciones.
+La información que se incluye en el certificado de calibración puede contener las dos curvas de calibración, tanto ascendente como descendente, o solo una de ellas. También es posible proporcionar únicamente alguna de las tablas de calibración, permitiendo que el usuario final realice una regresión lineal de los puntos y determine su propia curva de calibración. No obstante, el laboratorio no realiza el ajuste del instrumento, y la decisión final recae en el usuario final. En particular, los instrumentos que maneja el SMN tienen tolerancias máximas para cada magnitud física \cite{wmo2020} establecidas por la WMO. Para la variable viento se acepta una incertidumbre de $\pm \SI{1}{\meter\per\second}$ para ser considerado un instrumento de clase A, una incertidumbre de $\pm \SI{2}{\meter\per\second}$ para ser considerado de clase B, o una incertidumbre de $\pm \SI{5}{\meter\per\second}$ para ser considerado de clase C. Dependiendo de la categoría, el instrumento podrá ser utilizado para distintas aplicaciones.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

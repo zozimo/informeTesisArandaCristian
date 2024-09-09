@@ -1,5 +1,5 @@
 \definecolor{Sail}{rgb}{0.643,0.819,0.976}
-En este capítulo se abordarán los diferentes tipos de incertidumbre de medición y se explicará los conceptos teóricos para obtener la incertidumbre expandida. Posteriormente, se revisará la importancia del certificado de calibración y su relación con la trazabilidad de las mediciones. A continuación, se presentará el modelo teórico aplicado para la evaluación de la incertidumbre de medición de los anemómetros. Finalmente, se definirán las fuentes de incertidumbre específicas que se consideran al calibrar los anemómetros de ultrasonido dentro del túnel de viento  Este enfoque permitirá una comprensión integral de los aspectos que influyen en la precisión y fiabilidad de las mediciones realizadas en el contexto de los sensores de viento.
+En este capítulo se abordarán los diferentes tipos de incertidumbre de medición y se explicará los conceptos teóricos para obtener la incertidumbre expandida. Posteriormente, se revisará la importancia del certificado de calibración y su relación con la trazabilidad de las mediciones. Luego, se presentará el modelo teórico aplicado para la evaluación de la incertidumbre de medición de los anemómetros. Finalmente, se definirán las fuentes de incertidumbre específicas que se consideran al calibrar los anemómetros de ultrasonido dentro del túnel de viento.  Este enfoque permitirá una comprensión integral de los aspectos que influyen en la precisión y fiabilidad de las mediciones realizadas en el contexto de los sensores de viento.
 
 \section{Incertidumbre de la medición}\label{sec:tipos_incertidumbre}
 
@@ -33,11 +33,11 @@ Existen dos tipos principales de incertidumbre: la incertidumbre de tipo A y la 
     \label{eq:incertidumbreEstandarDeObservaciones}
 \end{equation}
 
-La incertidumbre de tipo B se basa en conocimientos previos y no en datos experimentales directos. Esta puede derivarse de información contenida en manuales, certificados de calibración o la experiencia previa con el instrumento de medición. Normalmente, se especifica un entorno $\Delta = \frac{B-A}{2}$ definido como su incertidumbre expandida. Luego, para obtener la incertidumbre estándar, se divide por un número que depende de la función de distribución asumida. Para una distribución rectangular (la más usual), se divide por $\sqrt{3}$; para una distribución triangular, se divide por $\sqrt{6}$; y para una distribución de media cuadrática (RMS), donde las fuentes de incertidumbre son idénticas y aditivamente independientes, se divide por $\sqrt{2}$.
+La incertidumbre de tipo B se basa en conocimientos previos y no en datos experimentales directos. Esta puede derivarse de información contenida en manuales, certificados de calibración o la experiencia previa con el instrumento de medición. Normalmente, se especifica un entorno $\Delta = \frac{B-A}{2}$ definido como su incertidumbre expandida. Luego, para obtener la incertidumbre estándar, se divide por un número que depende de la función de distribución asumida. Para una distribución rectangular uniforme (la más usual), se divide por $\sqrt{3}$; para una distribución triangular, se divide por $\sqrt{6}$; y para una distribución de media cuadrática (RMS), donde las fuentes de incertidumbre son idénticas y aditivamente independientes, se divide por $\sqrt{2}$.
 
 La combinación de las incertidumbres de tipo A y tipo B da lugar a la incertidumbre combinada, que proporciona una medida más completa de la incertidumbre total asociada a una medición. Generalmente, se elabora un presupuesto de incertidumbre (\textit{uncertainty budget}) a partir de todas las fuentes identificadas, con el fin de obtener una visión detallada y precisa.
 
-Para realizar este calculo, a partir de un modelo $y = f(x_{1},x_{2}, ..., x_{n})$ que se utiliza para estimar el valor del mensurando de salida $y$, a partir de los valores de entrada $x_{1},x_{2}, ..., x_{n}$ se obtiene la incertidumbre combinada a partir de la ley de propagación de incertidumbre definida en la ecuación \ref{eq:incertidumbreCombinadaMatematica}
+Para realizar este cálculo, a partir de un modelo $y = f(x_{1},x_{2}, ..., x_{n})$ que se utiliza para estimar el valor del mensurando de salida $y$, tomando los valores de entrada $x_{1},x_{2}, ..., x_{n}$ se obtiene la incertidumbre combinada mediante de la ley de propagación de incertidumbre definida en la ecuación \ref{eq:incertidumbreCombinadaMatematica}
 \begin{equation}
     \centering
     u_{c}(y) = \sqrt{\sum_{i=1}^{n} \left( \frac{\partial f}{\partial x_{i}} \right)^2 u^2(x_i)}
@@ -45,7 +45,7 @@ Para realizar este calculo, a partir de un modelo $y = f(x_{1},x_{2}, ..., x_{n}
 \end{equation}
 donde la derivada parcial $\frac{\partial f}{\partial x_{i}}$ se define como el coeficiente de sensibilidad $c_{i}$ que se calcula analíticamente o en algunos casos, se puede evaluar experimental o numéricamente.
 
-La incertidumbre combinada, definida en la ecuación \ref{eq:incertidumbreCombinadaMatematica}, puede ser ampliada mediante un factor de cobertura $k$. Este factor se obtiene calculando el valor crítico $t$ utilizando la distribución t de Student y los grados de libertad efectivos para un nivel de confianza determinado, que generalmente se encuentra entre el 68\% y el 99\%. Los grados de libertad efectivo definido en la ecuación \ref{eq:gradosDelibertadEfectivos}, representan el número de valores en un cálculo estadístico que son libres de variar. Los grados de libertad para una fuente de incertidumbre de tipo A se calcula como  $v_{i}= n_{i}-1$, donde $n_{i}$ es el numero de mediciones tomadas para cada fuente $i$. Para una fuente de incertidumbre de tipo B es mas complicado obtener los grados de libertad, pero considerando una distribución rectangular podemos asumir $v_{i} \rightarrow \infty$ \cite{Workshop_WMO2021}
+La incertidumbre combinada, definida en la ecuación \ref{eq:incertidumbreCombinadaMatematica}, puede ser ampliada mediante un factor de cobertura $k$. Este factor se obtiene calculando el valor crítico $t$ utilizando la distribución $t$ de Student y los grados de libertad efectivos para un nivel de confianza determinado, que generalmente se encuentra entre el 68\% y el 99\%. Los grados de libertad efectivo definido en la ecuación \ref{eq:gradosDelibertadEfectivos}, representan el número de valores en un cálculo estadístico que son libres de variar. Los grados de libertad para una fuente de incertidumbre de tipo A se calculan como  $v_{i}= n_{i}-1$, donde $n_{i}$ es el número de mediciones tomadas para cada fuente $i$. Para una fuente de incertidumbre de tipo B es mas complicado obtener los grados de libertad, pero considerando una distribución rectangular podemos asumir $v_{i} \rightarrow \infty$ \cite{Workshop_WMO2021}, entonces para las incertidumbres de tipo B el termino $\frac{u_i^4}{v_i} \rightarrow 0 $ y no contribuyen a la suma.
 
 
 \begin{equation}
@@ -73,9 +73,9 @@ Esta ampliación de la incertidumbre combinada se conoce como incertidumbre expa
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Calibración y trazabilidad}\label{sec:trazabilidad}
 
-La calibración es una operación que, bajo condiciones especificadas, establece en una primera etapa una relación entre los valores y sus incertidumbres de medida asociadas obtenidas a partir de los patrones de medida, y las correspondientes indicaciones con sus incertidumbres asociadas. En una segunda etapa, se utiliza esta información para establecer una relación que permita obtener un resultado de medida a partir de una indicación. Es importante no confundir la calibración con el ajuste del instrumento. La diferencia radica en que la calibración se obtiene a partir de comparar el Instrumento Bajo Calibración (IBC) contra un patrón de referencia estándar, bajo condiciones específicas, pero no implica modificar el instrumento. En cambio, el ajuste del instrumento implica la modificación de sus componentes pasivos o activos, de forma mecánica, eléctrica o mediante software, para que las mediciones sean lo más precisas posible, dentro de los límites de tolerancia preestablecidos por el fabricante o la aplicación del instrumento.
+% La calibración es una operación que, bajo condiciones específicas, primero establece una relación entre los valores medidos y sus incertidumbres usando patrones de medición. Luego, utiliza esta información para obtener un resultado de medición a partir de una indicación. \cite{VIM}.
 
-Para expresar la calibración, se emiten certificados de calibración en los cuales, en los puntos donde fue calibrado, se informa una función o tabla de corrección que se deriva de la diferencia entre las lecturas del patrón y las del IBC. Otro aspecto crucial que debe informarse en el certificado es la incertidumbre expandida de la corrección, la cual resulta del presupuesto de incertidumbre. El ajuste establece aplicar esta corrección a las lecturas del instrumento, lo que contribuye a mejorar la exactitud de las mediciones. 
+La calibración es una operación que, bajo condiciones especificadas, establece en una primera etapa una relación entre los valores y las incertidumbres de medición asociadas que son proporcionadas por los patrones de medición y las indicaciones correspondientes con las incertidumbres asociadas. Luego, en una segunda etapa, utiliza esta información para establecer una relación que permita obtener un resultado de medición a partir de una indicación \cite{VIM}. Es importante no confundir la calibración con el ajuste del instrumento. La diferencia radica en que la calibración se obtiene a partir de comparar el Instrumento Bajo Calibración (IBC) contra un patrón de referencia estándar, bajo condiciones específicas, pero no implica modificar el instrumento. En cambio, el ajuste del instrumento implica la modificación de sus componentes pasivos o activos, de forma mecánica, eléctrica o mediante software, para que las mediciones sean lo más precisas posible, dentro de los límites de tolerancia preestablecidos por el fabricante o la aplicación del instrumento. Para expresar la calibración, se emiten certificados de calibración en los cuales, en los puntos donde el instrumento fue calibrado, se informa una función o tabla de corrección que se deriva de la diferencia entre las lecturas del patrón y las del IBC. Otro aspecto crucial que debe informarse en el certificado es la incertidumbre expandida de la corrección, la cual resulta del presupuesto de incertidumbre. El ajuste establece aplicar esta corrección a las lecturas del instrumento, lo que contribuye a mejorar la exactitud de las mediciones. 
 
 Un certificado de calibración debe incluir la siguiente información:
 
@@ -93,9 +93,7 @@ Un certificado de calibración debe incluir la siguiente información:
     \item \textbf{Etiqueta:} Además se debe agregar un etiqueta en el instrumento donde se especifica la proxima fecha de calibración.
 \end{itemize}
 
-El instrumento patrón estándar también cuenta con estos parámetros en su propio certificado de calibración y son necesarios para completar el presupuesto de incertidumbre de la medición del instrumento bajo calibración (IBC), asegurando que todas las posibles fuentes de incertidumbre sean consideradas y cuantificadas.
-
-La calibración es esencial para mantener la fiabilidad y trazabilidad a los estándares primarios. En la Figura \ref{fig:trazabilidadMetrologica} se muestra cómo, a partir de un patrón internacional, se calibra un patrón nacional tomando como referencia la incertidumbre del patrón internacional. De esta forma, en sentido descendente, se tienen incertidumbres cada vez mayores hasta llegar al equipo de medición. Por otro lado, en sentido inverso, la trazabilidad es una propiedad de un resultado de medida por la cual dicho resultado puede relacionarse con un valor de referencia, nacional o internacional, a través de una cadena ininterrumpida y documentada de calibraciones, donde cada una contribuye a la incertidumbre de la medición.
+El instrumento patrón estándar también cuenta con esta información en su propio certificado de calibración y son necesarios para completar el presupuesto de incertidumbre de la medición del IBC, asegurando que todas las posibles fuentes de incertidumbre sean consideradas y cuantificadas. La calibración es esencial para mantener la fiabilidad y trazabilidad a los estándares primarios. En la Figura \ref{fig:trazabilidadMetrologica} se muestra cómo, a partir de un patrón internacional, se calibra un patrón nacional tomando como referencia la incertidumbre del patrón internacional. De esta forma, en sentido descendente, se tienen incertidumbres cada vez mayores hasta llegar al equipo de medición. Por otro lado, en sentido inverso, la trazabilidad es una propiedad de un resultado de medida por la cual dicho resultado puede relacionarse con un valor de referencia, nacional o internacional, a través de una cadena ininterrumpida y documentada de calibraciones, donde cada una contribuye a la incertidumbre de la medición.
 
 \begin{figure}[H]
     \centering
@@ -117,10 +115,10 @@ El modelo de medición utilizado para calcular la incertidumbre de los anemómet
 donde se define:
 
 \begin{itemize}
-    \item $V_{IBC}$ representa el valor de viento medido con el anemómetro bajo calibración.
-    \item $CV_{IBC}$ representa la corrección del anemómetro bajo calibración.
+    \item $CV_{IBC}$ representa la corrección del anemómetro bajo calibración.   
     \item $V_{p}$ representa el valor de viento medido con el anemómetro patrón.
     \item $CV_{p}$ representa la corrección de viento del anemómetro patrón, obtenida a partir de su certificado de calibración.
+    \item $V_{IBC}$ representa el valor de viento medido con el anemómetro bajo calibración.
 \end{itemize}
 
 A partir de la ecuación \ref{eq:ModeloIncertidumbre} y tomando en cuenta las fuentes de incertidumbre, definidas en la tabla \ref{tab:fuenteIncert} se realiza el cálculo de la incertidumbre combinada de la corrección, como la suma de los cuadrados de las incertidumbres estándar de cada fuente, como se muestra en la ecuación \ref{eq:incertidumbreCombinada}.
@@ -135,7 +133,8 @@ donde se define:
     \item $u^{2}(CV_{IBC})$ es la incertidumbre estándar de la corrección del anemómetro bajo calibración.
     \item $u^{2}(V_{ref})$ representa la suma de todas las fuentes de incertidumbre estándar debidas al patrón de referencia.
     \item $u^{2}(V_{IBC})$ representa la suma de todas las fuentes de incertidumbre estándar debidas al anemómetro bajo calibración.
-    \item $u^{2}(\text{túnel de Viento})$ es la contribución de incertidumbre estándar referida al túnel de viento, quien se encarga de generar condiciones de velocidad y dirección de viento.
+    \item $u^{2}(\text{túnel de Viento})$ representa la suma de todas las fuentes de incertidumbre estándar debidas al túnel de viento.
+    % , quien se encarga de generar condiciones de velocidad y dirección de viento.
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Fuentes de incertidumbre}\label{sec:fuentesDeIncertidumbre}
@@ -152,7 +151,7 @@ donde se define:
 \newcommand{\descAjusteEstabilidad}{Desvío estándar del ajuste lineal con los datos discretos del certificado de estabilidad.}
 \newcommand{\descFactorCalib}{Incertidumbre asociada al factor de calibracion que proporciona la relación entre las condiciones en la posición de medición de referencia y las condiciones en la posición del IBC.}
 
-\begin{table}
+\begin{table}[]
 \centering
 \fontsize{9}{8}\selectfont
 \begin{tblr}{
@@ -195,7 +194,13 @@ En particular se va a considerar las fuentes de incertidumbre debidas a:
     \item El túnel de viento.
 \end{itemize}
 
-En la tabla \ref{tab:fuenteIncert} se detallan las fuentes de incertidumbre que se evaluarán en el presupuesto de incertidumbre para cada punto de viento configurado. En la segunda columna se nombra el tipo de fuente y en la tercera columna se da una breve descripción de cada una. Luego, cada incertidumbre se clasifica según el tipo A o B, en función de cómo fue determinada. En la quinta columna se especifica el tipo de distribución probabilística. Finalmente, en la última columna se detalla el factor de normalización por el cual se debe dividir para obtener la incertidumbre estándar de cada fuente. Vale la pena destacar que la histéresis también se utiliza como indicador de la no linealidad del instrumento bajo calibración; una histéresis alta sugiere que el instrumento muestra un comportamiento diferente cuando la magnitud medida está aumentando en comparación a cuando está disminuyendo. Por otro lado, tanto el factor de bloqueo como en factor de calibración deben ser calculados previamente para luego obtener su correspondiente incertidumbre estándar.
+En la tabla \ref{tab:fuenteIncert} se detallan las fuentes de incertidumbre que se evaluarán en el presupuesto de incertidumbre para cada punto de viento configurado. En la segunda columna se nombra el tipo de fuente y en la tercera columna se da una breve descripción de cada una. Luego, cada incertidumbre se clasifica según el tipo A o B, en función de cómo fue determinada. En la quinta columna se especifica el tipo de distribución probabilística. Finalmente, en la última columna se detalla el factor de normalización por el cual se debe dividir para obtener la incertidumbre estándar de cada fuente. Como se muestra en la Figura \ref{fig:histeresis} la histéresis también se utiliza como indicador de la no linealidad del instrumento bajo calibración; una histéresis alta sugiere que el instrumento muestra un comportamiento diferente cuando la magnitud medida está aumentando en comparación a cuando está disminuyendo. Por otro lado, tanto el factor de bloqueo como en factor de calibración deben ser calculados previamente para luego obtener su correspondiente incertidumbre estándar.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Figuras/calculoIncertidumbre/histeresis.png}
+    \caption{Curva de histéresis y linealidad para una medición general. \cite{Workshop_WMO2021}}
+    \label{fig:histeresis}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
