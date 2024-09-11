@@ -110,6 +110,7 @@ Los pasos para realizar el proceso de calibración de un anemómetro se definen 
     \item Tomar las medidas de posición de los instrumentos respecto a un sistema de referencia establecido.
     \item Medir el área de bloqueo de cada instrumento, incluyendo su soporte.
     \item Conectar los anemómetros al \textit{datalogger} y alimentar todo el sistema con una fuente de \SI{12}{V}. Además, se debe conectar el \textit{datalogger} a la red LAN local del laboratorio.
+    \item Tomar datos ambiente de temperatura, humedad y presión al inicio y finalización de las mediciones.
     \item Acceder a la interfaz web y configurar los parámetros de calibración, luego iniciar la adquisición de mediciones.
     \item Monitorear las mediciones mediante la interfaz web.
     \item Una vez finalizadas las mediciones, revisar si los datos obtenidos son correctos y luego activar el procesamiento y cálculo de incertidumbre.
@@ -211,18 +212,18 @@ En la figura \ref{fig:configDataloggerDelta} se muestra la configuración del da
 
 \subsection{Resultados}
 
-Una vez finalizada la adquisición de datos, se observan en las Figuras \ref{fig:deltaVelocidadCrudo} y \ref{fig:deltaDireccionCrudo} los datos crudos de intensidad y dirección del viento, respectivamente. De estos datos se extrae la parte plana de cada punto, correspondiente al tiempo de medición. En este caso, se toman muestras cada 1 segundo, y el tiempo de medición es de 2 minutos, equivalente a 120 segundos. Por lo tanto, se tienen 120 muestras por punto de viento configurado. Estas muestras se presentan en tablas, donde el operador debe verificar que en cada punto, las mediciones no se salgan del rango establecido.
+Para esta calibración se mantuvieron condiciones ambientales en el entorno de \SI{22}{\degreeCelsius}, \SI{45}{\%} de humedad relativa y \SI{1010}{\hecto\pascal} de presión. Una vez finalizada la adquisición de datos, se observan en las Figuras \ref{fig:deltaVelocidadCrudo} y \ref{fig:deltaDireccionCrudo} los datos crudos de intensidad y dirección del viento, respectivamente. De estos datos se extrae la parte plana de cada punto, correspondiente al tiempo de medición. En este caso, se toman muestras cada 1 segundo, y el tiempo de medición es de 2 minutos, equivalente a 120 segundos. Por lo tanto, se tienen 120 muestras por punto de viento configurado. Estas muestras se presentan en tablas, donde el operador debe verificar que en cada punto, las mediciones no se salgan del rango establecido.
 
 \begin{figure}[H]
     \centering
     \begin{minipage}[b]{1\textwidth}
         \centering
-        \subcaptionbox{\label{fig:deltaVelocidadCrudo}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Velocidad de Viento crudo sn 20017380 pat 22100.pdf}}
+        \subcaptionbox{\label{fig:deltaVelocidadCrudo}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Velocidad de Viento sn 20017378 pat 22106.pdf}}
     \end{minipage}  
     \hspace{2em} % Espacio vertical entre las filas
     \begin{minipage}[b]{1\textwidth}
         \centering
-        \subcaptionbox{\label{fig:deltaDireccionCrudo}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Direccion de Viento sn crudo 20017380 pat 22100.pdf}}
+        \subcaptionbox{\label{fig:deltaDireccionCrudo}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Dirección de Viento sn 20017378 pat 22106.pdf}}
     \end{minipage}  
     \caption{En (a) se muestra el ciclo ascendente y descendente de la velocidad de viento y en (b) se observa la dirección de viento.}
     \label{fig:deltaDatosCrudos}
@@ -234,12 +235,12 @@ A partir de la resta entre los valores promedio del ciclo ascendente y los valor
     \centering
     \begin{minipage}[b]{1\textwidth}
         \centering
-        \subcaptionbox{\label{fig:deltaGraficoHister}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Curva de histeresis sn 20017380 pat 22100.pdf}}
+        \subcaptionbox{\label{fig:deltaGraficoHister}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Curva de histéresis sn 20017378 pat 22106.pdf}}
     \end{minipage}  
     \hspace{1em} % Espacio vertical entre las filas
     \begin{minipage}[b]{0.55\textwidth}
         \centering
-        \subcaptionbox{\label{fig:deltaTablaHister}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/tablaHisteresis.png}}
+        \subcaptionbox{\label{fig:deltaTablaHister}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/tablaHisteresis_22106.png}}
     \end{minipage}  
     \caption{En (a) se muestra la curva de histéresis para el sensor bajo calibración y en (b) se observa la tabla con los resultados numéricos.}
     \label{fig:deltaResultHisteresis}
@@ -252,12 +253,12 @@ En la Figura \ref{fig:deltaGraficoCalibAsc} se presenta la curva de calibración
     \centering
     \begin{minipage}[b]{1\textwidth}
         \centering
-        \subcaptionbox{\label{fig:deltaGraficoCalibAsc}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Curva de calibración Asc sn 20017380 pat 22100.pdf}}
+        \subcaptionbox{\label{fig:deltaGraficoCalibAsc}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Curva de calibración Asc sn 20017378 pat 22106.pdf}}
     \end{minipage}  
     \hspace{1em} % Espacio vertical entre las filas
     \begin{minipage}[b]{0.7\textwidth}
         \centering
-        \subcaptionbox{\label{fig:deltaTablaCalibAsc}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/tablaResultadosAsc.png}}
+        \subcaptionbox{\label{fig:deltaTablaCalibAsc}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/tablaResultadosAsc_22106.png}}
     \end{minipage}  
     \caption{En (a) se presenta la curva de calibración ascendente con sus respectivas incertidumbres expandidas, y en (b) se muestra la tabla con los resultados numéricos.}
     \label{fig:deltaResultCalibAsc}
@@ -269,12 +270,12 @@ Para las mediciones del ciclo descendente también se cuenta con una curva de ca
     \centering
     \begin{minipage}[b]{1\textwidth}
         \centering
-        \subcaptionbox{\label{fig:deltaGraficoCalibDes}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/Curva de calibración Des sn 20017380 pat 22100.pdf}}
+        \subcaptionbox{\label{fig:deltaGraficoCalibDes}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/CurvaCalibraciónDesSn20017378Pat22106.pdf}}
     \end{minipage}  
     \hspace{2em} % Espacio vertical entre las filas
     \begin{minipage}[b]{0.7\textwidth}
         \centering
-        \subcaptionbox{\label{fig:deltaTablaCalibDes}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/tablasResultadosDesc.png}}
+        \subcaptionbox{\label{fig:deltaTablaCalibDes}}{\includegraphics[width=\textwidth]{Figuras/resultados/calibracion/HD51_3/tablasResultadosDesc_22106.png}}
     \end{minipage}  
     \caption{En (a) se presenta la curva de calibración descendente con sus respectivas incertidumbres expandidas, y en (b) se muestra la tabla con los resultados numéricos.}
     \label{fig:deltaResultCalibDes}
