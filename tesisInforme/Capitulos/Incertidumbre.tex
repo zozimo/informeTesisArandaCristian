@@ -8,7 +8,7 @@ La incertidumbre en la medición es una característica inherente a cualquier pr
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Figuras/calculoIncertidumbre/diagramaPescado.png}
-    \caption{Diagrama de las fuentes que producen incertidumbre en la medición de un mensurando. \cite{instrumentosMedicionesFiuba}}
+    \caption{Diagrama de las fuentes que producen incertidumbre en la medición de un mensurando \cite{instrumentosMedicionesFiuba}.}
     \label{fig:diagramaPescado}
 \end{figure}
 
@@ -45,7 +45,7 @@ Para realizar este cálculo, a partir de un modelo $y = f(x_{1},x_{2}, ..., x_{n
 \end{equation}
 donde la derivada parcial $\frac{\partial f}{\partial x_{i}}$ se define como el coeficiente de sensibilidad $c_{i}$ que se calcula analíticamente o en algunos casos, se puede evaluar experimental o numéricamente.
 
-La incertidumbre combinada, definida en la ecuación \ref{eq:incertidumbreCombinadaMatematica}, puede ser ampliada mediante un factor de cobertura $k$. Este factor se obtiene calculando el valor crítico $t$ utilizando la distribución $t$ de Student y los grados de libertad efectivos para un nivel de confianza determinado, que generalmente se encuentra entre el 68\% y el 99\%. Los grados de libertad efectivo definido en la ecuación \ref{eq:gradosDelibertadEfectivos}, representan el número de valores en un cálculo estadístico que son libres de variar. Los grados de libertad para una fuente de incertidumbre de tipo A se calculan como  $v_{i}= n_{i}-1$, donde $n_{i}$ es el número de mediciones tomadas para cada fuente $i$. Para una fuente de incertidumbre de tipo B es mas complicado obtener los grados de libertad, pero considerando una distribución rectangular podemos asumir $v_{i} \rightarrow \infty$ \cite{Workshop_WMO2021}, entonces para las incertidumbres de tipo B el termino $\frac{u_i^4}{v_i} \rightarrow 0 $ y no contribuyen a la suma.
+La incertidumbre combinada, definida en la ecuación \ref{eq:incertidumbreCombinadaMatematica}, puede ser ampliada mediante un factor de cobertura $k$. Este factor se obtiene calculando el valor crítico $t$ utilizando la distribución $t$ de Student y los grados de libertad efectivos para un nivel de confianza determinado, que generalmente se encuentra entre el 68\% y el 99\%. Los grados de libertad efectivo ($V_{ef}$) definido en la ecuación \ref{eq:gradosDelibertadEfectivos}, representan el número de valores en un cálculo estadístico que son libres de variar. Los grados de libertad para una fuente de incertidumbre de tipo A se calculan como  $v_{i}= n_{i}-1$, donde $n_{i}$ es el número de mediciones tomadas para cada fuente $i$. Para una fuente de incertidumbre de tipo B es mas complicado obtener los grados de libertad, pero considerando una distribución rectangular podemos asumir $v_{i} \rightarrow \infty$ \cite{Workshop_WMO2021}, entonces para las incertidumbres de tipo B se cumple $\frac{u_i^4}{v_i} \rightarrow 0 $ y no contribuyen a la suma.
 
 
 \begin{equation}
@@ -98,7 +98,7 @@ El instrumento patrón estándar también cuenta con esta información en su pro
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{Figuras/calculoIncertidumbre/trazabilidadMetrologica.png}
-    \caption{Trazabilidad metrológica. \cite{instrumentosMedicionesFiuba}}
+    \caption{Trazabilidad metrológica \cite{instrumentosMedicionesFiuba}.}
     \label{fig:trazabilidadMetrologica}
 \end{figure}
 
@@ -106,7 +106,7 @@ El instrumento patrón estándar también cuenta con esta información en su pro
 
 \section{Modelo teórico de medición}\label{sec:modelo_teoricos}
 
-El modelo de medición utilizado para calcular la incertidumbre de los anemómetros se muestra en la ecuación \ref{eq:ModeloIncertidumbre}. Este modelo se basa en una comparación, donde se obtiene la corrección del mensurando bajo calibración a partir de la diferencia de medición en un punto determinado y bajo condiciones ambientales controladas, entre un patrón calibrado y el instrumento bajo calibración.
+El modelo de medición utilizado para calcular la incertidumbre de los anemómetros se muestra en la ecuación \ref{eq:ModeloIncertidumbre}. Este modelo se basa en una comparación, donde se obtiene la corrección del mensurando bajo calibración a partir de la diferencia en un punto determinado y bajo condiciones ambientales controladas, entre las lecturas de medición de viento del patrón calibrado y corregido ($V_{ref}$) y el instrumento bajo calibración ($V_{IBC}$).
 
 \begin{equation}
     CV_{IBC} = \overbrace{V_{p} + CV_{p}}^{V_{ref}} - V_{IBC}
@@ -194,11 +194,11 @@ En particular se va a considerar las fuentes de incertidumbre debidas a:
     \item El túnel de viento.
 \end{itemize}
 
-En la tabla \ref{tab:fuenteIncert} se detallan las fuentes de incertidumbre que se evaluarán en el presupuesto de incertidumbre para cada punto de viento configurado. En la segunda columna se nombra el tipo de fuente y en la tercera columna se da una breve descripción de cada una. Luego, cada incertidumbre se clasifica según el tipo A o B, en función de cómo fue determinada. En la quinta columna se especifica el tipo de distribución probabilística. Finalmente, en la última columna se detalla el factor de normalización por el cual se debe dividir para obtener la incertidumbre estándar de cada fuente. Como se muestra en la Figura \ref{fig:histeresis} la histéresis también se utiliza como indicador de la no linealidad del instrumento bajo calibración; una histéresis alta sugiere que el instrumento muestra un comportamiento diferente cuando la magnitud medida está aumentando en comparación a cuando está disminuyendo. Por otro lado, tanto el factor de bloqueo como en factor de calibración deben ser calculados previamente para luego obtener su correspondiente incertidumbre estándar.
+En la tabla \ref{tab:fuenteIncert} se detallan las fuentes de incertidumbre que se evaluarán en el presupuesto de incertidumbre para cada punto de viento configurado. En la segunda columna se nombra el tipo de fuente y en la tercera columna se da una breve descripción de cada una. Luego, cada incertidumbre se clasifica según el tipo A o B, en función de cómo fue determinada. En la quinta columna se especifica el tipo de distribución probabilística. Finalmente, en la última columna se detalla el factor de normalización por el cual se debe dividir para obtener la incertidumbre estándar de cada fuente. Como se muestra en la Figura \ref{fig:histeresis}, la histéresis también se utiliza como indicador de la no linealidad del instrumento bajo calibración; una histéresis alta sugiere que el instrumento muestra un comportamiento diferente cuando la magnitud medida está aumentando en comparación a cuando está disminuyendo. Por otro lado, tanto el factor de bloqueo como el factor de calibración deben ser calculados previamente para luego obtener su correspondiente incertidumbre estándar.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{Figuras/calculoIncertidumbre/histeresis.png}
-    \caption{Curva de histéresis y linealidad para una medición general. \cite{Workshop_WMO2021}}
+    \caption{Curva de histéresis y linealidad para una medición general \cite{Workshop_WMO2021}.}
     \label{fig:histeresis}
 \end{figure}
 
