@@ -105,7 +105,7 @@ Esta investigación proporciona una primera aproximación al comportamiento del 
 \section{Calibración DeltaOHM HD51.3}\label{sec:calibDeltaOhm}
 
 Los pasos para realizar el proceso de calibración de un anemómetro se definen a continuación \cite{ISO16622} \cite{IEC61400-12-1}  \cite{procedimientoSMNLaboratorio2024}:
-\begin{itemize}
+\begin{enumerate}
     \item Ensamblar el banco de medición, montando los sensores en un soporte dentro del túnel de viento, asegurando que queden fijos y alineados correctamente.
     \item Tomar las medidas de posición de los instrumentos respecto a un sistema de referencia establecido.
     \item Medir el área de bloqueo de cada instrumento, incluyendo su soporte.
@@ -115,7 +115,7 @@ Los pasos para realizar el proceso de calibración de un anemómetro se definen 
     \item Monitorear las mediciones mediante la interfaz web.
     \item Una vez finalizadas las mediciones, revisar si los datos obtenidos son correctos y luego activar el procesamiento y cálculo de incertidumbre.
     \item Descargar los datos y elaborar el correspondiente certificado de calibración del instrumento bajo prueba.
-\end{itemize}
+\end{enumerate}
 
 
 
@@ -153,8 +153,8 @@ Luego de ensamblar y alinear los sensores, se debe instalar el brazo dentro del 
     \label{fig:deltaMontajeTunel}
 \end{figure}
 
-Como se observa en la Figura \ref{fig:datalogger3}, en la mesa de trabajo se instala el datalogger, al cual se conectan el sensor bajo calibración y el sensor patrón a través de sus puertos RS485. Tanto los sensores como el datalogger se alimentan con una fuente de \SI{12}{\volt}. El módulo Ethernet se conecta al switch, y el nivel de tensión continua generado por el PWM se conecta al variador de velocidad del túnel.
-(mejorar esta foto)
+Como se observa en la Figura \ref{fig:datalogger3}, en la mesa de trabajo se instala el \textit{datalogger}, al cual se conectan el sensor bajo calibración y el sensor patrón a través de sus puertos RS485. Tanto los sensores como el datalogger se alimentan con una fuente de \SI{12}{\volt}. El módulo Ethernet se conecta al switch, y el nivel de tensión continua generado por el PWM se conecta al variador de velocidad del túnel.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{Figuras/resultados/calibracion/bancoMedicion.png}
@@ -212,7 +212,7 @@ En la Figura \ref{fig:configDataloggerDelta} se muestra la configuración del da
 
 \subsection{Resultados}
 
-Para esta calibración se mantuvieron condiciones ambientales en el entorno de \SI{22}{\degreeCelsius}, \SI{45}{\%} de humedad relativa y \SI{1010}{\hecto\pascal} de presión. Una vez finalizada la adquisición de datos, se observan en las Figuras \ref{fig:deltaVelocidadCrudo} y \ref{fig:deltaDireccionCrudo} los datos crudos de intensidad y dirección del viento, respectivamente. De estos datos se extrae la parte plana de cada punto, correspondiente al tiempo de medición. En este caso, se toman muestras cada 1 segundo, y el tiempo de medición es de 2 minutos, equivalente a 120 segundos. Por lo tanto, se tienen 120 muestras por punto de viento configurado. Estas muestras se presentan en tablas, donde el operador debe verificar que en cada punto, las mediciones no se salgan del rango establecido.
+Para esta calibración se mantuvieron condiciones ambiente en el entorno de \SI{22}{\degreeCelsius}, \SI{45}{\%} de humedad relativa y \SI{1010}{\hecto\pascal} de presión. Una vez finalizada la adquisición de datos, se observan en las Figuras \ref{fig:deltaVelocidadCrudo} y \ref{fig:deltaDireccionCrudo} los datos crudos de intensidad y dirección del viento, respectivamente. De estos datos se extrae la parte plana de cada punto, correspondiente al tiempo de medición. En este caso, se toman muestras cada 1 segundo, y el tiempo de medición es de 2 minutos, equivalente a 120 segundos. Por lo tanto, se tienen 120 muestras por punto de viento configurado. Estas muestras se presentan en tablas, donde el operador debe verificar que en cada punto, las mediciones no se salgan del rango establecido.
 
 \begin{figure}[H]
     \centering
