@@ -178,7 +178,7 @@ Para la zona 1 del mismo segmento, donde se define $\Delta A = v^A - v^B$, se ap
 Combinado estas ecuaciones para todo tiempo $t$ se obtiene un segmento que representa el cambio de velocidad desde $v^A$ hasta $v^C$. Esto garantiza que en la zona 1, donde se realice el enganche de segmento, la aceleración del cambio sea constante, y que en la zona 2, donde se realice la transición de un segmento a otro, la velocidad de cambio sea constante. Se puede revisar en el repositorio \cite{AppGenTrayect} el algoritmo generador de trayectoria. Este se ejecuta en el \textit{back end} y calcula la trayectoria en función de cada segmento, donde se ha configurado un $t_{acc} = \SI{10}{\second}$ y el tiempo de segmento $T_{j}$ se arma en función de los tiempos de crecimiento, estabilización y medición configurados por el operador. 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\linewidth]{Figuras/AplicacionWeb/backend/segmentoTrayect.png}
+    \includegraphics[width=0.78\linewidth]{Figuras/AplicacionWeb/backend/segmentoTrayect.png}
     \caption{Construcción de un segmento para pasar de un valor de velocidad $v^B$ a otro $v^C$ viniendo desde $v^A$.}
     \label{fig:segmentosZona1yZona2}
 \end{figure}
@@ -321,7 +321,7 @@ En caso de que el operador precise reiniciar las mediciones puede activar el bot
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Procesamiento}\label{sec:ProcesamientoDatos}
-Luego de que se acabe el tiempo del temporizador, el software redirige a la vista \textbf{Procesamiento} que se muestra en la Figura \ref{fig:procesarDatos1}. En esta vista, se grafican las curvas ascendente y descendente de las velocidades de viento del sensor patron y bajo calibración. En el título del gráfico se indica la magnitud, el número de serie y patrimonio del sensor bajo calibración. Toda la información y datos se leen desde la base de datos, ya que se fueron almacenando en la misma a medida que ingresaron. Además, cada gráfico cuenta con un botón para ser descargado.
+Luego de que se acabe el tiempo del temporizador, el software redirige a la vista \textbf{Procesamiento} que se muestra en la Figura \ref{fig:procesarDatos1}. En esta vista, se grafican las curvas ascendente y descendente de las velocidades de viento del sensor patron y bajo calibración. En el título del gráfico se indica la magnitud, el número de serie y patrimonio del sensor bajo calibración. Toda la información y datos se leen desde la base de datos, ya que se fueron almacenando en la misma a medida que ingresaron. Además, cada gráfico cuenta con un botón para ser descargado. En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos2} se muestran tablas con los datos parseados, que corresponden a la extracción de los datos de la parte plana, equivalente al tiempo de medición. Por ejemplo en el gráfico de la Figura \ref{fig:curvaEscalon} se tiene alrededor de 120 muestras en $\SI{5}{\meter\per\second}$. El operador revisa estos datos y, si están dentro del entorno del punto de medición configurado, debe presionar el botón \textbf{Calcular Incertidumbre}. En caso contrario, puede reiniciar las mediciones, lo que lo devolverá a la vista de adquisición de datos. De igual forma cada tabla cuenta con un botón para ser descargado en formato $.csv$
 
 \begin{figure}[H]
     \centering
@@ -329,8 +329,6 @@ Luego de que se acabe el tiempo del temporizador, el software redirige a la vist
     \caption{Vista para el procesamiento de datos y visualización de gráficos.}
     \label{fig:procesarDatos1}
 \end{figure}
-
-En la parte inferior de la vista, como se ve en la figura \ref{fig:procesarDatos2} se muestran tablas con los datos parseados, que corresponden a la extracción de los datos de la parte plana, equivalente al tiempo de medición. Por ejemplo en el gráfico de la Figura \ref{fig:curvaEscalon} se tiene alrededor de 120 muestras en $\SI{5}{\meter\per\second}$. El operador revisa estos datos y, si están dentro del entorno del punto de medición configurado, debe presionar el botón \textbf{Calcular Incertidumbre}. En caso contrario, puede reiniciar las mediciones, lo que lo devolverá a la vista de adquisición de datos. De igual forma cada tabla cuenta con un botón para ser descargado en formato $.csv$
 
 \begin{figure}[H]
     \centering

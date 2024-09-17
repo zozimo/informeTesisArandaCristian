@@ -20,7 +20,7 @@ Para el desarrollo del hardware, en una primera etapa se realizó un proceso de 
 Para el módulo principal se utiliza placa de desarrollo EDU-CIAA-NXP, Figura \ref{fig:EduCiaaPlaca}, es una versión de bajo costo de la CIAA-NXP \cite{proyectoCIAA} pensada para la enseñanza universitaria, terciaria y secundaria. 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Hardware/EduCiaaPlaca.jpg}
+    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Hardware/EduCiaaPlaca.jpg}
     \caption{Placa de desarrollo EDU CIAA}
     \label{fig:EduCiaaPlaca}
 \end{figure}
@@ -79,7 +79,7 @@ En la Figura \ref{fig:EDU_CIAA_esquema} se describe un diagrama en bloques de lo
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\linewidth]{Figuras/datalogger/Hardware/EDUCIAAesquema.png}
-    \caption{Diagrama en bloques de la EDU-CIAA}
+    \caption{Diagrama en bloques de la EDU-CIAA \cite{proyectoCIAA}.}
     \label{fig:EDU_CIAA_esquema}
 \end{figure}
 
@@ -153,12 +153,10 @@ Para conectar el anemómetro bajo calibración se utilizó el módulo MAX485, Fi
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Hardware/esquemRS485.png}
+    \includegraphics[width=0.45\linewidth]{Figuras/datalogger/Hardware/esquemRS485.png}
     \caption{Esquemático del módulo MAX485 para la recepción de datos del sensor bajo calibración.}
     \label{fig:esquemRS485}
 \end{figure}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Explicar el protocolo y tensiones de los anemometros
 % Poner un esquema de módulo y como va conectado a la CIAA
@@ -200,9 +198,7 @@ Como se muestra en la Figura \ref{fig:esquemEthernet}, el módulo W5100 se alime
 \subsection{Módulo de control}\label{sec:circuitoPWM}
 
 
-En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control que se conecta con el variador de velocidad del túnel de viento. El tablero posee dos pulsadores: uno de marcha (BT1-NC) y otro de parada (BT2-NA), que permiten encender y apagar, respectivamente, el conjunto variador-motor del túnel de viento. La velocidad del viento se regula manualmente mediante dos potenciómetros lineales: $P_{1} = \SI{1}{\kilo\ohm}$ y $P_{2} = \SI{500}{\ohm}$. Además, el circuito incluye una resistencia $R_{1} = \SI{1.2}{\kilo\ohm}$ conectada a una fuente de alimentación $V_{CC} = \SI{10}{\volt}$ que es proporcionada por el tablero. Estos componentes, junto con los potenciómetros, conforman un divisor de tensión variable que permite ajustar la tensión en un rango de \SI{0}{\volt} a \SI{10}{\volt}. Esta tensión se aplica al pin de entrada analógico-digital $V_{ADC}$ del tablero. Este nivel de baja tensión obtenido se amplifica y adapta a través de su variador a los niveles de tensión continua requeridos por el motor en el rango de \SI{0}{\volt} a \SI{300}{\volt}. El nivel de tensión aplicado al motor se puede visualizar en un voltímetro de corriente continua, \textit{V}, que incluye el tablero.
-
-Se realizó una medición con un amperímetro en serie con la resistencia $R_{1}$ y se obtuvo que la corriente sobre $R_{1}$ cuando se ajusta el potenciómetro para obtener una $V_{ADC} = \SI{3.56}{\volt}$ es de \SI{140}{\micro\ampere}. Cuando se ajusta el potenciómetro para obtener una $VADC = \SI{5}{\volt}$, la corriente es de \SI{200}{\micro\ampere}. Con estas mediciones podemos concluir que el pin $V_{ADC}$ del variador tiene una resistencia de entrada de alta impedancia, ya que el consumo de corriente no supera los \SI{500}{\micro\ampere}.
+En esta sección, se presenta el desarrollo de un circuito que permite controlar la potencia del motor del túnel de viento a través de modulación por ancho de pulso (PWM, por sus siglas en inglés). Primero, se describe el funcionamiento original del variador de velocidad. En la Figura \ref{fig:esquemCircuitoControlTunel} se muestra un esquema del tablero de control que se conecta con el variador de velocidad del túnel de viento. El tablero posee dos pulsadores: uno de marcha (BT1-NC) y otro de parada (BT2-NA), que permiten encender y apagar, respectivamente, el conjunto variador-motor del túnel de viento. La velocidad del viento se regula manualmente mediante dos potenciómetros lineales: $P_{1} = \SI{1}{\kilo\ohm}$ y $P_{2} = \SI{500}{\ohm}$. Además, el circuito incluye una resistencia $R_{1} = \SI{1.2}{\kilo\ohm}$ conectada a una fuente de alimentación $V_{CC} = \SI{10}{\volt}$ que es proporcionada por el tablero. Estos componentes, junto con los potenciómetros, conforman un divisor de tensión variable que permite ajustar la tensión en un rango de \SI{0}{\volt} a \SI{10}{\volt}. Esta tensión se aplica al pin de entrada analógico-digital $V_{ADC}$ del tablero. Este nivel de baja tensión obtenido se amplifica y adapta a través de su variador a los niveles de tensión continua requeridos por el motor en el rango de \SI{0}{\volt} a \SI{300}{\volt}. El nivel de tensión aplicado al motor se puede visualizar en un voltímetro de corriente continua, \textit{V}, que incluye el tablero. Se realizó una medición con un amperímetro en serie con la resistencia $R_{1}$ y se obtuvo que la corriente sobre $R_{1}$ cuando se ajusta el potenciómetro para obtener una $V_{ADC} = \SI{3.56}{\volt}$ es de \SI{140}{\micro\ampere}. Cuando se ajusta el potenciómetro para obtener una $VADC = \SI{5}{\volt}$, la corriente es de \SI{200}{\micro\ampere}. Con estas mediciones podemos concluir que el pin $V_{ADC}$ del variador tiene una resistencia de entrada de alta impedancia, ya que el consumo de corriente no supera los \SI{500}{\micro\ampere}.
 
 
 \begin{figure}[H]
@@ -419,10 +415,8 @@ Luego de caracterizar el circuito PWM, se dio comienzo a las pruebas en el túne
 % \caption{Mediciones para ciclos de trabajo en modo Descendente, VadcTunnel y la velocidad del viento.}
 % \label{tab:windSpeedDataDesc}
 % \end{table}
-
-A partir de los resultados obtenidos para la tensión en el variador y la velocidad del viento medida con el anemómetro versus el nivel de PWM
-
-, se determina una velocidad máxima de viento de $\SI{26}{\meter\per\second}$ para una tensión de $\SI{3.5}{\volt}$. Además, dado que se tienen 255 niveles de tensión, y considerando que tanto el viento como la tensión $V_{ADC}$ del variador tienen respuesta lineal en el rango de 0 a 255, se obtiene una resolución en tensión de $\frac{\SI{3.5}{\volt}}{255} = \SI{13.7}{\milli\volt}$ y una resolución en velocidad del viento de $\frac{\SI{26}{\meter\per\second}}{255} = \SI{0.101}{\meter\per\second}$. Con estas mediciones y la caracterización del circuito PWM, éste quedó listo para ser integrado en un PCB. Este circuito será la interfaz electrónica para un controlador PID, el cual se explica en la sección \ref{sec:sistemaDeControlPid}.
+\newpage
+A partir de los resultados obtenidos para la tensión en el variador y la velocidad del viento medida con el anemómetro versus el nivel de PWM, se determina una velocidad máxima de viento de $\SI{26}{\meter\per\second}$ para una tensión de $\SI{3.5}{\volt}$. Además, dado que se tienen 255 niveles de tensión, y considerando que tanto el viento como la tensión $V_{ADC}$ del variador tienen respuesta lineal en el rango de 0 a 255, se obtiene una resolución en tensión de $\frac{\SI{3.5}{\volt}}{255} = \SI{13.7}{\milli\volt}$ y una resolución en velocidad del viento de $\frac{\SI{26}{\meter\per\second}}{255} = \SI{0.101}{\meter\per\second}$. Con estas mediciones y la caracterización del circuito PWM, éste quedó listo para ser integrado en un PCB. Este circuito será la interfaz electrónica para un controlador PID, el cual se explica en la sección \ref{sec:sistemaDeControlPid}.
 
 
 % \subsubsection{Caracterizacion en el tunel de viento}
@@ -472,7 +466,7 @@ Se implementó el circuito de la Figura \ref{fig:adcCiaaCircuitSimulate}. Para a
 %     \label{fig:esquemADCTunel}
 % \end{figure}
 
-Por ultimo, para caracterizar este circuito se conectó dos voltímetros, uno en la señal de entrada del variador y otro en la señal que ingresa al ADC de la EDU-CIAA, los resultados de estas mediciones se observan en las Figura \ref{fig:pruebaTunelCiaaAsc} para un barrido ascendente y \ref{fig:pruebaTunelCiaaDes} para un barrido descendente.
+Por ultimo, para caracterizar este circuito se conectó dos voltímetros, uno en la señal de entrada del variador y otro en la señal que ingresa al ADC de la EDU-CIAA, los resultados de estas mediciones se observan en las Figura \ref{fig:pruebaTunelCiaaAsc} para un barrido ascendente y \ref{fig:pruebaTunelCiaaDes} para un barrido descendente. Este circuito permite monitorear por software los niveles de tensión que estamos entregando al variador de velocidad y su correspondiente nivel de PWM.
 
 \begin{figure}[H]
     \centering
@@ -487,6 +481,7 @@ Por ultimo, para caracterizar este circuito se conectó dos voltímetros, uno en
     \caption{Mediciones a la entrada pin $V_{ADC}$ del variador y en el pin ADC\_CH2 de la EDU-CIAA, para un barrido descendente del nivel de PWM.}
     \label{fig:pruebaTunelCiaaDes}
 \end{figure}
+\newpage
 % \begin{table}[H]
 % \centering
 % \fontsize{10}{8}\selectfont
@@ -540,10 +535,10 @@ Por ultimo, para caracterizar este circuito se conectó dos voltímetros, uno en
 % \caption{Mediciones a la entrada pin $VADC$ del variador y en el pin ADC\_CH2 de la EDU-CIAA, para un barrido descendente del ciclo de trabajo.}
 % \label{tab:medicionesVadcCIAA_descendente}
 % \end{table}
-Este circuito permite monitorear por software los niveles de tensión que estamos entregando al variador de velocidad y su correspondiente nivel de PWM.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Módulo de LEDs}
+\subsection{Módulo indicador}
 Se diseñó el circuito de la Figura \ref{fig:esquemLedsSensor}  para encender y apagar LEDs como indicadores de la recepción de datos de los anemómetros patrón y bajo calibración. Se utilizaron dos LEDs de colores diferentes: uno verde y otro amarillo. El LED verde se asoció al canal RS-485-1 y el LED amarillo al canal RS-485-2. Cada circuito permite que el LED correspondiente parpadee cada vez que se recibe un dato del anemómetro, con un intervalo predeterminado por software. Si el LED no parpadea, indica que el anemómetro no está enviando datos.% Por el contrario, si el LED parpadea, confirma la recepción de datos del anemómetro.
 
 % El diseño de cada circuito incluye un transistor NPN y dos resistencias, conectados a un diodo LED. La señal de entrada llega al resistor $ R_4 = \SI{1}{\kilo\ohm} $, el cual está conectado a la base del transistor. El colector del transistor está conectado a una fuente de $\SI{5}{\volt} $, mientras que el emisor está conectado a una resistencia limitadora de corriente $ R5 = \SI{39}{\ohm}$ y luego al ánodo del LED, con su cátodo a masa. Ambos circuitos son prácticamente idénticos, diferenciándose únicamente en los colores de los LEDs y los canales RS-485 a los que están conectados.
@@ -572,6 +567,8 @@ En La Figura \ref{fig:esquemLedStatusSocket} se muestra un circuito similar al p
 
 En las secciones anteriores se ha descrito el diseño y funcionamiento electrónico de los distintos módulos y circuitos que forman parte del \textit{datalogger}. Para integrar todo en un solo lugar, se diseñó un \textit{shield} que se conecta sobre la EDU-CIAA. Para ello, se trabajó con la lista de templates que ofrece el proyecto CIAA \cite{CIAA_Ponchos}. Este template tiene un diseño acorde con las dimensiones de la placa EDU-CIAA. Para el desarrollo del PCB, se utilizó el software KiCad. Primero se cargó el template de la Figura \ref{fig:HojaTemplatePonchoCiaa} que incluye una hoja jerárquica con los pines disponibles en los conectores P1 y P2 y luego se agregaron etiquetas jerárquicas por cada pin utilizado en este desarrollo.
 
+Por cada módulo, se agregó una hoja jerárquica que contiene el circuito esquemático como se indica en la Figura \ref{fig:esquematicoPonchoDatalogger}. En total, se dividió en seis hojas jerárquicas: una para el módulo RS485, otra para el módulo Ethernet W5100, otra para el circuito PWM, otra para la fuente de alimentación (\textit{power supply}), otra para los LEDs y una más para el circuito que mide la tensión en el variador del túnel. Además, se diseñaron los símbolos para los módulos W5100, RS485-TTL y el convertidor DC-DC usando el editor de símbolos de KiCad, ya que estos no vienen precargados en el software. También se diseñaron sus respectivos footprints con el editor de huellas, tomando las dimensiones y la distribución de pines de cada módulo para que se puedan agregar correctamente al PCB.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{Figuras/datalogger/Hardware/HojaTemplatePonchoCiaa.png}
@@ -579,8 +576,6 @@ En las secciones anteriores se ha descrito el diseño y funcionamiento electrón
     \label{fig:HojaTemplatePonchoCiaa}
 \end{figure}
 
-
-Por cada módulo, se agregó una hoja jerárquica que contiene el circuito esquemático como se indica en la Figura \ref{fig:esquematicoPonchoDatalogger}. En total, se dividió en seis hojas jerárquicas: una para el módulo RS485, otra para el módulo Ethernet W5100, otra para el circuito PWM, otra para la fuente de alimentación (\textit{power supply}), otra para los LEDs y una más para el circuito que mide la tensión en el variador del túnel. Además, se diseñaron los símbolos para los módulos W5100, RS485-TTL y el convertidor DC-DC usando el editor de símbolos de KiCad, ya que estos no vienen precargados en el software. También se diseñaron sus respectivos footprints con el editor de huellas, tomando las dimensiones y la distribución de pines de cada módulo para que se puedan agregar correctamente al PCB.
 
 \begin{figure}[H]
     \centering
@@ -663,15 +658,17 @@ El proyecto CIAA brinda un \textit{framework} para programar las placas de desar
     \label{fig:ciaaLauncher}
 \end{figure}
 
-Se clonó el repositorio que contiene el \texttt{firmware\_v3} de GitHub en el IDE y se abrió un nuevo proyecto llamado \texttt{Datalogger}, como se indica en la Figura \ref{fig:projectDataloggerFolder}.
+Se clonó el repositorio que contiene el \texttt{firmware\_v3} de GitHub en el IDE y se abrió un nuevo proyecto llamado \texttt{Datalogger}. En particular, la lógica del programa se implementó mediante el uso de máquinas de estado (\textit{statecharts}) de Harel, empleando el software Itemis Yakindu \cite{itemis_create}. Los \textit{statecharts} de Harel amplían los diagramas de estados tradicionales incorporando conceptos de modularidad, jerarquía y estructura organizacional, similar a las maquinas de estado UML \cite{uml_state_machine}. Estos diagramas se caracterizan por el uso de estados compuestos y subdiagramas que preservan la claridad y la organización, y facilitan la ejecución concurrente de múltiples submáquinas de estado a través de regiones ortogonales. Además, los eventos que inician con (\textit{e\_}) habilitan la comunicación por difusión, mientras que las transiciones condicionales que se denotan entre llaves ([\textit{condición de guarda}]), los estados históricos, la lógica temporal y las acciones de entrada/salida potencian la funcionalidad de los \textit{statecharts}, optimizando la modelización de sistemas complejos de manera eficiente. La Tabla~\ref{tab:compStateCharts} presenta un análisis comparativo entre las máquinas de estado simples, como las de Mealy y Moore, y las máquinas de estado más avanzadas de UML y Harel.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.40\linewidth]{Figuras/datalogger/Firmware/projectDataloggerFolder.jpg}
-    \caption{Estructura de carpetas, del proyecto Datalogger}
-    \label{fig:projectDataloggerFolder}
-\end{figure}
-En particular, la lógica del programa se implementó mediante el uso de máquinas de estado (\textit{statecharts}) de Harel, empleando el software Itemis Yakindu \cite{itemis_create}. Los \textit{statecharts} de Harel amplían los diagramas de estados tradicionales incorporando conceptos de modularidad, jerarquía y estructura organizacional, similar a las maquinas de estado UML \cite{uml_state_machine}. Estos diagramas se caracterizan por el uso de estados compuestos y subdiagramas que preservan la claridad y la organización, y facilitan la ejecución concurrente de múltiples submáquinas de estado a través de regiones ortogonales. Además, los eventos que inician con (\textit{e\_}) habilitan la comunicación por difusión, mientras que las transiciones condicionales que se denotan entre llaves ([\textit{condición de guarda}]), los estados históricos, la lógica temporal y las acciones de entrada/salida potencian la funcionalidad de los \textit{statecharts}, optimizando la modelización de sistemas complejos de manera eficiente. La Tabla~\ref{tab:compStateCharts} presenta un análisis comparativo entre las máquinas de estado simples, como las de Mealy y Moore, y las máquinas de estado más avanzadas de UML y Harel.
+% , como se indica en la Figura \ref{fig:projectDataloggerFolder}.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.40\linewidth]{Figuras/datalogger/Firmware/projectDataloggerFolder.jpg}
+%     \caption{Estructura de carpetas, del proyecto Datalogger}
+%     \label{fig:projectDataloggerFolder}
+% \end{figure}
+
 
 
 \begin{table}[H]
@@ -703,18 +700,19 @@ Se crearon doce regiones donde cada una contiene una maquina de estados. A parti
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Firmware/ordenRegiones.jpg}
+    \includegraphics[width=0.65\linewidth]{Figuras/datalogger/Firmware/ordenRegiones.jpg}
     \caption{Lista de regiones con su respectiva prioridad.}
     \label{fig:ordenRegiones}
 \end{figure}
 
 Se utilizó una licencia educativa, gratuita de Yakindu, integrándola en el IDE de Eclipse para editar y generar el código a partir de los \textit{statecharts}. En particular, se configuró el proyecto en Yakindu C/C++ para poder agregar código en C a las máquinas de estado, incluyendo la importación de archivos \texttt{.h}, declaración de variables, punteros globales y constantes. Para más detalle del código se puede acceder al repositorio del proyecto \cite{FirmwareSCA2024}.
 
+\newpage
 La máquina de estado principal se muestra en la Figura \ref{fig:sc_main}, e inicializa y configura la placa, el SPI, las UARTs, un contador de \textit{ticks} (tiempos de reloj) y el resto de las máquinas de estado. Luego, pasa a un estado inactivo, esperando alguna interrupción. Cuando ocurre una interrupción, se verifica el estado de un \textit{flag} del temporizador principal del sistema. Si el \textit{flag} está activo, se actualizan todos los \textit{ticks} de los temporizadores. Posteriormente, el sistema escanea todos los \textit{ticks} de los temporizadores para verificar eventos pendientes. Si hay eventos pendientes, estos se levantan en su respectiva máquina de estados. Finalmente, la máquina de estados ejecuta un ciclo para manejar los eventos levantados (\textit{raiseEvent}). Luego, el sistema regresa al estado inactivo, esperando la próxima interrupción.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\linewidth]{Figuras/datalogger/Firmware/sc_main.png}
+    \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Firmware/sc_main.png}
     \caption{Maquina de estados principal, que gestiona la ejecución del resto de las maquinas de estado.}
     \label{fig:sc_main}
 \end{figure}
@@ -806,7 +804,7 @@ La máquina comienza en el estado \textbf{Inicio} y luego de un tiempo predefini
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Firmware/sc_configRTC.png}
+    \includegraphics[width=0.85\linewidth]{Figuras/datalogger/Firmware/sc_configRTC.png}
     \caption{Máquina de estados para configurar el RTC del datalogger a través de un servidor NTP.}
     \label{fig:sc_configRTC}
 \end{figure}
@@ -842,8 +840,8 @@ La máquina de estados que gestiona la conexión con el servidor \textit{WebSock
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Figuras/datalogger/Firmware/sc_connectionWebSocket.png}
-    \caption{Máquina de estados para establecer una conexión bidireccional con un servidor \textit{WebSocket}.}
+    \includegraphics[width=0.85\linewidth]{Figuras/datalogger/Firmware/sc_connectionWebSocket.png}
+    \caption{Máquina de estados para establecer una conexión bidireccional con el servidor.}
     \label{fig:sc_connectionWebSocket}
 \end{figure}
 % Luego hablar del keep alive 
@@ -856,7 +854,7 @@ Para prevenir la desconexión automática con el servidor en ausencia de interca
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Firmware/sc_keepAlive.png}
+    \includegraphics[width=0.75\linewidth]{Figuras/datalogger/Firmware/sc_keepAlive.png}
     \caption{Máquina de estados para mantener la conexión con el servidor y elevar un \textit{raiseEvent} en caso de que se reciba información del servidor.}
     \label{fig:sc_keepAlive}
 \end{figure}
@@ -878,7 +876,7 @@ La máquina de estados de la Figura \ref{fig:sc_processComand} se encarga de pro
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figuras/datalogger/Firmware/sc_processComand.png}
+    \includegraphics[width=0.45\linewidth]{Figuras/datalogger/Firmware/sc_processComand.png}
     \caption{Máquina de estados para procesar los mensajes recibidos del servidor \textit{WebSocket}.}
     \label{fig:sc_processComand}
 \end{figure}
@@ -940,14 +938,12 @@ En la Figura \ref{fig:sc_sampleSensorWind}, se muestra la máquina de estados en
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/sc_sampleSensorWind.png}
+    \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Firmware/sc_sampleSensorWind.png}
     \caption{Máquina de estados para tomar muestras de los sensores viento.}
     \label{fig:sc_sampleSensorWind}
 \end{figure}
 
-El string del patrón VAISALA, modelo WMT700 tiene el formato \texttt{\$--MWV,021,R,003.34,N,A*14}, mientras que el del instrumento bajo calibración DELTAOHM, modelo HD51.3 tiene el formato \texttt{28.30 359.3 998.3<CR><LF>}. Para procesar y separar estos datos, se utiliza un diccionario de punteros a funciones. Desde el software, el operador preconfigura el modelo del anemómetro y esto hace que en la  máquina de estados se llame a la función correspondiente para procesar los datos de cada anemómetro.
-
-En la Figura \ref{fig:sc_sampleSensorVoltage} se muestra la máquina de estado que se utiliza para adquirir los niveles de tensión de la fuente de alimentación o los niveles de tensión del variador de velocidad. La máquina de estado comienza en el estado \textbf{Inicio} y automáticamente transiciona al estado \textbf{Inactividad}. Luego cuando se recibe el comando iniciar mediciones y se produce la transición al estado \textbf{Tomar Muestra}, donde se adquiere una muestra del nivel de tensión a traves de los circuitos diseñados en la seccion \ref{sec:desarrolloHardware}. Después de transcurrido el tiempo $t_{1}$ definido como el tiempo de muestreo, se pasa al estado \textbf{Guardar muestra}, donde se guarda la muestra  y se activa una señal \texttt{s\_Acumular muestra} que permite activar una transición de la siguiente máquina de estado. Finalmente, se regresa al estado \textbf{Inactividad} para repetir el ciclo indefinidamente o hasta que se envie el comando de detener mediciones.
+El string del patrón VAISALA, modelo WMT700 tiene el formato \texttt{\$--MWV,021,R,003.34,N,A*14}, mientras que el del instrumento bajo calibración DELTAOHM, modelo HD51.3 tiene el formato \texttt{28.30 359.3 998.3<CR><LF>}. Para procesar y separar estos datos, se utiliza un diccionario de punteros a funciones. Desde el software, el operador preconfigura el modelo del anemómetro y esto hace que en la  máquina de estados se llame a la función correspondiente para procesar los datos de cada anemómetro. En la Figura \ref{fig:sc_sampleSensorVoltage} se muestra la máquina de estado que se utiliza para adquirir los niveles de tensión de la fuente de alimentación o los niveles de tensión del variador de velocidad. La máquina de estado comienza en el estado \textbf{Inicio} y automáticamente transiciona al estado \textbf{Inactividad}. Luego cuando se recibe el comando iniciar mediciones y se produce la transición al estado \textbf{Tomar Muestra}, donde se adquiere una muestra del nivel de tensión a traves de los circuitos diseñados en la seccion \ref{sec:desarrolloHardware}. Después de transcurrido el tiempo $t_{1}$ definido como el tiempo de muestreo, se pasa al estado \textbf{Guardar muestra}, donde se guarda la muestra  y se activa una señal \texttt{s\_Acumular muestra} que permite activar una transición de la siguiente máquina de estado. Finalmente, se regresa al estado \textbf{Inactividad} para repetir el ciclo indefinidamente o hasta que se envie el comando de detener mediciones.
 
 \begin{figure}[H]
     \centering
@@ -956,16 +952,17 @@ En la Figura \ref{fig:sc_sampleSensorVoltage} se muestra la máquina de estado q
     \label{fig:sc_sampleSensorVoltage}
 \end{figure}
 
-La máquina de estado de la Figura \ref{fig:sc_processing} se utiliza para procesar las muestras acumuladas. Inicia en un estado de \textbf{Inactividad} y la transición al estado \textbf{Acumular muestras} se produce cuando se ha activado la señal \texttt{s\_Acumular muestra}  y al mismo tiempo se cumplen dos condiciones: primero, que el número de muestras sea menor al cociente entre el intervalo de tabla $t_{2}$ y el intervalo de muestra $t_{1}$; segundo, que el comando de iniciar mediciones esté activo. En este estado, se acumulan las muestras de todos los sensores, se incrementa el número de muestras en una unidad y luego se regresa al estado de \textbf{Inactividad}. Este ciclo se repite hasta que el número de muestras es igual al cociente entre el intervalo de tabla $t_{2}$ y el intervalo de muestra $t_{1}$, cuando se alcanza esta igualdad se pasa al estado \textbf{Procesar muestras}. Por ejemplo, si el operador define un intervalo de muestras $t_{1} = \SI{1}{\second}$ y un intervalo de tabla $t_{2} = \SI{10}{\second}$, el cociente da $\frac{t_{2}}{t_{1}}=10$ muestras. Los datos se acumulan hasta que el número de muestras llega a 10 y con esa condición se produce la transición al estado \textbf{Procesar muestras}. En este estado, se calcula el promedio, el valor mínimo y el valor máximo de las 10 muestras. Luego, se reinicia el número de muestras a cero y se activa la señal \texttt{s\_tx\_WebSocketServer}, que será utilizada para transmitir datos al servidor en la siguiente máquina de estados. Finalmente, se vuelve al estado \textbf{Inactividad} para acumular las próximas mediciones.
+La máquina de estado de la Figura \ref{fig:sc_processing} se utiliza para procesar las muestras acumuladas. Inicia en un estado de \textbf{Inactividad} y la transición al estado \textbf{Acumular muestras} se produce cuando se ha activado la señal \texttt{s\_Acumular muestra}  y al mismo tiempo se cumplen dos condiciones: primero, que el número de muestras sea menor al cociente entre el intervalo de tabla $t_{2}$ y el intervalo de muestra $t_{1}$; segundo, que el comando de iniciar mediciones esté activo. En este estado, se acumulan las muestras de todos los sensores, se incrementa el número de muestras en una unidad y luego se regresa al estado de \textbf{Inactividad}. Este ciclo se repite hasta que el número de muestras es igual al cociente entre el intervalo de tabla $t_{2}$ y el intervalo de muestra $t_{1}$, cuando se alcanza esta igualdad se pasa al estado \textbf{Procesar muestras}. 
 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Figuras/datalogger/Firmware/sc_processing.png}
+    \includegraphics[width=0.65\linewidth]{Figuras/datalogger/Firmware/sc_processing.png}
     \caption{Máquina de estados para acumular muestras en una tabla y realizar un preprocesamiento de esos datos.}
     \label{fig:sc_processing}
 \end{figure}
 
+Por ejemplo, si el operador define un intervalo de muestras $t_{1} = \SI{1}{\second}$ y un intervalo de tabla $t_{2} = \SI{10}{\second}$, el cociente da $\frac{t_{2}}{t_{1}}=10$ muestras. Los datos se acumulan hasta que el número de muestras llega a 10 y con esa condición se produce la transición al estado \textbf{Procesar muestras}. En este estado, se calcula el promedio, el valor mínimo y el valor máximo de las 10 muestras. Luego, se reinicia el número de muestras a cero y se activa la señal \texttt{s\_tx\_WebSocketServer}, que será utilizada para transmitir datos al servidor en la siguiente máquina de estados. Finalmente, se vuelve al estado \textbf{Inactividad} para acumular las próximas mediciones.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Transmisión al servidor}
 
@@ -1009,7 +1006,7 @@ El valor de $u_{c}$ se somete a un saturador entre 0 y 255, y luego se aplica es
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{Figuras/datalogger/Firmware/sc_controlTunnel.png}
+    \includegraphics[width=0.95\linewidth]{Figuras/datalogger/Firmware/sc_controlTunnel.png}
     \caption{Máquina de estados que ejecuta el control PID con valores de referencia enviados por el servidor.}
     \label{fig:sc_controlTunnel}
 \end{figure}

@@ -5,14 +5,15 @@ En este capítulo se abordarán los diferentes tipos de incertidumbre de medici�
 
 La incertidumbre en la medición es una característica inherente a cualquier proceso de medición y se refiere a la duda sobre el resultado de una medición. Esta incertidumbre puede surgir de diversas fuentes, como las limitaciones del instrumento de medición, las condiciones ambientales o el método de medición empleado. Para identificar las fuentes de incertidumbre, se puede utilizar el diagrama de Ishikawa (diagrama de pescado) mostrado en la Figura \ref{fig:diagramaPescado}.
 
+Existen dos tipos principales de incertidumbre: la incertidumbre de tipo A y la incertidumbre de tipo B. La incertidumbre de tipo A se evalúa mediante métodos estadísticos y se basa en datos experimentales. A partir de una serie de observaciones de una cantidad $X_{i}$, se obtiene el promedio (ecuación \ref{eq:promedioDeObservaciones}), el desvío estándar (ecuación \ref{eq:desvioEstandarDeObservaciones}) y la incertidumbre estándar (ecuación \ref{eq:incertidumbreEstandarDeObservaciones}).
+
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{Figuras/calculoIncertidumbre/diagramaPescado.png}
-    \caption{Diagrama de las fuentes que producen incertidumbre en la medición de un mensurando \cite{instrumentosMedicionesFiuba}.}
+    \caption{Diagrama de las fuentes de incertidumbre en la medición de un mensurando \cite{instrumentosMedicionesFiuba}.}
     \label{fig:diagramaPescado}
 \end{figure}
-
-Existen dos tipos principales de incertidumbre: la incertidumbre de tipo A y la incertidumbre de tipo B. La incertidumbre de tipo A se evalúa mediante métodos estadísticos y se basa en datos experimentales. A partir de una serie de observaciones de una cantidad $X_{i}$, se obtiene el promedio (ecuación \ref{eq:promedioDeObservaciones}), el desvío estándar (ecuación \ref{eq:desvioEstandarDeObservaciones}) y la incertidumbre estándar (ecuación \ref{eq:incertidumbreEstandarDeObservaciones}).
 
 
 \begin{equation}
@@ -54,7 +55,7 @@ La incertidumbre combinada, definida en la ecuación \ref{eq:incertidumbreCombin
     \label{eq:gradosDelibertadEfectivos}
 \end{equation}
 
-
+\vspace{3mm}
 Esta ampliación de la incertidumbre combinada se conoce como incertidumbre expandida, la cual se muestra en la ecuación \ref{eq:incertidumbreExpandida}, proporcionando un intervalo alrededor del resultado de la medición con una alta probabilidad de contener el valor verdadero del mensurando.
 
 % \begin{equation}
@@ -137,6 +138,7 @@ donde se define:
     % , quien se encarga de generar condiciones de velocidad y dirección de viento.
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section{Fuentes de incertidumbre}\label{sec:fuentesDeIncertidumbre}
 \newcommand{\descCalibracion}{Incertidumbre expandida especificada  en el certificado de calibración.}
 \newcommand{\descAjusteCalibracion}{Desvío estándar del ajuste lineal con los datos discretos del certificado de calibración.}
@@ -150,42 +152,6 @@ donde se define:
 \newcommand{\descEstabilidad}{Variación temporal del flujo de aire dentro del túnel.}
 \newcommand{\descAjusteEstabilidad}{Desvío estándar del ajuste lineal con los datos discretos del certificado de estabilidad.}
 \newcommand{\descFactorCalib}{Incertidumbre asociada al factor de calibracion que proporciona la relación entre las condiciones en la posición de medición de referencia y las condiciones en la posición del IBC.}
-
-\begin{table}[]
-\centering
-\fontsize{9}{8}\selectfont
-\begin{tblr}{
-    colspec = {Q[c,1.1cm] Q[c,1.2cm] Q[c,6cm] Q[c,0.8cm] Q[c,1.9cm] Q[c,2.1cm]},
-    cells = {c}, % Centra todas las celdas por defecto
-    row{1} = {Sail}, % Aplica el estilo "Sail" a la primera fila
-    cell{1}{1} = {c=2}{}, % La celda en la fila 1, columna 1 se extiende a dos columnas
-    cell{2}{1} = {r=6}{}, % La celda en la fila 2, columna 1 se extiende a seis filas
-    cell{8}{1} = {r=5}{}, % La celda en la fila 8, columna 1 se extiende a cinco filas
-    cell{13}{1} = {r=4}{}, % La celda en la fila 13, columna 1 se extiende a tres filas
-    vlines, % Añade líneas verticales entre todas las columnas
-    hline{1-2,8,13,17} = {-}{}, % Añade líneas horizontales completas en las filas 1-2, 8, 13 y 17
-    hline{3-7,9-12,14-16} = {2-6}{}, % Añade líneas horizontales parciales en las filas 3-7, 9-12 y 14-15
-}
-Fuentes de Incertidumbre    &                                   & Descripción               & Tipo  & Distribución de probabilidad & Factor de normalización \\
-Patrón                      & Calibración                       & \descCalibracion          & B                          &  N                           &  2                      \\
-                            & Ajuste de calibración         & \descAjusteCalibracion    & A                           & N                            &  1                      \\
-                            & Resolución   & \descResolucionPatron& B                           & R                            &  $\sqrt{3}$                      \\
-                            & Repetibilidad                     & \descRepetibilidad        & A                           & N                            & $\sqrt{n}$, n muestras                      \\
-                            & Histéresis                        & \descHisteresis           & B                          &  R                           & $\sqrt{3}$                       \\
-                            & Factor de bloqueo             & \descFactorBloqueo        & B                          & RMS                             & 1                       \\
-Túnel de viento             & Homogeneidad                      & \descHomogeneidad         & B                          & R                            & $\sqrt{3}$                       \\
-                            & Ajuste de la homogeneidad     & \descAjusteHomogeneidad   & A                          & N                            & 1                       \\
-                            & Estabilidad                       & \descEstabilidad          & B                           & R                            & $\sqrt{3}$                        \\
-                            & Ajuste de la estabilidad      & \descAjusteEstabilidad    & A                          & N                            & 1                       \\
-                            & Factor de calibración                          & \descFactorCalib              & B                          & RMS                            & 1\\
-IBC                         & Resolución                & \descResolucionInstrumento& B                          & R                             & $\sqrt{3}$                        \\
-                            & Repetibilidad                     & Lo mismo que la definición para el patrón        & A                          & N                            & $\sqrt{n}$, n muestras                        \\
-                            & Histéresis                        & Lo mismo que la definición para el patrón           & B                           & R                            & $\sqrt{3}$                        \\
-                            & Factor de bloqueo             & Lo mismo que la definición para el patrón        & B                          & RMS                             & 1                       \\
-\end{tblr}
-\caption{Fuentes de incertidumbre evaluadas para el presupuesto de incertidumbre de un anemómetro bajo calibración en el túnel de viento del SMN.}
-\label{tab:fuenteIncert}
-\end{table}
 
 En particular se va a considerar las fuentes de incertidumbre debidas a:
 \begin{itemize}
@@ -201,6 +167,43 @@ En la tabla \ref{tab:fuenteIncert} se detallan las fuentes de incertidumbre que 
     \caption{Curva de histéresis y linealidad para una medición general \cite{Workshop_WMO2021}.}
     \label{fig:histeresis}
 \end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \fontsize{9}{8}\selectfont
+    \begin{tblr}{
+        colspec = {Q[c,1.1cm] Q[c,1.2cm] Q[c,6cm] Q[c,0.8cm] Q[c,1.9cm] Q[c,2.1cm]},
+        cells = {c}, % Centra todas las celdas por defecto
+        row{1} = {Sail}, % Aplica el estilo "Sail" a la primera fila
+        cell{1}{1} = {c=2}{}, % La celda en la fila 1, columna 1 se extiende a dos columnas
+        cell{2}{1} = {r=6}{}, % La celda en la fila 2, columna 1 se extiende a seis filas
+        cell{8}{1} = {r=5}{}, % La celda en la fila 8, columna 1 se extiende a cinco filas
+        cell{13}{1} = {r=4}{}, % La celda en la fila 13, columna 1 se extiende a tres filas
+        vlines, % Añade líneas verticales entre todas las columnas
+        hline{1-2,8,13,17} = {-}{}, % Añade líneas horizontales completas en las filas 1-2, 8, 13 y 17
+        hline{3-7,9-12,14-16} = {2-6}{}, % Añade líneas horizontales parciales en las filas 3-7, 9-12 y 14-15
+    }
+    Fuentes de Incertidumbre    &                                   & Descripción               & Tipo  & Distribución de probabilidad & Factor de normalización \\
+    Patrón                      & Calibración                       & \descCalibracion          & B                          &  N                           &  2                      \\
+                                & Ajuste de calibración         & \descAjusteCalibracion    & A                           & N                            &  1                      \\
+                                & Resolución   & \descResolucionPatron& B                           & R                            &  $\sqrt{3}$                      \\
+                                & Repetibilidad                     & \descRepetibilidad        & A                           & N                            & $\sqrt{n}$, n muestras                      \\
+                                & Histéresis                        & \descHisteresis           & B                          &  R                           & $\sqrt{3}$                       \\
+                                & Factor de bloqueo             & \descFactorBloqueo        & B                          & RMS                             & 1                       \\
+    Túnel de viento             & Homogeneidad                      & \descHomogeneidad         & B                          & R                            & $\sqrt{3}$                       \\
+                                & Ajuste de la homogeneidad     & \descAjusteHomogeneidad   & A                          & N                            & 1                       \\
+                                & Estabilidad                       & \descEstabilidad          & B                           & R                            & $\sqrt{3}$                        \\
+                                & Ajuste de la estabilidad      & \descAjusteEstabilidad    & A                          & N                            & 1                       \\
+                                & Factor de calibración                          & \descFactorCalib              & B                          & RMS                            & 1\\
+    IBC                         & Resolución                & \descResolucionInstrumento& B                          & R                             & $\sqrt{3}$                        \\
+                                & Repetibilidad                     & Lo mismo que la definición para el patrón        & A                          & N                            & $\sqrt{n}$, n muestras                        \\
+                                & Histéresis                        & Lo mismo que la definición para el patrón           & B                           & R                            & $\sqrt{3}$                        \\
+                                & Factor de bloqueo             & Lo mismo que la definición para el patrón        & B                          & RMS                             & 1                       \\
+    \end{tblr}
+    \caption{Fuentes de incertidumbre evaluadas para el presupuesto de incertidumbre de un anemómetro bajo calibración en el túnel de viento del SMN.}
+    \label{tab:fuenteIncert}
+    \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

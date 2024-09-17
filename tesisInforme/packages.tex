@@ -27,14 +27,24 @@
 %\usepackage{caption}
 \usepackage{subcaption}
 %\usepackage{epsfig}
-\usepackage{xcolor}
-\usepackage{hyperref}
-\definecolor{mi_color}{rgb}{0.349, 0.137, 0}
+% \usepackage{hyperref}
+\usepackage[colorlinks=false]{hyperref}
 \hypersetup{
-     colorlinks   = true,
-     linkcolor    = mi_color,
-     runcolor = mi_color
-}
+     colorlinks=true,
+     linkcolor=black,
+     filecolor=blue,
+     citecolor = blue,      
+     urlcolor=blue,
+     }
+\usepackage{xcolor}
+\definecolor{mi_color}{rgb}{0, 0, 0}
+% \hypersetup{
+%      colorlinks = true,
+%      linkcolor = mi_color,
+%      runcolor = mi_color
+%      citecolor= red,
+% }
+
 % \usepackage[margin=1.2in]{geometry}
 \usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry} 
 % \usepackage[dvipsnames,table]{xcolor}
