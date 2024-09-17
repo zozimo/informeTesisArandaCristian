@@ -4,7 +4,7 @@
 
 % Inicialmente, se identificarán dos posiciones dentro del túnel de viento que presenten condiciones similares de flujo de aire para la medición de los anemómetros. Posteriormente, se detallarán dos ejemplos de calibración de anemómetros en el túnel de viento, utilizando el sistema mencionado.
 
-En este capítulo se presentan los resultados de dos mediciones. La primera medición permite identificar dos posiciones dentro del túnel de viento donde se presentan condiciones similares de flujo de aire para la medición de los anemómetros. La segunda medición consiste en la realización de un presupuesto de incertidumbre para obtener la calibración de un anemómetro bajo prueba. Ambos ensayos se llevaron a cabo utilizando el sistema desarrollado y el túnel de viento. Para todas las mediciones se utilizo el sistema de referencia definido en la figura \ref{fig:sisReferenciaZmed}, donde el eje \textbf{z} se corresponde con el eje vertical, el eje \textbf{y} se corresponde con el eje longitudinal y el eje \textbf{x} se corresponde con el eje trasversal.
+En este capítulo se presentan los resultados de dos mediciones. La primera medición permite identificar dos posiciones dentro del túnel de viento donde se presentan condiciones similares de flujo de aire para la medición de los anemómetros. La segunda medición consiste en la realización de un presupuesto de incertidumbre para obtener la calibración de un anemómetro bajo prueba. Ambos ensayos se llevaron a cabo utilizando el sistema desarrollado y el túnel de viento. Para todas las mediciones se utilizo el sistema de referencia definido en la Figura \ref{fig:sisReferenciaZmed}, donde el eje \textbf{z} se corresponde con el eje vertical, el eje \textbf{y} se corresponde con el eje longitudinal y el eje \textbf{x} se corresponde con el eje trasversal.
 
 \begin{figure}[H]
     \centering
@@ -38,7 +38,7 @@ El flujo de aire a lo largo, alto y profundo en toda la zona de medición no es 
     \label{fig:caracterPuntos}
 \end{figure}
 
-En la figura \ref{fig:velocidadViento} se observan las velocidades del viento para las distintas posiciones en los cinco puntos de viento programados. El sistema de control PID se encarga de suministrar la potencia necesaria para que el viento dentro del túnel, en la posición del sensor patrón, alcance y se estabilice en el valor configurado.
+En la Figura \ref{fig:velocidadViento} se observan las velocidades del viento para las distintas posiciones en los cinco puntos de viento programados. El sistema de control PID se encarga de suministrar la potencia necesaria para que el viento dentro del túnel, en la posición del sensor patrón, alcance y se estabilice en el valor configurado.
 
 \begin{figure}[H]
     \centering
@@ -122,7 +122,7 @@ Los pasos para realizar el proceso de calibración de un anemómetro se definen 
 % \item La aplicación Django procesa las solicitudes y envía comandos al \textit{datalogger} a través de \textit{WebSocket}.
 %     \item El \textit{datalogger} controla el variador de velocidad del motor mediante señales PWM, ajustando el flujo de aire en el túnel de viento.
 %     \item Los datos de los anemómetros y otros sensores se registran y envían a la aplicación Django.
-En base a los pasos descritos, se realizó la calibración de un sensor ultrasónico de viento marca DeltaOhm, modelo HD51.3, mostrado en la figura \ref{fig:sensorDeltaOhm}, utilizando como sensor patrón el de la figura \ref{fig:sensorVaisala}, modelo WMT700 de la marca Vaisala.
+En base a los pasos descritos, se realizó la calibración de un sensor ultrasónico de viento marca DeltaOhm, modelo HD51.3, mostrado en la Figura \ref{fig:sensorDeltaOhm}, utilizando como sensor patrón el de la Figura \ref{fig:sensorVaisala}, modelo WMT700 de la marca Vaisala.
 
 \subsection{Banco de medición y configuración del hardware}\label{sec:bancoMedicionDeltaOhm}
 En la Figura \ref{fig:deltaVistaFrontal} se muestra el montaje de los sensores sobre una barra de acero, donde se instalaron con una distancia $d$ de \SI{65}{\centi\meter} y a una altura $h$ respecto a la base del soporte de \SI{36.5}{\centi\meter}. Los sensores quedan alineados y nivelados en el eje longitudinal de la barra, como se muestra en las Figuras \ref{fig:deltaVistaSup2} y \ref{fig:deltaVistaPerfil}.
@@ -192,7 +192,7 @@ En las Figuras \ref{fig:configSensorIBC} y \ref{fig:configSensorPAT} se muestra 
     \label{fig:configMetadatos}
 \end{figure} 
 
-En la figura \ref{fig:configDataloggerDelta} se muestra la configuración del datalogger. Se elige un tiempo de muestreo de \SI{1}{\second} y un tiempo de tabla también de \SI{1}{\second}, ya que nos interesa el dato instantáneo para realizar la calibración. Se selecciona el puerto COM2 (RS485 agregado con el módulo RS485-TTL) para el IBC y el puerto COM1 (RS485 propio de la EDU-CIAA) para el sensor patrón. Ambos sensores tienen un baud rate de \SI{9600}{}. En la Figura \ref{fig:configTunelDelta} se muestra la configuración del túnel de viento. Se establece un punto mínimo de \SI{1}{\meter\per\second} y un punto máximo de \SI{25}{\meter\per\second}. Se indican 5 puntos para calibrar en \SI{5}{\meter\per\second}, \SI{10}{\meter\per\second}, \SI{15}{\meter\per\second}, \SI{20}{\meter\per\second} y \SI{25}{\meter\per\second}. Se configura un ciclo ascendente-descendente de \SI{5}{\meter\per\second} a \SI{25}{\meter\per\second} y luego de \SI{25}{\meter\per\second} a \SI{5}{\meter\per\second}. Se establece un tiempo de transición para llegar de un punto a otro de \SI{3}{\minute}, un tiempo para estabilizar las mediciones de \SI{5}{\minute} y un tiempo de medición de \SI{2}{\minute}.
+En la Figura \ref{fig:configDataloggerDelta} se muestra la configuración del datalogger. Se elige un tiempo de muestreo de \SI{1}{\second} y un tiempo de tabla también de \SI{1}{\second}, ya que nos interesa el dato instantáneo para realizar la calibración. Se selecciona el puerto COM2 (RS485 agregado con el módulo RS485-TTL) para el IBC y el puerto COM1 (RS485 propio de la EDU-CIAA) para el sensor patrón. Ambos sensores tienen un baud rate de \SI{9600}{}. En la Figura \ref{fig:configTunelDelta} se muestra la configuración del túnel de viento. Se establece un punto mínimo de \SI{1}{\meter\per\second} y un punto máximo de \SI{25}{\meter\per\second}. Se indican 5 puntos para calibrar en \SI{5}{\meter\per\second}, \SI{10}{\meter\per\second}, \SI{15}{\meter\per\second}, \SI{20}{\meter\per\second} y \SI{25}{\meter\per\second}. Se configura un ciclo ascendente-descendente de \SI{5}{\meter\per\second} a \SI{25}{\meter\per\second} y luego de \SI{25}{\meter\per\second} a \SI{5}{\meter\per\second}. Se establece un tiempo de transición para llegar de un punto a otro de \SI{3}{\minute}, un tiempo para estabilizar las mediciones de \SI{5}{\minute} y un tiempo de medición de \SI{2}{\minute}.
 
 \begin{figure}[H]
     \centering
