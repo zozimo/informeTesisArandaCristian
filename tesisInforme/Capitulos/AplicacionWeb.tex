@@ -148,7 +148,7 @@ M;[nro Medición];[fecha];[hora];
 % El método \texttt{receive} recibe y decodifica los mensajes desde JSON para luego enviarlos a un grupo de la sala utilizando \texttt{async\_to\_sync(self.channel\_layer.group\_send)}. Los mensajes que envía el \textit{datalogger} tiene la forma del arreglo declarado en código \ref{cdg:estructuraMensaje}, que contiene toda la información que ha recolectado el \textit{datalogger} en un ciclo de iteración.
 
 El mensaje utiliza el carácter \texttt{;} como separador. La primera letra \texttt{M} es un carácter que el servidor \textit{WebSocket} valida para interpretar que se trata de un mensaje que contiene mediciones y debe ser guardado en la base de datos. A continuación, se incluye el número de medición, la fecha y la hora. Posteriormente, se envían las mediciones de velocidad y dirección de los sensores patrón y bajo calibración. Luego, se envía el nivel de batería de la fuente de alimentación seguido del nivel de tensión del variador del túnel. Todas estas variables se envían en paquetes de cuatro mediciones: el valor instantáneo, el valor mínimo, el valor máximo y el valor promedio. Finalmente, se envía el nivel de PWM al controlador PID. Más abajo, se presenta un ejemplo de mensaje en el que se utiliza una precisión, habitual para calibrar anemómetros y el resto de las mediciones, de dos decimales, excepto para el nivel de PWM, que es un valor entero entre 0 y 255.
-
+% \newpage
 \begin{verbatim}
     M;634;14-06-2024;16:42:41;
     10.08;10.08;10.08;10.08;
@@ -167,7 +167,7 @@ En la sección \ref{sec:sistemaDeControlPid} se explica cómo funciona el contro
 
 El método de Paul consiste en definir, para cada valor de velocidad configurado, dos zonas: una de aceleración constante (zona 1) y otra de velocidad constante (zona 2), como se muestra en la figura \ref{fig:segmentosZona1yZona2}. Cada segmento tiene una duración $T_{j}$ y un tiempo de aceleración $t_{acc}$, de forma tal que no se realicen cambios abruptos en el controlador, permitiendo que los cambios de velocidad del viento sean suaves. Estos cambios suaves se traducen, a través del controlador PID, en cambios suaves en los valores de PWM para el motor. Para construir la zona 2 del segmento $T_{j}$, donde se define $\Delta C = v^C - v^B$, el método de Paul aplica la ecuación \ref{eq:zona2MetodoPaul}:
 \begin{equation}
-    v(t) = \frac{\Delta C}{T_j} + v^B
+    v(t) = \frac{\Delta C}{T_j}t + v^B
     \label{eq:zona2MetodoPaul}
 \end{equation}
 Para la zona 1 del mismo segmento, donde se define $\Delta A = v^A - v^B$, se aplica la ecuación \ref{eq:zona1MetodoPaul}:
@@ -190,7 +190,7 @@ Combinado estas ecuaciones para todo tiempo $t$ se obtiene un segmento que repre
     \label{fig:trayectoriaGenerada}
 \end{figure}
 
-Luego, realiza el encadenamiento de todos esos segmentos dando como resultado un perfil de velocidad de viento como el de la Figura \ref{fig:trayectoriaGenerada}, donde se muestra una trayectoria de ciclo ascendente y descendente para los puntos 5, 10, 15, 20 y 25 \unit{\meter\per\second}, con un tiempo de crecimiento de 2 \unit{\minute}, un tiempo de estabilización de 5 \unit{\minute} y un tiempo de medición de 2 \unit{\minute}. La curva está compuesta en total por diez segmentos, cada uno construido como el de la Figura \ref{fig:segmentosZona1yZona2}.
+Luego, realiza el encadenamiento de todos esos segmentos dando como resultado un perfil de velocidad de viento como el de la Figura \ref{fig:trayectoriaGenerada}, donde se muestra una trayectoria de ciclo ascendente y descendente para los puntos 5, 10, 15, 20 y 25 \unit{\meter\per\second}, con un tiempo de crecimiento de 3 \unit{\minute}, un tiempo de estabilización de 5 \unit{\minute} y un tiempo de medición de 2 \unit{\minute}. La curva está compuesta en total por diez segmentos, cada uno construido como el de la Figura \ref{fig:segmentosZona1yZona2}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cálculo de incertidumbre}\label{sec:calculoIncertidumbre}
 
@@ -227,7 +227,7 @@ A continuación, el algoritmo obtiene los datos de calibración del sensor patr�
 En base al número de mediciones, se calculan los grados de libertad efectivos y con este número, solicitando un intervalo de confianza del 95\%, se evalúa la distribución $t$ de Student para obtener el factor de cobertura $k$. Luego, se multiplica este número por cada incertidumbre combinada correspondiente para obtener la incertidumbre expandida 
 \begin{equation}
     \centering
-    U = k \cdot u_c.
+    U = k \cdot u_c
 \label{eq:incertExpandidaSoft}
 \end{equation}
 

@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        .clase1{
+            font-size: 15px; /* Ajusta este valor según tus necesidades */
+            color: black;
+            font-weight: bold;
+        }
+    </style>
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: true });
     </script>
 </head>
 <body>
-    <div class="mermaid">
+    <div class="mermaid clase1" >
+        
+        
         sequenceDiagram
             participant DataLogger as Datalogger
             participant Server as Servidor WebSocket
@@ -15,32 +24,29 @@
             
             note left of DataLogger: timeline
             DataLogger->>Server: Solicitud de conexión (Handshake)
-            Server-->>DataLogger: Respuesta de conexión (Handshake)
+            Server->>DataLogger: Respuesta de conexión (Handshake)
             WebApp->>Server: Solicitud de conexión (Handshake)
-            Server-->>WebApp: Respuesta de conexión (Handshake)
+            Server->>WebApp: Respuesta de conexión (Handshake)
 
             loop Keep Alive
                 DataLogger->>Server: Keep Alive
-                Server-->>DataLogger: Keep Alive ACK
+                Server->>DataLogger: Keep Alive ACK
             end
+            WebApp->>Server: Enviar comandos de configuración
+            Server->>DataLogger: Reenviar comandos
 
-            DataLogger->>Server: Enviar datos
-            Server-->>WebApp: Reenviar datos
+            DataLogger->>Server: Enviar mediciones
+            Server->>WebApp: Reenviar mediciones
 
-            WebApp-->>Server: Confirmación de recepción
-            Server-->>DataLogger: Confirmación de recepción
-
-            DataLogger->>Server: Enviar más datos
-            Server-->>WebApp: Reenviar más datos
-
-            WebApp-->>Server: Confirmación de recepción
-            Server-->>DataLogger: Confirmación de recepción
+            WebApp->>Server: Confirmación de recepción
+            Server->>DataLogger: Confirmación de recepción
 
             WebApp->>Server: Solicitud de desconexión
-            Server-->>WebApp: Confirmación de desconexión
+            Server->>WebApp: Confirmación de desconexión
             DataLogger->>Server: Solicitud de desconexión
-            Server-->>DataLogger: Confirmación de desconexión
+            Server- >>DataLogger: Confirmación de desconexión
             note left of DataLogger: timeline
+            
 
     </div>
 </body>
